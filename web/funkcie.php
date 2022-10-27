@@ -7,8 +7,8 @@ date_default_timezone_set('Europe/Bratislava');
 <?php
 
 
-/* kontroluje meno (meno a priezvisko)
-vráti TRUE, ak celé meno ($m) obsahuje práve 1 medzeru, pred a za medzerou sú časti aspoň dĺžky 3 znaky
+/* kontroluje meno (meno a heslo v SHA256 "formáte")
+vráti riadok s použivatelom ak existuje, ak nie vráti false
 */
 function over_pouzivatela($mysqli, $username, $pass) {
 	if (!$mysqli->connect_errno) {

@@ -11,14 +11,14 @@ include('funkcie.php');
 <?php
 $chyby = array();
 if (isset($_POST['odhlas'])){
-	vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
+	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	session_unset();
 	session_destroy();
 }
 
 if (isset($_POST[ "prihlasmeno"] ) && isset($_POST["heslo"] ) &&
 over_pouzivatela($mysqli, $_POST["prihlasmeno"], $_POST["heslo"] )==false ){
-	vloz_log($mysqli,$_POST[ "prihlasmeno"],"Kombinácia mena a hesla je nesprávna");
+	//vloz_log($mysqli,$_POST[ "prihlasmeno"],"Kombinácia mena a hesla je nesprávna");
  echo "Kombinácia mena a hesla je nesprávna";
 }
 
@@ -33,10 +33,16 @@ over_pouzivatela($mysqli, $_POST["prihlasmeno"], $_POST["heslo"] )==true ){
 if (isset($_SESSION['prihlasovacie_meno'])){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"Návšteva indexu ako prihlásený");
 //echo "Hello there";
+
 ?>
 <div class="container tekst">
 <section>
-
+				<button>
+				<form id="myform" method="post"><input type="hidden" id="odhlas" name="odhlas" value="odhlas"></form>
+				<a class="nav-link" onclick="document.getElementById('myform').submit();">Odhlásiť sa</a>
+			
+                </button>
+				
 </div>
 <?php
 
