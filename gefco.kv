@@ -1,0 +1,23 @@
+<ChooseLanguage>:
+    background_color: 1,1,1,1  # the last zero is the critical on, make invisible
+    canvas.before:
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [50,]
+    Button:
+        background_normal: 'normal.png'
+        background_down: 'down.png'
+        background_color:138/255,43/255,226/255,1
+        text: 'Slovak'
+        size_hint_y: None
+        height: 44
+        on_release: root.select('Slovak')
+    Button:
+        background_normal: 'normal.png'
+        background_down: 'down.png'
+        background_color:138/255,43/255,226/255,1
+        text: 'English'
+        size_hint_y:None
+        height:44
+        on_release: root.select('English')
