@@ -2,7 +2,8 @@
 session_start();
 include('db.php');
 include('funkcie.php');
-
+require('fpdf/fpdf.php');
+$pdf = new FPDF();
 ?>
 <section>
 
@@ -17,7 +18,7 @@ if (isset($_POST['odhlas'])){
 }
 
 if (isset($_POST[ "prihlasmeno"] ) && isset($_POST["heslo"] ) &&
-over_pouzivatela($mysqli, $_POST["prihlasmeno"], $_POST["heslo"] )==false ){
+over_pouzivatela($db, $_POST["prihlasmeno"], $_POST["heslo"] )==false ){
 	//vloz_log($mysqli,$_POST[ "prihlasmeno"],"Kombinácia mena a hesla je nesprávna");
  echo "Kombinácia mena a hesla je nesprávna";
 }
@@ -25,14 +26,23 @@ over_pouzivatela($mysqli, $_POST["prihlasmeno"], $_POST["heslo"] )==false ){
 
 
 if (isset($_POST[ "prihlasmeno"] ) && isset($_POST["heslo"] ) &&
-over_pouzivatela($mysqli, $_POST["prihlasmeno"], $_POST["heslo"] )==true ){
-	$pouzivatel = over_pouzivatela($mysqli, $_POST["prihlasmeno"], $_POST["heslo"] );
-	$_SESSION['prihlasovacie_meno'] = $pouzivatel['username'] ;
+over_pouzivatela($db, $_POST["prihlasmeno"], $_POST["heslo"] )==true ){
+	$pouzivatel = over_pouzivatela($db, $_POST["prihlasmeno"], $_POST["heslo"] );
+	//print_r($pouzivatel);
+	$_SESSION['prihlasovacie_meno'] = $pouzivatel[1] ;
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"prihlasenie");
 }
 if (isset($_SESSION['prihlasovacie_meno'])){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"Návšteva indexu ako prihlásený");
-//echo "Hello there";
+	ob_start();
+	$pdf->AddPage();
+	$pdf->SetFont('Arial','B',16);
+	$pdf->Cell(40,10,'Hello World!');
+	$pdf->Output();
+	ob_end_flush(); 
+	
+  
+
 
 ?>
 <div class="container tekst">
