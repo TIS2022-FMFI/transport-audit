@@ -10,17 +10,20 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ARRAY, BigInteger, Boolean, Column, DateTime, ForeignKey, Table, Text, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import INT4RANGE
+from flask_migrate import Migrate
 from sqlalchemy.ext.declarative import declarative_base
 #vytvorí inštanciu Flasku
 app = Flask(__name__)
 # Vytvorí api objekt
 api = Api(app)
 
+
 #Vytvorí databázu
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:Verejne_zname_heslo_47@server.nahovno.eu:5432/audit-preprav'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #SQL alchemy inštancia
 db = SQLAlchemy(app)
+
 
 # Definicia tabuliek
 Base = db.Model
@@ -170,15 +173,50 @@ class Stillage(Base):
 #Beží ako post a autentifikácia je cez json "api-heslo" s heslom "
 class Get(Resource):
     def post(self):
-        if request.is_json:
+        if request.is_json and ("tabulka" in request.json) and (request.json['api-heslo']=="YouWontGuessThisOne"):
+            row_list = []
+            if(request.json['tabulka'] == "General"):
+                tabulka = General.query.all()
+                for row in tabulka:
+                    data = {'id': row.id, 'Last_changes': row.Last_changes, 'Last_available': row.Last_available, 'Automatic_export': row.Automatic_export}
+                    row_list.append(data)
 
-            if(request.json['api-heslo']=="YouWontGuessThisOne"):
-                employees = General.query.all()
-                emp_list = []
-                for emp in employees:
-                    emp_data = {'Id': emp.id, 'Meno': emp.meno, 'Priezvisko': emp.priezvisko}
-                    emp_list.append(emp)
-                return {"Všetci pracovníci": emp_list}, 200
+            elif(request.json['tabulka'] == "User_Role"):
+                tabulka = UserRole.query.all()
+                for row in tabulka:
+                    data = {'id': row.id, 'name': row.name}
+                    row_list.append(data)
+
+            elif(request.json['tabulka'] == "Customer"):
+                tabulka = Customer.query.all()
+                for row in tabulka:
+                    data = {'id': row.id, 'Name': row.Name}
+                    row_list.append(data)
+
+            elif(request.json['tabulka'] == "Vehicle"):
+                tabulka = Vehicle.query.all()
+                for row in tabulka:
+                    data = {'id': row.id, 'SPZ': row.SPZ}
+                    row_list.append(data)
+
+            elif(request.json['tabulka'] == "User"):
+                tabulka = User.query.all()
+                for row in tabulka:
+                    data = {'code': row.code, 'Name': row.Name, 'Last_name': row.Last_name, 'User_Role_id': row.User_Role_id}
+                    row_list.append(data)
+            elif(request.json['tabulka'] == "Config"):
+                tabulka = Config.query.all()
+                for row in tabulka:
+                    data = {'id': row.id, 'Customer_id': row.Customer_id, 'Vehicle_id': row.Vehicle_id}
+                    row_list.append(data)
+
+
+
+
+
+
+
+            return {"Všetci pracovníci": row_list}, 200
         else:
             return {'error': 'Formát musí byť JSON'}, 400
 
