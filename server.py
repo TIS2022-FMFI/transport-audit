@@ -2,8 +2,12 @@
 #pip install flask-sqlalchemy
 #pip install flask-restful
 #pip install mysqlclient
+#pip install SQLAlchemy-serializer
 #Odporúčam testovať cez PostMan-a
 #SSL bude riešené až v WSGI spolu s apache / NGIX
+from sqlalchemy_serializer import SerializerMixin
+import json
+import decimal, datetime
 from flask import Flask, request,jsonify,make_response
 from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
@@ -29,14 +33,21 @@ db = SQLAlchemy(app)
 Base = db.Model
 metadata = Base.metadata
 
-class Customer(Base):
+def alchemyencoder(obj):
+    """JSON encoder function for SQLAlchemy special classes."""
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    elif isinstance(obj, decimal.Decimal):
+        return float(obj)
+
+class Customer(Base, SerializerMixin):
     __tablename__ = 'Customer'
 
     Name = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
 
 
-class General(Base):
+class General(Base, SerializerMixin):
     __tablename__ = 'General'
 
     Last_changes = Column(DateTime)
@@ -45,28 +56,28 @@ class General(Base):
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
 
 
-class StillageType(Base):
+class StillageType(Base, SerializerMixin):
     __tablename__ = 'Stillage_type'
 
     Name = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
 
 
-class UserRole(Base):
+class UserRole(Base, SerializerMixin):
     __tablename__ = 'User_Role'
 
     name = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
 
 
-class Vehicle(Base):
+class Vehicle(Base, SerializerMixin):
     __tablename__ = 'Vehicle'
 
     SPZ = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
 
 
-class Config(Base):
+class Config(Base, SerializerMixin):
     __tablename__ = 'Config'
 
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
@@ -77,7 +88,7 @@ class Config(Base):
     Vehicle = relationship('Vehicle')
 
 
-class Pattern(Base):
+class Pattern(Base, SerializerMixin):
     __tablename__ = 'Pattern'
 
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
@@ -86,7 +97,7 @@ class Pattern(Base):
     Customer = relationship('Customer')
 
 
-class User(Base):
+class User(Base, SerializerMixin):
     __tablename__ = 'User'
 
     code = Column(BigInteger, primary_key=True)
@@ -97,7 +108,7 @@ class User(Base):
     User_Role = relationship('UserRole')
 
 
-class AdvancedUser(Base):
+class AdvancedUser(Base, SerializerMixin):
     __tablename__ = 'Advanced_user'
 
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
@@ -108,7 +119,7 @@ class AdvancedUser(Base):
     User = relationship('User')
 
 
-class PatternItem(Base):
+class PatternItem(Base, SerializerMixin):
     __tablename__ = 'Pattern_Item'
 
     Number = Column(BigInteger)
@@ -120,7 +131,7 @@ class PatternItem(Base):
     Stillage_type = relationship('StillageType')
 
 
-class Shipment(Base):
+class Shipment(Base, SerializerMixin):
     __tablename__ = 'Shipment'
 
     User_code = Column(ForeignKey('User.code'))
@@ -134,7 +145,7 @@ class Shipment(Base):
     Vehicle = relationship('Vehicle')
 
 
-class WorkStatement(Base):
+class WorkStatement(Base, SerializerMixin):
     __tablename__ = 'Work_statement'
 
     User_code = Column(ForeignKey('User.code'))
@@ -146,25 +157,26 @@ class WorkStatement(Base):
     User = relationship('User')
 
 
-class Stillage(Base):
+class Stillage(Base, SerializerMixin):
     __tablename__ = 'Stillage'
 
     Date_time_start = Column(DateTime)
     Date_time_end = Column(DateTime)
     Stillage_number = Column(BigInteger)
-    TLS_range = Column(INT4RANGE)
     Stillage_Number_on_Header = Column(BigInteger)
     First_scan_product = Column(BigInteger)
     Last_scan_product = Column(BigInteger)
     JLR_Header_NO = Column(BigInteger)
     Carriage_L_JLR_H = Column('Carriage_L+JLR_H', Text)
     Check = Column(BigInteger)
-    Note = Column(ARRAY(Text()))
     First_scan_TLS_code = Column(BigInteger)
     Last_scan_TLS_code = Column(BigInteger)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     Stillage_Type_id = Column(ForeignKey('Stillage_type.id'))
     Shipment_id = Column(ForeignKey('Shipment.id'))
+    TLS_range_start = Column(BigInteger)
+    TLS_range_stop = Column(BigInteger)
+    Note = Column(Text)
 
     Shipment = relationship('Shipment')
     Stillage_Type = relationship('StillageType')
@@ -174,49 +186,47 @@ class Stillage(Base):
 class Get(Resource):
     def post(self):
         if request.is_json and ("tabulka" in request.json) and (request.json['api-heslo']=="YouWontGuessThisOne"):
-            row_list = []
+            tabulka = []
             if(request.json['tabulka'] == "General"):
                 tabulka = General.query.all()
-                for row in tabulka:
-                    data = {'id': row.id, 'Last_changes': row.Last_changes, 'Last_available': row.Last_available, 'Automatic_export': row.Automatic_export}
-                    row_list.append(data)
 
             elif(request.json['tabulka'] == "User_Role"):
                 tabulka = UserRole.query.all()
-                for row in tabulka:
-                    data = {'id': row.id, 'name': row.name}
-                    row_list.append(data)
 
             elif(request.json['tabulka'] == "Customer"):
                 tabulka = Customer.query.all()
-                for row in tabulka:
-                    data = {'id': row.id, 'Name': row.Name}
-                    row_list.append(data)
 
             elif(request.json['tabulka'] == "Vehicle"):
                 tabulka = Vehicle.query.all()
-                for row in tabulka:
-                    data = {'id': row.id, 'SPZ': row.SPZ}
-                    row_list.append(data)
 
             elif(request.json['tabulka'] == "User"):
                 tabulka = User.query.all()
-                for row in tabulka:
-                    data = {'code': row.code, 'Name': row.Name, 'Last_name': row.Last_name, 'User_Role_id': row.User_Role_id}
-                    row_list.append(data)
+
             elif(request.json['tabulka'] == "Config"):
                 tabulka = Config.query.all()
-                for row in tabulka:
-                    data = {'id': row.id, 'Customer_id': row.Customer_id, 'Vehicle_id': row.Vehicle_id}
-                    row_list.append(data)
 
+            elif(request.json['tabulka'] == "Shipment"):
+                tabulka = Shipment.query.all()
 
+            elif(request.json['tabulka'] == "Pattern"):
+                tabulka = Pattern.query.all()
 
+            elif(request.json['tabulka'] == "Work_statement"):
+                tabulka = WorkStatement.query.all()
 
+            elif(request.json['tabulka'] == "Stillage_type"):
+                tabulka = StillageType.query.all()
 
+            elif(request.json['tabulka'] == "Advanced_user"):
+                tabulka = AdvancedUser.query.all()
 
+            elif(request.json['tabulka'] == "Stillage"):
+                tabulka = Stillage.query.all()
 
-            return {"Všetci pracovníci": row_list}, 200
+            elif(request.json['tabulka'] == "Pattern_Item"):
+                tabulka = PatternItem.query.all()
+
+            return [r.to_dict() for r in tabulka], 200
         else:
             return {'error': 'Formát musí byť JSON'}, 400
 
