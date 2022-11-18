@@ -1,13 +1,15 @@
+import json
 import sqlite3
 import requests
-from tqdm import tqdm
 db = sqlite3.connect("gefco.db")
 cursor = db.cursor()
-def synchronize_db():
-    tabulky = ["General","User_Role","Customer","Vehicle","User","Config","Shipment","Pattern","Work_statement","Stillage_type","Advanced_user","Stillage","Pattern_Item"] #Vsetky tabulky
-    #tabulky = ["Config"] # len jedna tabulka, pre test
+tabulky = ["General", "User_Role", "Customer", "Vehicle", "User", "Config", "Shipment", "Pattern", "Work_statement",
+           "Stillage_type", "Advanced_user", "Stillage", "Pattern_Item"]  # Vsetky tabulky
+
+#tabulky = ["Config"] # len jedna tabulka, pre test
+def synchronize_db_server_client():
     for nazov_tabulky in tabulky:
-        URL = "http://127.0.0.1:5100/"
+        URL = "http://185.91.116.166:5100/Get"
         post = {
             "api-heslo": "YouWontGuessThisOne",
             "tabulka": f"{nazov_tabulky}"
@@ -35,8 +37,25 @@ def synchronize_db():
             cursor.execute(query, filtrovane)
         cursor.execute("COMMIT")
 
-        #dorobit synchronizáciu lokál --> server
+#dorobit synchronizáciu lokál --> server
+def synchronize_db_client_server():
+    for nazov_tabulky in tabulky:
+        cursor.execute("""SELECT * FROM %s""" % (nazov_tabulky))
+        col_name = [i[0] for i in cursor.description]
+        vysledok = []
+        for riadok in cursor.fetchall():
+            temp = dict(zip(col_name, riadok))
+            vysledok.append(temp)
+        #print(nazov_tabulky,temp)
+        URL = "http://185.91.116.166:5100/Post"
+        post = {
+            "api-heslo": "YouWontGuessThisOne",
+            "tabulka": f"{nazov_tabulky}",
+            "data" : vysledok
+        }
+        requests.post(url=URL, json=post, timeout=None)
+
 
 
 if __name__ == '__main__':
-    synchronize_db()
+    synchronize_db_client_server()

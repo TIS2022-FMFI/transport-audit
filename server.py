@@ -1,8 +1,8 @@
 #pip install flask
 #pip install flask-sqlalchemy
 #pip install flask-restful
-#pip install mysqlclient
 #pip install SQLAlchemy-serializer
+#pip install psycopg2
 #Odporúčam testovať cez PostMan-a
 #SSL bude riešené až v WSGI spolu s apache / NGIX
 from sqlalchemy_serializer import SerializerMixin
@@ -13,9 +13,6 @@ from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ARRAY, BigInteger, Boolean, Column, DateTime, ForeignKey, Table, Text, text
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import INT4RANGE
-from flask_migrate import Migrate
-from sqlalchemy.ext.declarative import declarative_base
 #vytvorí inštanciu Flasku
 app = Flask(__name__)
 # Vytvorí api objekt
@@ -230,20 +227,31 @@ class Get(Resource):
         else:
             return {'error': 'Formát musí byť JSON'}, 400
 
-# Bude bezat na /pridat - táto funkcia v skutocnosti nie je potrebna,
-# pretože potrebujeme iba get, pridavanie pojde cez php my admin
-# class Pridať(Resource):
-#     def post(self):
-#         if request.is_json:
-#             emp = Pracovnik(meno=request.json['meno'], priezvisko=request.json['priezvisko'])
-#             db.session.add(emp)
-#             db.session.commit()
-#             # vrátim json odpoveď
-#             return make_response(jsonify({'id': emp.id, 'meno': emp.meno, 'priezvisko': emp.priezvisko}), 201)
-#         else:
-#             return {'error': 'Formát musí byť JSON'}, 400
 
-api.add_resource(Get, '/')
-#api.add_resource(Pridať, '/pridat') # do buducna zmazať
+class Post(Resource):
+    def post(self):
+        if request.is_json and ("tabulka" in request.json) and (request.json['api-heslo']=="YouWontGuessThisOne"):
+            data = request.json['data']
+            for riadok in data:
+                prikaz = f"{request.json['tabulka']}.query.filter_by(id=riadok.get('id')).first()"
+                if(exec(prikaz)):
+                    pass
+                else:
+                    prikaz = f"db.session.add({request.json['tabulka']}(**riadok))"
+                    exec(prikaz)
+                    db.session.commit()
+
+            return {'ok': 'spracovane'}, 200
+
+            # emp = Pracovnik(meno=request.json['meno'], priezvisko=request.json['priezvisko'])
+            # db.session.add(emp)
+            # db.session.commit()
+            # vrátim json odpoveď
+            # return make_response(jsonify({'id': emp.id, 'meno': emp.meno, 'priezvisko': emp.priezvisko}), 201)
+        else:
+            return {'error': 'Formát musí byť JSON'}, 400
+
+api.add_resource(Get, '/Get') #Funkcia vracia obsah pozadovanej tabulky
+api.add_resource(Post, '/Post') # Funkcia si nahrá poslaný riadok do tabulky
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5100)
