@@ -1,15 +1,15 @@
 import json
+import time
 import sqlite3
 import requests
 db = sqlite3.connect("gefco.db")
 cursor = db.cursor()
-tabulky = ["General", "User_Role", "Customer", "Vehicle", "User", "Config", "Shipment", "Pattern", "Work_statement",
-           "Stillage_type", "Advanced_user", "Stillage", "Pattern_Item"]  # Vsetky tabulky
+tabulky = ["General", "User_Role", "Customer", "Vehicle", "User", "Config", "Shipment", "Pattern", "Work_statement","Stillage_type", "Advanced_user", "Stillage", "Pattern_Item"]  # Vsetky tabulky
 
-#tabulky = ["Config"] # len jedna tabulka, pre test
+#tabulky = ["Stillage"] # len jedna tabulka, pre test
 def synchronize_db_server_client():
     for nazov_tabulky in tabulky:
-        URL = "http://185.91.116.166:5100/Get"
+        URL = "http://server.nahovno.eu:5100/Get"
         post = {
             "api-heslo": "YouWontGuessThisOne",
             "tabulka": f"{nazov_tabulky}"
@@ -47,15 +47,20 @@ def synchronize_db_client_server():
             temp = dict(zip(col_name, riadok))
             vysledok.append(temp)
         #print(nazov_tabulky,temp)
-        URL = "http://185.91.116.166:5100/Post"
+        URL = "http://server.nahovno.eu:5100/Post"
         post = {
             "api-heslo": "YouWontGuessThisOne",
             "tabulka": f"{nazov_tabulky}",
             "data" : vysledok
         }
-        requests.post(url=URL, json=post, timeout=None)
+        r = requests.post(url=URL, json=post, timeout=None)
+        print(f"Nahrávam {nazov_tabulky}")
+        print(r.text) #Aby som nesiel príliš rýchlo, potom sa nestihnú tabulky spracovat v spravnom poradí a to vedie k zlým foreign keys
 
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     synchronize_db_client_server()
+
+    print("--- %s seconds ---" % (time.time() - start_time))

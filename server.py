@@ -53,14 +53,14 @@ class General(Base, SerializerMixin):
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
 
 
-class StillageType(Base, SerializerMixin):
+class Stillage_type(Base, SerializerMixin):
     __tablename__ = 'Stillage_type'
 
     Name = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
 
 
-class UserRole(Base, SerializerMixin):
+class User_Role(Base, SerializerMixin):
     __tablename__ = 'User_Role'
 
     name = Column(Text)
@@ -81,8 +81,8 @@ class Config(Base, SerializerMixin):
     Customer_id = Column(ForeignKey('Customer.id'))
     Vehicle_id = Column(ForeignKey('Vehicle.id'))
 
-    Customer = relationship('Customer')
-    Vehicle = relationship('Vehicle')
+    #Customer = relationship('Customer')
+    #Vehicle = relationship('Vehicle')
 
 
 class Pattern(Base, SerializerMixin):
@@ -91,7 +91,7 @@ class Pattern(Base, SerializerMixin):
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     Customer_id = Column(ForeignKey('Customer.id'))
 
-    Customer = relationship('Customer')
+    #Customer = relationship('Customer')
 
 
 class User(Base, SerializerMixin):
@@ -102,21 +102,21 @@ class User(Base, SerializerMixin):
     Last_name = Column(Text)
     User_Role_id = Column(ForeignKey('User_Role.id', match='FULL'))
 
-    User_Role = relationship('UserRole')
+    #User_Role = relationship('UserRole')
 
 
-class AdvancedUser(Base, SerializerMixin):
+class Advanced_user(Base, SerializerMixin):
     __tablename__ = 'Advanced_user'
 
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     Config_id = Column(ForeignKey('Config.id'))
     User_code = Column(ForeignKey('User.code'))
 
-    Config = relationship('Config')
-    User = relationship('User')
+    #Config = relationship('Config')
+    #User = relationship('User')
 
 
-class PatternItem(Base, SerializerMixin):
+class Pattern_Item(Base, SerializerMixin):
     __tablename__ = 'Pattern_Item'
 
     Number = Column(BigInteger)
@@ -124,8 +124,8 @@ class PatternItem(Base, SerializerMixin):
     Pattern_id = Column(ForeignKey('Pattern.id'))
     Stillage_type_id = Column(ForeignKey('Stillage_type.id'))
 
-    Pattern = relationship('Pattern')
-    Stillage_type = relationship('StillageType')
+    #Pattern = relationship('Pattern')
+    #Stillage_type = relationship('StillageType')
 
 
 class Shipment(Base, SerializerMixin):
@@ -137,12 +137,12 @@ class Shipment(Base, SerializerMixin):
     Customer_id = Column(ForeignKey('Customer.id'))
     Vehicle_id = Column(ForeignKey('Vehicle.id'))
 
-    Customer = relationship('Customer')
-    User = relationship('User')
-    Vehicle = relationship('Vehicle')
+    #Customer = relationship('Customer')
+    #User = relationship('User')
+    #Vehicle = relationship('Vehicle')
 
 
-class WorkStatement(Base, SerializerMixin):
+class Work_statement(Base, SerializerMixin):
     __tablename__ = 'Work_statement'
 
     User_code = Column(ForeignKey('User.code'))
@@ -151,7 +151,7 @@ class WorkStatement(Base, SerializerMixin):
     Time_end = Column(DateTime)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
 
-    User = relationship('User')
+    #User = relationship('User')
 
 
 class Stillage(Base, SerializerMixin):
@@ -164,8 +164,8 @@ class Stillage(Base, SerializerMixin):
     First_scan_product = Column(BigInteger)
     Last_scan_product = Column(BigInteger)
     JLR_Header_NO = Column(BigInteger)
-    Carriage_L_JLR_H = Column('Carriage_L+JLR_H', Text)
-    Check = Column(BigInteger)
+    Carriage_L_JLR_H = Column('Carriage_L_JLR_H', Text)
+    _Check = Column(BigInteger)
     First_scan_TLS_code = Column(BigInteger)
     Last_scan_TLS_code = Column(BigInteger)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
@@ -175,20 +175,21 @@ class Stillage(Base, SerializerMixin):
     TLS_range_stop = Column(BigInteger)
     Note = Column(Text)
 
-    Shipment = relationship('Shipment')
-    Stillage_Type = relationship('StillageType')
+    #Shipment = relationship('Shipment')
+    #Stillage_Type = relationship('StillageType')
 
 
 #Beží ako post a autentifikácia je cez json "api-heslo" s heslom "
 class Get(Resource):
     def post(self):
         if request.is_json and ("tabulka" in request.json) and (request.json['api-heslo']=="YouWontGuessThisOne"):
+            db.session.execute('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;')
             tabulka = []
             if(request.json['tabulka'] == "General"):
                 tabulka = General.query.all()
 
             elif(request.json['tabulka'] == "User_Role"):
-                tabulka = UserRole.query.all()
+                tabulka = User_Role.query.all()
 
             elif(request.json['tabulka'] == "Customer"):
                 tabulka = Customer.query.all()
@@ -209,19 +210,21 @@ class Get(Resource):
                 tabulka = Pattern.query.all()
 
             elif(request.json['tabulka'] == "Work_statement"):
-                tabulka = WorkStatement.query.all()
+                tabulka = Work_statement.query.all()
 
             elif(request.json['tabulka'] == "Stillage_type"):
-                tabulka = StillageType.query.all()
+                tabulka = Stillage_type.query.all()
 
             elif(request.json['tabulka'] == "Advanced_user"):
-                tabulka = AdvancedUser.query.all()
+                tabulka = Advanced_user.query.all()
 
             elif(request.json['tabulka'] == "Stillage"):
                 tabulka = Stillage.query.all()
 
             elif(request.json['tabulka'] == "Pattern_Item"):
-                tabulka = PatternItem.query.all()
+                tabulka = Pattern_Item.query.all()
+            else:
+                return {'error': 'Netrafil si tabuľku'}, 400
 
             return [r.to_dict() for r in tabulka], 200
         else:
@@ -231,15 +234,20 @@ class Get(Resource):
 class Post(Resource):
     def post(self):
         if request.is_json and ("tabulka" in request.json) and (request.json['api-heslo']=="YouWontGuessThisOne"):
+            db.session.execute('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;')
             data = request.json['data']
             for riadok in data:
-                prikaz = f"{request.json['tabulka']}.query.filter_by(id=riadok.get('id')).first()"
-                if(exec(prikaz)):
+                if(request.json['tabulka']=="User"):
+                    prikaz = f"{request.json['tabulka']}.query.filter_by(code=riadok.get('code')).first()"
+                else:
+                    prikaz = f"{request.json['tabulka']}.query.filter_by(id=riadok.get('id')).first()"
+                vysledok = eval(prikaz)
+                if(vysledok):
                     pass
                 else:
                     prikaz = f"db.session.add({request.json['tabulka']}(**riadok))"
-                    exec(prikaz)
-                    db.session.commit()
+                    eval(prikaz)
+            db.session.commit()
 
             return {'ok': 'spracovane'}, 200
 
