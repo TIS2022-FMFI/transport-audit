@@ -243,7 +243,8 @@ class Post(Resource):
                     prikaz = f"{request.json['tabulka']}.query.filter_by(id=riadok.get('id')).first()"
                 vysledok = eval(prikaz)
                 if(vysledok):
-                    pass
+                    prikaz = f"db.session.merge({request.json['tabulka']}(**riadok))"
+                    eval(prikaz)
                 else:
                     prikaz = f"db.session.add({request.json['tabulka']}(**riadok))"
                     eval(prikaz)
