@@ -4,11 +4,24 @@ import time
 import sqlite3
 import requests
 import datetime
+import random
 #pip install python-dateutil
 from dateutil.parser import parse
-db = sqlite3.connect("gefco.db")
+import os
+db_path = os.path.abspath(os.path.dirname(__file__)) + "/gefco.db"
+db_path = os.path.normpath(db_path)
+#print(db_path)
+db = sqlite3.connect(db_path)
 cursor = db.cursor()
 tabulky = ["General", "User_Role", "Customer", "Vehicle", "User", "Config", "Shipment", "Pattern", "Work_statement","Stillage_type", "Advanced_user", "Stillage", "Pattern_Item"]  # Vsetky tabulky
+
+
+def all_user_codes():
+    cursor.execute("SELECT code FROM User")
+    vysledok = set()
+    for i in cursor.fetchall():
+        vysledok.add(i[0])
+    return vysledok
 
 #tabulky = ["Stillage"] # len jedna tabulka, pre test
 def synchronize_db_server_client():
@@ -138,7 +151,7 @@ class Customer:
             data = dict()
             data['id'] = self.id
             data['Name'] = self.Name
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Customer",data)#
             except requests.exceptions.HTTPError as errh:
@@ -191,8 +204,8 @@ class General():
             cursor.execute('INSERT INTO General (id, Last_changes, Last_available, Automatic_export) VALUES (?,?,?,?)', (self.id, self.Last_changes,self.Last_available,self.Automatic_export))#
             cursor.execute("COMMIT")
             data = dict()
-            data['Last_changes'] = self.Last_changes
-            data['Last_available'] = self.Last_available
+            data['Last_changes'] = str(self.Last_changes)
+            data['Last_available'] = str(self.Last_available)
             data['Automatic_export'] = self.Automatic_export
             data['id'] = self.id
             try:
@@ -214,11 +227,11 @@ class General():
             cursor.execute(sql,(self.Last_changes,self.Last_available,self.Automatic_export,parse(str(datetime.datetime.now())),self.id))
             cursor.execute("COMMIT")
             data = dict()
-            data['Last_changes'] = self.Last_changes
-            data['Last_available'] = self.Last_available
+            data['Last_changes'] = str(self.Last_changes)
+            data['Last_available'] = str(self.Last_available)
             data['Automatic_export'] = self.Automatic_export
             data['id'] = self.id
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("General",data)#
             except requests.exceptions.HTTPError as errh:
@@ -356,7 +369,7 @@ class User_Role():
             data = dict()
             data['name'] = self.name
             data['id'] = self.id
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("User_Role",data)#
             except requests.exceptions.HTTPError as errh:
@@ -425,7 +438,7 @@ class Vehicle():
             data = dict()
             data['SPZ'] = self.SPZ
             data['id'] = self.id
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Vehicle",data)#
             except requests.exceptions.HTTPError as errh:
@@ -611,7 +624,14 @@ class User():
         self.Name = Name
         self.Last_name = Last_name
         self.User_Role_id = User_Role_id
-        self.code = str(uuid.uuid4())
+        #Generovanie user kodu, aký ešte nieje v db
+        while True: # celý tento vtip je úplne zbytočný, skôr vyhrám v športke ako to, že trafím 2x 15 miestne user kódy
+            random_code = random.Random().randint(100000000000000,999999999999999) # náhodný 15 miestny int
+            if(random_code in all_user_codes()):
+                pass
+            else:
+                self.code = random_code
+                break
         cursor.execute('SELECT * FROM User WHERE code = ?', [self.code])#
         entry = cursor.fetchone()
         if entry is None:
@@ -645,7 +665,7 @@ class User():
             data['Last_name'] = self.Last_name
             data['User_Role_id'] = self.User_Role_id
             data['code'] = self.code
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("User",data)#
             except requests.exceptions.HTTPError as errh:
