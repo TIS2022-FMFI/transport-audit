@@ -130,6 +130,7 @@ class Customer:
             data = dict()
             data['id'] = self.id
             data['Name'] = self.Name
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Customer",data)#
             except requests.exceptions.HTTPError as errh:
@@ -208,6 +209,7 @@ class General():
             data['Last_available'] = str(self.Last_available)
             data['Automatic_export'] = self.Automatic_export
             data['id'] = self.id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("General",data)#
             except requests.exceptions.HTTPError as errh:
@@ -279,6 +281,7 @@ class Stillage_type():
             data = dict()
             data['Name'] = self.Name
             data['id'] = self.id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Stillage_type",data)#
             except requests.exceptions.HTTPError as errh:
@@ -300,7 +303,7 @@ class Stillage_type():
             data = dict()
             data['Name'] = self.Name
             data['id'] = self.id
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Stillage_type",data)#
             except requests.exceptions.HTTPError as errh:
@@ -348,6 +351,7 @@ class User_Role():
             data = dict()
             data['name'] = self.name
             data['id'] = self.id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("User_Role",data)#
             except requests.exceptions.HTTPError as errh:
@@ -417,6 +421,7 @@ class Vehicle():
             data = dict()
             data['SPZ'] = self.SPZ
             data['id'] = self.id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Vehicle",data)#
             except requests.exceptions.HTTPError as errh:
@@ -490,6 +495,7 @@ class Config():
             data['Customer_id'] = self.Customer_id
             data['Vehicle_id'] = self.Vehicle_id
             data['id'] = self.id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Config",data)#
             except requests.exceptions.HTTPError as errh:
@@ -505,16 +511,16 @@ class Config():
             return None
     def update(self):
         if self.id:
-            sql = """UPDATE Config SET Customer_id = ?, Vehicle_id, last_sync = ? WHERE id = ?"""
+            sql = """UPDATE Config SET Customer_id = ?, Vehicle_id = ?, last_sync = ? WHERE id = ?"""
             cursor.execute(sql,(self.Customer_id,self.Vehicle_id,parse(str(datetime.datetime.now())),self.id))
             cursor.execute("COMMIT")
             data = dict()
             data['Customer_id'] = self.Customer_id
             data['Vehicle_id'] = self.Vehicle_id
             data['id'] = self.id
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
-                client_server_nahraj_jeden("Vehicle",data)#
+                client_server_nahraj_jeden("Config",data)#
             except requests.exceptions.HTTPError as errh:
                 print("Http Error:", errh)
             except requests.exceptions.ConnectionError as errc:
@@ -559,6 +565,7 @@ class Pattern():
             data = dict()
             data['Customer_id'] = self.Customer_id
             data['id'] = self.id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Pattern",data)#
             except requests.exceptions.HTTPError as errh:
@@ -580,7 +587,7 @@ class Pattern():
             data = dict()
             data['Customer_id'] = self.Customer_id
             data['id'] = self.id
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Pattern",data)#
             except requests.exceptions.HTTPError as errh:
@@ -642,6 +649,7 @@ class User():
             data['Last_name'] = self.Last_name
             data['User_Role_id'] = self.User_Role_id
             data['code'] = self.code
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("User",data)#
             except requests.exceptions.HTTPError as errh:
@@ -720,6 +728,7 @@ class Advanced_user():
              data['Config_id'] = self.Config_id
              data['User_code'] = self.User_code
              data['id'] = self.id
+             data['last_sync'] = str(parse(str(datetime.datetime.now())))
              try:
                  client_server_nahraj_jeden("Advanced_user", data)  #
              except requests.exceptions.HTTPError as errh:
@@ -743,7 +752,7 @@ class Advanced_user():
              data['Config_id'] = self.Config_id
              data['id'] = self.id
              data['User_code'] = self.User_code
-             data['last_sync'] = parse(str(datetime.datetime.now()))
+             data['last_sync'] = str(parse(str(datetime.datetime.now())))
              try:
                  client_server_nahraj_jeden("Advanced_user", data)  #
              except requests.exceptions.HTTPError as errh:
@@ -803,6 +812,7 @@ class Pattern_Item():
             data['Pattern_id'] = self.Pattern_id
             data['Stillage_type_id'] = self.Stillage_type_id
             data['id'] = self.id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Pattern_Item", data)  #
             except requests.exceptions.HTTPError as errh:
@@ -827,7 +837,7 @@ class Pattern_Item():
             data['id'] = self.id
             data['Pattern_id'] = self.Pattern_id
             data['Stillage_type_id'] = self.Stillage_type_id
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Pattern_Item", data)  #
             except requests.exceptions.HTTPError as errh:
@@ -891,6 +901,7 @@ class Shipment():
             data['id'] = self.id
             data['Customer_id'] = self.Customer_id
             data['Vehicle_id'] = self.Vehicle_id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Shipment", data)  #
             except requests.exceptions.HTTPError as errh:
@@ -916,7 +927,7 @@ class Shipment():
             data['id'] = self.id
             data['Customer_id'] = self.Customer_id
             data['Vehicle_id'] = self.Vehicle_id
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Shipment", data)  #
             except requests.exceptions.HTTPError as errh:
@@ -979,6 +990,7 @@ class Work_statement():
             data['Time_start'] = self.Time_start
             data['Time_end'] = self.Time_end
             data['id'] = self.id
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Work_statement", data)  #
             except requests.exceptions.HTTPError as errh:
@@ -1004,7 +1016,7 @@ class Work_statement():
             data['Work'] = self.Work
             data['Time_start'] = self.Time_start
             data['Time_end'] = self.Time_end
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Work_statement", data)  #
             except requests.exceptions.HTTPError as errh:
@@ -1066,7 +1078,7 @@ class Stillage():
         self.First_scan_TLS_code = data['First_scan_TLS_code']
         self.Last_scan_TLS_code = data['Last_scan_TLS_code']
         self.id = data['id']
-        self.Stillage_Type_id = data['Stillage_type_id']
+        self.Stillage_Type_id = data['Stillage_Type_id']
         self.Shipment_id = data['Shipment_id']
         self.TLS_range_start = data['TLS_range_start']
         self.TLS_range_stop = data['TLS_range_stop']
@@ -1110,11 +1122,12 @@ class Stillage():
             data['First_scan_TLS_code'] = self.First_scan_TLS_code
             data['Last_scan_TLS_code'] = self.Last_scan_TLS_code
             data['id'] = self.id
-            data['Stillage_type_id'] = self.Stillage_Type_id
+            data['Stillage_Type_id'] = self.Stillage_Type_id
             data['Shipment_id'] = self.Shipment_id
             data['TLS_range_start'] = self.TLS_range_start
             data['TLS_range_stop'] = self.TLS_range_stop
             data['Note'] = self.Note
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Stillage", data)  #
             except requests.exceptions.HTTPError as errh:
@@ -1147,12 +1160,12 @@ class Stillage():
             data['First_scan_TLS_code'] = self.First_scan_TLS_code
             data['Last_scan_TLS_code'] = self.Last_scan_TLS_code
             data['id'] = self.id
-            data['Stillage_type_id'] = self.Stillage_Type_id
+            data['Stillage_Type_id'] = self.Stillage_Type_id
             data['Shipment_id'] = self.Shipment_id
             data['TLS_range_start'] = self.TLS_range_start
             data['TLS_range_stop'] = self.TLS_range_stop
             data['Note'] = self.Note
-            data['last_sync'] = parse(str(datetime.datetime.now()))
+            data['last_sync'] = str(parse(str(datetime.datetime.now())))
             try:
                 client_server_nahraj_jeden("Stillage", data)  #
             except requests.exceptions.HTTPError as errh:
