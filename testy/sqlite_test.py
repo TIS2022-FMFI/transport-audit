@@ -6,7 +6,7 @@ from sqlite import *
 # Všetky dáta z lokálnej databázy budú zmazané
 #!!!!!!!!!!!!!!!
 #Pri spúšťaní lokálnych testov je vhodné sa odpojiť od internetu aby vzdialená databáza nebola zaplnená blbosťami
-# Platí hlavne pri reálnom nasadení, v čase, kedy píšem tento text si môžem databázu mazať jak sa mi zachce :)
+# Platí hlavne pri reálnom nasadení, v čase, kedy píšem tento text si môžem databázu mazať jak sa mi zachce, takže odpojenie nie je potrebné :)
 
 conn = psycopg2.connect(
     host="server.nahovno.eu",
