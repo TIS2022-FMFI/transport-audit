@@ -5,9 +5,7 @@ from sqlite import *
 #!!!!!!!!!!!!!!!!
 # Všetky dáta z lokálnej databázy budú zmazané
 #!!!!!!!!!!!!!!!
-#Pri spúšťaní lokálnych testov je vhodné sa odpojiť od internetu aby vzdialená databáza nebola zaplnená blbosťami
-# Platí hlavne pri reálnom nasadení, v čase, kedy píšem tento text si môžem databázu mazať jak sa mi zachce, takže odpojenie nie je potrebné :)
-
+# Netreba zabúdať, že test zaprace vzdialenú databázu s hlúposťami. Preto pri prevádzke by sa tento skript nemal spúšťať
 conn = psycopg2.connect(
     host="server.nahovno.eu",
     database="audit-preprav",
@@ -792,6 +790,110 @@ def over_data_Pattern_Item():
     assert k[2] == pattern_id2
     assert k[3] == stylage_type_id2
 
+def test_vrat_vsetky():
+    general_pocet = db.execute("SELECT COUNT(*) FROM GENERAL").fetchone()[0]
+    #print(general_pocet)
+    general_vrat_vsetky_klasa = General().vrat_vsetky(True)
+    assert len(general_vrat_vsetky_klasa) == general_pocet
+    if None in general_vrat_vsetky_klasa: assert False
+    assert len(General().vrat_vsetky()) == general_pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM User_Role").fetchone()[0]
+    klasa = User_Role()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Customer").fetchone()[0]
+    klasa = Customer()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Vehicle").fetchone()[0]
+    klasa = Vehicle()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM User").fetchone()[0]
+    klasa = User()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Config").fetchone()[0]
+    klasa = Config()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Shipment").fetchone()[0]
+    klasa = Shipment()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Pattern").fetchone()[0]
+    klasa = Pattern()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Work_statement").fetchone()[0]
+    klasa = Work_statement()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Stillage_type").fetchone()[0]
+    klasa = Stillage_type()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Advanced_user").fetchone()[0]
+    klasa = Advanced_user()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Stillage").fetchone()[0]
+    klasa = Stillage()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
+    pocet = db.execute("SELECT COUNT(*) FROM Pattern_Item").fetchone()[0]
+    klasa = Pattern_Item()
+    #print(pocet)
+    vrat_vsetky_klasa = klasa.vrat_vsetky(True)
+    assert len(vrat_vsetky_klasa) == pocet
+    if None in vrat_vsetky_klasa: assert False
+    assert len(klasa.vrat_vsetky()) == pocet
+
 if __name__ == '__main__':
     # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     # print(cursor.fetchall())
@@ -811,6 +913,7 @@ if __name__ == '__main__':
     Advanced_user_test()
     Stillage_test()
     Pattern_item_test()
+    test_vrat_vsetky()
     print("TEST OBSAHU A ŠTRUKTÚRY TRIED OK - trval %s sekúnd" % (time.time() - start_time))
     #Test obsahu vzdialenej databázy
     start_time = time.time()

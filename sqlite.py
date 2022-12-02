@@ -101,7 +101,14 @@ class Customer:
     def __init__(self):
         self.Name = None
         self.id = None
-    def vrat_vsetky(self): # Vypíše všetky riadky
+
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Customer")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Customer().stiahni(riadok[1]))
+            return vysledok
         cursor.execute("Select * from Customer")#
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -174,7 +181,13 @@ class General():
         self.Last_available = None
         self.Automatic_export = None
         self.id = None
-    def vrat_vsetky(self): # Vypíše všetky riadky, vráti ako dictionary
+    def vrat_vsetky(self,klasy = False): # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from General")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(General().stiahni(riadok[3]))
+            return vysledok
         cursor.execute("Select * from General")#
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -252,7 +265,14 @@ class Stillage_type():
     def __int__(self):
         self.Name = None
         self.id = None
-    def vrat_vsetky(self): # Vypíše všetky riadky, vráti ako dictionary
+
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Stillage_type")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Stillage_type().stiahni(riadok[1]))
+            return vysledok
         cursor.execute("Select * from Stillage_type")#
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -322,7 +342,14 @@ class User_Role():
     def __init__(self):
         self.name = None
         self.id = None
-    def vrat_vsetky(self): # Vypíše všetky riadky, vráti ako dictionary
+
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from User_Role")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(User_Role().stiahni(riadok[1]))
+            return vysledok
         cursor.execute("Select * from User_Role")#
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -392,7 +419,14 @@ class Vehicle():
     def __init__(self):
      self.SPZ = None
      self.id = None
-    def vrat_vsetky(self): # Vypíše všetky riadky, vráti ako dictionary
+
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Vehicle")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Vehicle().stiahni(riadok[1]))
+            return vysledok
         cursor.execute("Select * from Vehicle")#
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -463,7 +497,14 @@ class Config():
         self.id = None
         self.Customer_id = None
         self.Vehicle_id = None
-    def vrat_vsetky(self): # Vypíše všetky riadky, vráti ako dictionary
+
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Config")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Config().stiahni(riadok[0]))
+            return vysledok
         cursor.execute("Select * from Config")#
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -536,7 +577,14 @@ class Pattern():
     def __init__(self):
         self.id = None
         self.Customer_id = None
-    def vrat_vsetky(self): # Vypíše všetky riadky, vráti ako dictionary
+
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Pattern")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Pattern().stiahni(riadok[0]))
+            return vysledok
         cursor.execute("Select * from Pattern")#
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -607,7 +655,14 @@ class User():
         self.Name = None
         self.Last_name = None
         self.User_Role_id = None
-    def vrat_vsetky(self): # Vypíše všetky riadky, vráti ako dictionary
+
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from User")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(User().stiahni(riadok[0]))
+            return vysledok
         cursor.execute("Select * from User")#
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -694,7 +749,13 @@ class Advanced_user():
         self.Config_id = None
         self.User_code = None
 
-     def vrat_vsetky(self):  # Vypíše všetky riadky, vráti ako dictionary
+     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+         if klasy:
+             cursor.execute("Select * from Advanced_user")  #
+             vysledok = []
+             for riadok in cursor.fetchall():
+                 vysledok.append(Advanced_user().stiahni(riadok[0]))
+             return vysledok
          cursor.execute("Select * from Advanced_user")  #
          col_name = [i[0] for i in cursor.description]
          vysledok = []
@@ -774,7 +835,13 @@ class Pattern_Item():
      self.Pattern_id = None
      self.Stillage_type_id = None
 
-    def vrat_vsetky(self):  # Vypíše všetky riadky, vráti ako dictionary
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Pattern_Item")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Pattern_Item().stiahni(riadok[1]))
+            return vysledok
         cursor.execute("Select * from Pattern_Item")  #
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -860,7 +927,13 @@ class Shipment():
         self.Customer_id = None
         self.Vehicle_id = None
 
-    def vrat_vsetky(self):  # Vypíše všetky riadky, vráti ako dictionary
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Shipment")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Shipment().stiahni(riadok[2]))
+            return vysledok
         cursor.execute("Select * from Shipment")  #
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -949,7 +1022,13 @@ class Work_statement():
         self.Time_end = None
         self.id = None
 
-    def vrat_vsetky(self):  # Vypíše všetky riadky, vráti ako dictionary
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Work_statement")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Work_statement().stiahni(riadok[4]))
+            return vysledok
         cursor.execute("Select * from Work_statement")  #
         col_name = [i[0] for i in cursor.description]
         vysledok = []
@@ -1050,7 +1129,13 @@ class Stillage():
         self.TLS_range_stop = None
         self.Note = None
 
-    def vrat_vsetky(self):  # Vypíše všetky riadky, vráti ako dictionary
+    def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
+        if klasy:
+            cursor.execute("Select * from Stillage")  #
+            vysledok = []
+            for riadok in cursor.fetchall():
+                vysledok.append(Stillage().stiahni(riadok[11]))
+            return vysledok
         cursor.execute("Select * from Stillage")  #
         col_name = [i[0] for i in cursor.description]
         vysledok = []
