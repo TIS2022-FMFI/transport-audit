@@ -43,7 +43,7 @@ insert into "General" ("Last_changes", "Last_available", "Automatic_export")
 select	random_timestamp(),
         random_timestamp(),
 		random_boolean()
-from generate_series(1, 5000) as seq(i);
+from generate_series(1, 50) as seq(i);
 --User_Role
 --insert into "User_Role" ("name")
 --select 'test'
@@ -58,11 +58,12 @@ INSERT INTO "User_Role" ("name")
 VALUES ('Administrátor');
 
 -- User
-insert into "User" ("code", "Name", "Last_name")
-select	random_between_big(1,9223372036854775800),
+insert into "User" ("code", "Name", "Last_name", "User_Role_id")
+select	random_between_big(10001,99999),
 		random_text(),
-		random_text()
-from generate_series(1, 100) as seq(i);
+		random_text(),
+		random_id_v_tabulke('User_Role')
+from generate_series(1, 20) as seq(i);
 -- Vehicle
 INSERT INTO "Vehicle" ("SPZ")
 VALUES ('BA420XX');
@@ -98,11 +99,11 @@ select	random_code(),
        random_timestamp(),
        random_id_v_tabulke('Customer'),
        random_id_v_tabulke('Vehicle')
-from generate_series(1, 10000) as seq(i);
+from generate_series(1, 100) as seq(i);
 -- Pattern
 insert into "Pattern" ("Customer_id")
 select	random_id_v_tabulke('Customer')
-from generate_series(1, 20) as seq(i);
+from generate_series(1, 6) as seq(i);
 --Work_statement
 
 insert into "Work_statement" ("User_code","Work", "Time_start", "Time_end")
@@ -111,11 +112,11 @@ select	random_code(),
 		random_timestamp(),
 		random_timestamp()
 
-from generate_series(1, 5000) as seq(i);
+from generate_series(1, 50) as seq(i);
 -- Stillage_type
 insert into "Stillage_type" ("Name")
 select	random_text()
-from generate_series(1, 100) as seq(i);
+from generate_series(1, 10) as seq(i);
 --Pattern_Item
 insert into "Pattern_Item" ("Number","Pattern_id","Stillage_type_id")
 select	floor(random()),
@@ -123,7 +124,7 @@ select	floor(random()),
        random_id_v_tabulke('Stillage_type')
 
 
-from generate_series(1, 1000) as seq(i);
+from generate_series(1, 100) as seq(i);
 
 --Stillage
 insert into "Stillage" ("Date_time_start", "Date_time_end",
@@ -151,14 +152,14 @@ select	random_timestamp(),
 		random_text()
 
 
-from generate_series(1, 5000) as seq(i);
+from generate_series(1, 50) as seq(i);
 
 --Advanced_user
 insert into "Advanced_user" ("User_code","Config_id")
 select	random_code(),
        random_id_v_tabulke('Config')
 
-from generate_series(1, 100) as seq(i);
+from generate_series(1, 5) as seq(i);
 
 drop function random_between_big(bigint, bigint) cascade;
 drop function random_boolean() cascade;

@@ -894,6 +894,16 @@ def test_vrat_vsetky():
     if None in vrat_vsetky_klasa: assert False
     assert len(klasa.vrat_vsetky()) == pocet
 
+def over_synchronizacia():
+    vyprazdni_db()
+    synchronize_db_server_client()
+    for tabulka in tabulky:
+        cur.execute(f""" SELECT COUNT(*) FROM "{tabulka}" """)
+        assert cur.fetchone()[0] == db.execute(f""" SELECT COUNT(*) FROM {tabulka} """).fetchone()[0]
+
+
+
+
 if __name__ == '__main__':
     # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     # print(cursor.fetchall())
@@ -931,6 +941,6 @@ if __name__ == '__main__':
     over_data_advanced_user()
     over_data_Stillage()
     over_data_Pattern_Item()
+    over_synchronizacia()
     vyprazdni_db()
     print("TEST OBSAHU DB OK - trval %s sekúnd" % (time.time() - start_time))
-    #Pridať Test synchronizácie

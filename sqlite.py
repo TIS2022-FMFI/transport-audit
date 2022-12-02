@@ -23,7 +23,7 @@ def all_user_codes():
         vysledok.add(i[0])
     return vysledok
 
-#tabulky = ["Stillage"] # len jedna tabulka, pre test
+
 def synchronize_db_server_client():
     for nazov_tabulky in tabulky:
         URL = "http://server.nahovno.eu:5100/Get"
@@ -67,6 +67,7 @@ def synchronize_db_server_client():
 
 #dorobit synchronizáciu lokál --> server
 def synchronize_db_client_server():
+    vysledky_rekvestov = []
     for nazov_tabulky in tabulky:
         cursor.execute("""SELECT * FROM %s""" % (nazov_tabulky))
         col_name = [i[0] for i in cursor.description]
@@ -82,9 +83,9 @@ def synchronize_db_client_server():
             "data" : vysledok
         }
         r = requests.post(url=URL, json=post, timeout=None)
-        print(f"Nahrávam {nazov_tabulky}")
-        print(r.text) #Aby som nesiel príliš rýchlo, potom sa nestihnú tabulky spracovat v spravnom poradí a to vedie k zlým foreign keys
-
+        #print(f"Nahrávam {nazov_tabulky}")
+        vysledky_rekvestov.append(r) #Aby som nesiel príliš rýchlo, potom sa nestihnú tabulky spracovat v spravnom poradí a to vedie k zlým foreign keys
+    return vysledky_rekvestov
 def client_server_nahraj_jeden(nazov_tabulky,data):
     vysledok = [data]
     URL = "http://server.nahovno.eu:5100/Post"
@@ -688,7 +689,7 @@ class User():
         self.User_Role_id = User_Role_id
         #Generovanie user kodu, aký ešte nieje v db
         while True: # celý tento vtip je úplne zbytočný, skôr vyhrám v športke ako to, že trafím 2x 15 miestne user kódy
-            random_code = random.Random().randint(100000000000000,999999999999999) # náhodný 15 miestny int
+            random_code = random.Random().randint(10001,99999) # náhodný 5 miestny int
             if(random_code in all_user_codes()):
                 pass
             else:
