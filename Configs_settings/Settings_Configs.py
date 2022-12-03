@@ -1,5 +1,5 @@
 # from Configs_settings.Delete_Configs import *
-# from Configs_settings.Add_Configs import *
+from Configs_settings.Add_Configs import *
 # from Configs_settings.Edit_Configs import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -21,7 +21,7 @@ class Settings_Configs (BoxLayout):
         self.add_widget(self.btn4)
     def call_add(self):
         App.get_running_app().stop()
-        # Adding().run()
+        Adding().run()
     def call_edit(self):
         App.get_running_app().stop()
         # Editing().run()
