@@ -79,7 +79,7 @@ class Edit_Patterns (BoxLayout):
         self.clear_choosed_items()
         self.select_pattern = None
         self.drop1.clear_widgets()
-        self.drop1.select("Vyber pattern")
+        self.drop1.select("Vyber pat tern")
 
         self.select_customer = self.customer_list[tex1]
         list_of_patterns=[]
@@ -120,7 +120,6 @@ class Edit_Patterns (BoxLayout):
                 btn.bind(on_release=lambda btn: self.drop4.select(btn.text))
                 self.drop4.add_widget(btn)
             self.on_delete_type_stillage = None
-            print(self.pattern_item_list)
     def check_added_pattern_item(self):
         if self.select_pattern is None:
             self.notify.text = "Please select pattern you want edit"
