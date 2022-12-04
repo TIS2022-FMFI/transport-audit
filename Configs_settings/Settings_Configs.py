@@ -1,6 +1,6 @@
-# from Configs_settings.Delete_Configs import *
+from Configs_settings.Delete_Configs import *
 from Configs_settings.Add_Configs import *
-# from Configs_settings.Edit_Configs import *
+from Configs_settings.Edit_Configs import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.app import App
@@ -24,10 +24,10 @@ class Settings_Configs (BoxLayout):
         Adding().run()
     def call_edit(self):
         App.get_running_app().stop()
-        # Editing().run()
+        Editing().run()
     def call_delete(self):
         App.get_running_app().stop()
-        # Deleting().run()
+        Deleting().run()
 class Configy (App):
     def build(self):return Settings_Configs()
 
