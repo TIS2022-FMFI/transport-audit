@@ -8,6 +8,7 @@ import random
 #pip install python-dateutil
 from dateutil.parser import parse
 import os
+from config import allow_synchronize,sync_URL,api_password
 db_path = os.path.abspath(os.path.dirname(__file__)) + "/gefco.db"
 db_path = os.path.normpath(db_path)
 #print(db_path)
@@ -25,10 +26,11 @@ def all_user_codes():
 
 
 def synchronize_db_server_client():
+    if(allow_synchronize==False): return False
     for nazov_tabulky in tabulky:
-        URL = "http://server.nahovno.eu:5100/Get"
+        URL = f"{sync_URL}/Get"
         post = {
-            "api-heslo": "YouWontGuessThisOne",
+            "api-heslo": f"{api_password}",
             "tabulka": f"{nazov_tabulky}"
         }
         r = requests.post(url=URL, json=post,timeout=None)
@@ -67,6 +69,7 @@ def synchronize_db_server_client():
 
 #dorobit synchronizáciu lokál --> server
 def synchronize_db_client_server():
+    if (allow_synchronize == False): return False
     vysledky_rekvestov = []
     for nazov_tabulky in tabulky:
         cursor.execute("""SELECT * FROM %s""" % (nazov_tabulky))
@@ -76,9 +79,9 @@ def synchronize_db_client_server():
             temp = dict(zip(col_name, riadok))
             vysledok.append(temp)
         #print(nazov_tabulky,temp)
-        URL = "http://server.nahovno.eu:5100/Post"
+        URL = f"{sync_URL}/Post"
         post = {
-            "api-heslo": "YouWontGuessThisOne",
+            "api-heslo": f"{api_password}",
             "tabulka": f"{nazov_tabulky}",
             "data" : vysledok
         }
@@ -87,10 +90,11 @@ def synchronize_db_client_server():
         vysledky_rekvestov.append(r) #Aby som nesiel príliš rýchlo, potom sa nestihnú tabulky spracovat v spravnom poradí a to vedie k zlým foreign keys
     return vysledky_rekvestov
 def client_server_nahraj_jeden(nazov_tabulky,data):
+    if (allow_synchronize == False): return False
     vysledok = [data]
-    URL = "http://server.nahovno.eu:5100/Post"
+    URL = f"{sync_URL}/Post"
     post = {
-        "api-heslo": "YouWontGuessThisOne",
+        "api-heslo": f"{api_password}",
         "tabulka": f"{nazov_tabulky}",
         "data" : vysledok
     }
@@ -499,6 +503,16 @@ class Config():
         self.Customer_id = None
         self.Vehicle_id = None
 
+    def edit_configs(self):
+        cursor.execute("select * from Customer C inner join Config C2 on C.id = C2.Customer_id inner join Vehicle V on V.id = C2.Vehicle_id;")
+        data = []
+        for i in cursor.fetchall():
+            data.append(i)
+        return data
+
+
+
+
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
             cursor.execute("Select * from Config")  #
@@ -578,6 +592,16 @@ class Pattern():
     def __init__(self):
         self.id = None
         self.Customer_id = None
+
+    def Data_on_editing(self):  # Vráti None ak neexistuje, inak vráti class
+        cursor.execute(
+            "select * from Customer c inner join Pattern P on c.id = P.Customer_id inner join Pattern_Item PI on P.id = PI.Pattern_id inner join Stillage_type St on St.id = PI.Stillage_type_id")
+
+        data = []
+        for i in cursor.fetchall():
+            data.append(i)
+        return data
+
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
