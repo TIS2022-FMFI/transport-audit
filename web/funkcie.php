@@ -59,50 +59,50 @@ function vypis_audit($db){
 		echo '				
 					<form target="_blank" action="export.php" method="POST">
 
-			<input type="checkbox" id="time_start" name="time_start" value="' . $item['Date_time_start'] . '">
+			<input type="checkbox" id="time_start" name="time_start" value="Začiatok: ' . $item['Date_time_start'] . '">
 			<label for="time_start"> time_start</label><br>
 
-			<input type="checkbox" id="time_end" name="time_end" value="time_end">
+			<input type="checkbox" id="time_end" name="time_end" value="Koniec: ' . $item['Date_time_end'] . '">
 			<label for="time_end"> time_end</label><br>
 
-			<input type="checkbox" id="Stillage_number" name="Stillage_number" value="Stillage_number">
+			<input type="checkbox" id="Stillage_number" name="Stillage_number" value="Stillage: ' . $item['Stillage_number'] . '">
 			<label for="Stillage_number"> Stillage_number</label><br>
 
-			<input type="checkbox" id="Stillage_number_on_Header" name="Stillage_number_on_Header" value="Stillage_number_on_Header">
-			<label for="Stillage_number_on_Header"> Stillage_number_on_Header</label><br>
+			<input type="checkbox" id="Stillage_Number_on_Header" name="Stillage_Number_on_Header" value="Stillage_header: ' . $item['Stillage_Number_on_Header'] . '">
+			<label for="Stillage_Number_on_Header"> Stillage_Number_on_Header</label><br>
 
-			<input type="checkbox" id="First_scan_product" name="First_scan_product" value="First_scan_product">
+			<input type="checkbox" id="First_scan_product" name="First_scan_product" value="First-Product: ' . $item['First_scan_product'] . '">
 			<label for="First_scan_product"> First_scan_product</label><br>
 
-			<input type="checkbox" id="Last_scan_product" name="Last_scan_product" value="Last_scan_product">
+			<input type="checkbox" id="Last_scan_product" name="Last_scan_product" value="Last-Product' . $item['Last_scan_product'] . '">
 			<label for="Last_scan_product"> Last_scan_product</label><br>
 
-			<input type="checkbox" id="JLR_Header_NO" name="JLR_Header_NO" value="JLR_Header_NO">
+			<input type="checkbox" id="JLR_Header_NO" name="JLR_Header_NO" value="JLR... : ' . $item['JLR_Header_NO'] . '">
 			<label for="JLR_Header_NO"> JLR_Header_NO</label><br>
 
-			<input type="checkbox" id="Carriage" name="Carriage" value="Carriage">
+			<input type="checkbox" id="Carriage" name="Carriage" value="Carriage ... : ' . $item['Carriage_L_JLR_H'] . '">
 			<label for="Carriage"> Carriage</label><br>
 
-			<input type="checkbox" id="Check" name="Check" value="Check">
+			<input type="checkbox" id="Check" name="Check" value="Check: ' . $item['_Check'] . '">
 			<label for="Check"> Check</label><br>
 
-			<input type="checkbox" id="First_scan_TLS" name="First_scan_TLS" value="First_scan_TLS">
+			<input type="checkbox" id="First_scan_TLS" name="First_scan_TLS" value="TLS: ' . $item['First_scan_TLS_code'] . '">
 			<label for="First_scan_TLS"> First_scan_TLS</label><br>
 
-			<input type="checkbox" id="Last_scan_TLS" name="Last_scan_TLS" value="Last_scan_TLS">
+			<input type="checkbox" id="Last_scan_TLS" name="Last_scan_TLS" value="TLS_stop: ' . $item['Last_scan_TLS_code'] . '">
 			<label for="First_scan_TLS"> Last_scan_TLS</label><br>
 
-			<input type="checkbox" id="TLS_Range_start" name="TLS_Range_start" value="TLS_Range_start">
+			<input type="checkbox" id="TLS_Range_start" name="TLS_Range_start" value="TLS_Range_start: ' . $item['TLS_range_start'] . '">
 			<label for="TLS_Range_start"> TLS_Range_start</label><br>
 
-			<input type="checkbox" id="TLS_Range_stop" name="TLS_Range_stop" value="TLS_Range_stop">
+			<input type="checkbox" id="TLS_Range_stop" name="TLS_Range_stop" value="TLS_range_stop: ' . $item['TLS_range_stop'] . '">
 			<label for="TLS_Range_stop"> TLS_Range_stop</label><br>
 
-			<input type="checkbox" id="Note" name="Note" value="Note">
+			<input type="checkbox" id="Note" name="Note" value="Poznámka: ' . $item['Note'] . '">
 			<label for="Note"> Note</label><br>
 
 			<br><br>
-				<input type="submit" value="Submit" />
+				<input type="submit" value="Generuj" />
 			</form>
 		
 		';
