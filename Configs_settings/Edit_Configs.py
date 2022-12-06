@@ -28,9 +28,10 @@ class Edit_Configs(BoxLayout):
     list_of_config_vehicles = set()
     advanced_user_list = set()
     old_advanced_user_list = set()
-
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self, screenManager,**kwargs):
         super(Edit_Configs, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in self.list_of_config_customers:
             btn = Button(text=i, size_hint_y=None, height=40,
                          on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
@@ -120,7 +121,7 @@ class Edit_Configs(BoxLayout):
             self.synchronize_choosed_advanced_users()
 
     def call_Back(self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Configs'
 
     def set_on_delete_advanced_user(self, text):
         self.on_delete_advanced_user = int(text)
@@ -141,7 +142,3 @@ class Edit_Configs(BoxLayout):
             for i in self.advanced_user_list:
                 Advanced_user().nahraj(Konfig.id, int(i))
             self.call_Back()
-
-
-class Editing(App):
-    def build(self): return Edit_Configs()

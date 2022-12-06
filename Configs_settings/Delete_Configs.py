@@ -20,8 +20,10 @@ class Delete_Configs(BoxLayout):
     list_of_config_customers = set(i[0] for i in edit_config_list)
     vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['SPZ'] is not None])
     list_of_config_vehicles = set()
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self, screenManager,**kwargs):
         super(Delete_Configs, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in self.list_of_config_customers:
             btn = Button(text=i, size_hint_y=None, height=40,
                          on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
@@ -59,7 +61,7 @@ class Delete_Configs(BoxLayout):
                 self.select_config_id = i[3]
                 break
     def call_Back(self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Configs'
     def check(self):
         if self.select_customer_id is None:
             self.notify.text = "Please select customer"
@@ -72,7 +74,3 @@ class Delete_Configs(BoxLayout):
             on_delete.update()
             # on_delete.update()
             self.call_Back()
-
-
-class Deleting(App):
-    def build(self): return Delete_Configs()

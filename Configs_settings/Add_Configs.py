@@ -21,8 +21,10 @@ class Add_Configs (BoxLayout):
     customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
     vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['SPZ'] is not None])    
     advanced_user_list = set()
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self, screenManager,**kwargs):
         super(Add_Configs, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in self.customer_list:
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -91,7 +93,7 @@ class Add_Configs (BoxLayout):
             self.advanced_user_list.remove(self.on_delete_advanced_user)
             self.synchronize_choosed_advanced_users()
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Configs'
 
     def set_on_delete_advanced_user(self,text):
         self.on_delete_advanced_user = int(text)
@@ -107,5 +109,3 @@ class Add_Configs (BoxLayout):
             for i in self.advanced_user_list:
                 Advanced_user().nahraj(Konfig.id,int(i))
             self.call_Back()
-class Adding (App):
-    def build(self): return Add_Configs()
