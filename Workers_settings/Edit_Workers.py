@@ -14,8 +14,10 @@ class Edit_Workers (BoxLayout):
     drop2 = DropDown()
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
-    def __init__(self, **kwargs):
-        super(Edit_Workers, self).__init__(**kwargs)        
+    screenManager = None
+    def __init__(self, screenManager,**kwargs):
+        super(Edit_Workers, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in User_Role().vrat_vsetky():
             btn = Button(text=i["name"], size_hint_y=None, height=40,on_release = lambda btn: self.set_select(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -52,7 +54,7 @@ class Edit_Workers (BoxLayout):
             self.drop1.select(selected_role.name)
             self.select_role = selected_role.name
     def call_Back (self):
-        App.get_running_app().stop()        
+        self.screenManager.current = 'Settings_Workers'
     def check (self):
         if (self.select_code is None):
                 self.notify.text = "Please choose user by code you want edit."
@@ -76,5 +78,3 @@ class Edit_Workers (BoxLayout):
                     break
             updated_user.update()
             self.call_Back()
-class Editing (App):
-    def build(self):return Edit_Workers()

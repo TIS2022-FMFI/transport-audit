@@ -9,25 +9,26 @@ class Settings_Workers (BoxLayout):
     btn2 = Button(text="Uprav")
     btn3 = Button(text="Vymaz")
     btn4 = Button(text="Spat")
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self, screenManager,**kwargs):
         super(Settings_Workers, self).__init__(**kwargs)
         super().__init__()
+        self.screenManager = screenManager
         self.btn1.bind(on_release = lambda btn: self.call_add())
         self.btn2.bind(on_release=lambda btn: self.call_edit())
         self.btn3.bind(on_release=lambda btn: self.call_delete())
+        self.btn4.bind(on_release=lambda btn: self.call_back())
         self.add_widget(self.btn1)
         self.add_widget(self.btn2)
         self.add_widget(self.btn3)
         self.add_widget(self.btn4)
     def call_add(self):
-        App.get_running_app().stop()
-        Adding().run()
+        self.screenManager.current = 'Add_Workers'
     def call_edit(self):
-        App.get_running_app().stop()
-        Editing().run()
+        self.screenManager.current = 'Edit_Workers'
     def call_delete(self):
-        App.get_running_app().stop()
-        Deleting().run()
-class Zamestnanci (App):
-    def build(self):return Settings_Workers()
+        self.screenManager.current = 'Delete_Workers'
+    def call_back(self):
+        self.screenManager.current = 'Menu_screen'
+
 

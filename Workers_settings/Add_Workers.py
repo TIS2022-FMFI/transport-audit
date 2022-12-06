@@ -12,8 +12,10 @@ class Add_Workers (BoxLayout):
     text2 = TextInput(text='Priezvisko')
     btn1 = Button(text="Pridaj")
     btn2 = Button(text="Späť")
-    def __init__(self, **kwargs):
-        super(Add_Workers, self).__init__(**kwargs)        
+    screenManager = None
+    def __init__(self, screenManager,**kwargs):
+        super(Add_Workers, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in User_Role().vrat_vsetky():
             btn = Button(text=i["name"], size_hint_y=None, height=40,on_release = lambda btn: self.set_selected(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -32,7 +34,7 @@ class Add_Workers (BoxLayout):
     def set_selected(self,text):
         self.selected_role = text
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Workers'
     def check (self):
         if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) != len(self.text1.text) or self.text1.text == "Meno":
             self.notify.text = "Please enter a valid first name."
@@ -47,5 +49,3 @@ class Add_Workers (BoxLayout):
                     break
             User().nahraj(self.text1.text, self.text2.text, self.selected_role)
             self.call_Back()
-class Adding (App):
-    def build(self):return Add_Workers()

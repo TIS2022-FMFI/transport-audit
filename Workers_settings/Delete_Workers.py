@@ -9,8 +9,10 @@ class Delete_Workers (BoxLayout):
     drop1 = DropDown()
     btn1 = Button(text="Vymaz")
     btn2 = Button(text="Späť")
-    def __init__(self, **kwargs):
-        super(Delete_Workers, self).__init__(**kwargs)        
+    screenManager = None
+    def __init__(self, screenManager, **kwargs):
+        super(Delete_Workers, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in User().vrat_vsetky():
             btn = Button(text= str(i['code']), size_hint_y=None, height=40, on_release=lambda btn: self.select_code(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -27,7 +29,7 @@ class Delete_Workers (BoxLayout):
     def select_code(self,tex):
         self.on_delete_selected  = tex
     def call_Back (self):
-        App.get_running_app().stop()        
+        self.screenManager.current = 'Settings_Workers'
     def check (self):
         if (self.on_delete_selected is None):
                 self.notify.text = "Please choose user by code you want delete."
@@ -36,5 +38,3 @@ class Delete_Workers (BoxLayout):
             on_delete_user.Name = None
             on_delete_user.update()
             self.call_Back()
-class Deleting (App):
-    def build(self):return Delete_Workers()
