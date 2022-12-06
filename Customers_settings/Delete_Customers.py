@@ -10,8 +10,10 @@ class Delete_Customers (BoxLayout):
     btn1 = Button(text="Vymaz")
     btn2 = Button(text="Späť")
     customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self, screenManager,**kwargs):
         super(Delete_Customers, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in self.customer_list:
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.select_code(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -28,7 +30,7 @@ class Delete_Customers (BoxLayout):
     def select_code(self,tex):
         self.on_delete_selected = self.customer_list[tex]
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Customers'
     def check (self):
         if (self.on_delete_selected is None):
                 self.notify.text = "Please choose Customer by code you want delete."
@@ -37,5 +39,3 @@ class Delete_Customers (BoxLayout):
             on_delete_customer.Name = None
             on_delete_customer.update()
             self.call_Back()
-class Deleting (App):
-    def build(self):return Delete_Customers()

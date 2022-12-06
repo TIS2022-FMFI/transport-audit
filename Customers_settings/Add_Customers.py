@@ -7,8 +7,10 @@ from sqlite import Customer
 class Add_Customers (BoxLayout):
     notify = Button(text = '')
     text1 = TextInput(text='Meno zakaznika')
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self,screenManager, **kwargs):
         super(Add_Customers, self).__init__(**kwargs)
+        self.screenManager = screenManager
         btn1 = Button(text="Pridaj")
         btn1.bind(on_release = lambda btn:self.check())
         btn2 = Button(text="Späť")
@@ -18,7 +20,7 @@ class Add_Customers (BoxLayout):
         self.add_widget(btn2)
         self.add_widget(self.notify)
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Customers'
     def check (self):
         if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) == 0 or self.text1.text == "Meno zakaznika":
             self.notify.text = "Please enter a valid name."
@@ -27,5 +29,3 @@ class Add_Customers (BoxLayout):
         else:
             Customer().nahraj(self.text1.text)
             self.call_Back()
-class Adding (App):
-    def build(self):return Add_Customers()

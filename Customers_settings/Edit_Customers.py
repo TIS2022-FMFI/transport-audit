@@ -12,8 +12,10 @@ class Edit_Customers (BoxLayout):
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
     customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self,screenManager, **kwargs):
         super(Edit_Customers, self).__init__(**kwargs)        
+        self.screenManager = screenManager
         for i in self.customer_list:
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -32,7 +34,7 @@ class Edit_Customers (BoxLayout):
         self.text1.text = tex1
         self.select_id = self.customer_list[tex1]
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Customers'
     def check (self):
         if (self.select_id is None):
                 self.notify.text = "Please choose customer by code you want edit."
@@ -45,5 +47,3 @@ class Edit_Customers (BoxLayout):
             updated_customer.Name = self.text1.text
             updated_customer.update()
             self.call_Back()
-class Editing (App):
-    def build(self):return Edit_Customers()
