@@ -1,22 +1,21 @@
 <?php
-require('fpdf/fpdf.php');
+define('FPDF_FONTPATH',"fpdf/font/");
+require('fpdf/tfpdf.php');
 
-function filter_html($value){
-    $value = mb_convert_encoding($value, 'ISO-8859-1', 'UTF-8');
-    return $value;
-}
-
-
-$pdf = new FPDF();
+$pdf = new tFPDF();
 $pdf->AddPage();
+
+$pdf->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
 $pdf->SetFont('Arial','B',16);
 
-$pdf->Cell(40,10,'Hello World!');
+
+$pdf->Cell(100,10,'Nadpis');
 $pdf->Ln(20);
 
+$pdf->SetFont('DejaVu','',12);
 
 foreach( $_POST as $stuff ) {
-		         $pdf->Cell(20,10,filter_html($stuff));
+		         $pdf->Cell(20,10,$stuff);
 				$pdf->Ln(20);
 }
 
