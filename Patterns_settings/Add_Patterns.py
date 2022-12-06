@@ -23,8 +23,10 @@ class Add_Patterns (BoxLayout):
     customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
     stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['Name'] is not None])
     pattern_item_list = dict()
-    def __init__(self, **kwargs):
-        super(Add_Patterns, self).__init__(**kwargs)        
+    screenManager = None
+    def __init__(self,screenManager, **kwargs):
+        super(Add_Patterns, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in self.customer_list:
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -69,7 +71,7 @@ class Add_Patterns (BoxLayout):
     def set_on_delete_type_stillage(self,tex):
         self.on_delete_type_stillage = tex
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Patterns'
     def check_deleted_pattern_tem(self):
         if self.on_delete_type_stillage is None:
             self.notify.text = "Please select item to delete"
@@ -113,5 +115,3 @@ class Add_Patterns (BoxLayout):
             for i in self.pattern_item_list:
                 Pattern_Item().nahraj(int(self.pattern_item_list[i]),Updated_Pattern_id,self.stillage_type_list[i])
             self.call_Back()
-class Adding (App):
-    def build(self):return Add_Patterns()

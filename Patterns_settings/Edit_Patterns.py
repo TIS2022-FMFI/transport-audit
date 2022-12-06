@@ -27,7 +27,9 @@ class Edit_Patterns (BoxLayout):
     pattern_item_list = dict()
     pattern_list = dict([( i['id'],i['Customer_id']) for i in Pattern().vrat_vsetky() if i['Customer_id'] is not None])
     Edit_data = Pattern().Data_on_editing()
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self,screenManager, **kwargs):
+        self.screenManager = screenManager
         super(Edit_Patterns, self).__init__(**kwargs)
         for i in self.customer_list:
             if self.customer_list[i] in self.pattern_list.values():
@@ -105,7 +107,7 @@ class Edit_Patterns (BoxLayout):
     def set_on_delete_type_stillage(self,tex):
         self.on_delete_type_stillage = tex
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Patterns'
     def check_deleted_pattern_item(self):
         if self.on_delete_type_stillage is None:
             self.notify.text = "Please select item to delete"
@@ -159,5 +161,3 @@ class Edit_Patterns (BoxLayout):
             for i in self.pattern_item_list:
                 Pattern_Item().nahraj(int(self.pattern_item_list[i]),self.select_pattern,self.stillage_type_list[i])
             self.call_Back()
-class Editing (App):
-    def build(self):return Edit_Patterns()

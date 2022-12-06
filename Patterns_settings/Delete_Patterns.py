@@ -15,8 +15,10 @@ class Delete_Patterns (BoxLayout):
     customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
     pattern_list = dict([( i['id'],i['Customer_id']) for i in Pattern().vrat_vsetky() if i['Customer_id'] is not None])
     Edit_data = Pattern().Data_on_editing()
-    def __init__(self, **kwargs):
+    screenManager = None
+    def __init__(self,screenManager, **kwargs):
         super(Delete_Patterns, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in self.customer_list:
             if self.customer_list[i] in self.pattern_list.values():
                 btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_customer_id(btn.text))
@@ -50,7 +52,7 @@ class Delete_Patterns (BoxLayout):
     def set_widgets(self,tex1):
         self.select_pattern = tex1
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Patterns'
     def check (self):
         if self.select_customer is None:
             self.notify.text = "Please choose customer"
@@ -61,5 +63,3 @@ class Delete_Patterns (BoxLayout):
             on_delete.Customer_id = None
             on_delete.update()
             self.call_Back()
-class Deleting (App):
-    def build(self):return Delete_Patterns()
