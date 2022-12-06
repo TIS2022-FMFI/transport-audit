@@ -10,8 +10,10 @@ class Delete_Vehicles (BoxLayout):
     btn1 = Button(text="Vymaz")
     btn2 = Button(text="Späť")
     vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['SPZ'] is not None])
-    def __init__(self, **kwargs):
-        super(Delete_Vehicles, self).__init__(**kwargs)        
+    screenManager = None
+    def __init__(self,screenManager, **kwargs):
+        super(Delete_Vehicles, self).__init__(**kwargs)
+        self.screenManager = screenManager
         for i in self.vehicle_list:
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.select_id(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -26,10 +28,9 @@ class Delete_Vehicles (BoxLayout):
         self.add_widget(self.btn2)
         self.add_widget(self.notify)
     def select_id(self,tex):
-        print(self.vehicle_list[tex])
         self.on_delete_selected  = self.vehicle_list[tex]
     def call_Back (self):
-        App.get_running_app().stop()
+        self.screenManager.current = 'Settings_Vehicles'
     def check (self):
         if (self.on_delete_selected is None):
                 self.notify.text = "Please choose Vehicle by id you want delete."
@@ -38,5 +39,3 @@ class Delete_Vehicles (BoxLayout):
             on_delete_Vehicle.SPZ = None
             on_delete_Vehicle.update()
             self.call_Back()
-class Deleting (App):
-    def build(self):return Delete_Vehicles()
