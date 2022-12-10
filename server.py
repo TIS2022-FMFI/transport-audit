@@ -45,6 +45,9 @@ class Customer(Base, SerializerMixin):
     Name = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
 
 class General(Base, SerializerMixin):
     __tablename__ = 'General'
@@ -54,6 +57,9 @@ class General(Base, SerializerMixin):
     Automatic_export = Column(Boolean)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
 
 class Stillage_type(Base, SerializerMixin):
     __tablename__ = 'Stillage_type'
@@ -61,6 +67,9 @@ class Stillage_type(Base, SerializerMixin):
     Name = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
 
 class User_Role(Base, SerializerMixin):
     __tablename__ = 'User_Role'
@@ -68,6 +77,9 @@ class User_Role(Base, SerializerMixin):
     name = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
 
 class Vehicle(Base, SerializerMixin):
     __tablename__ = 'Vehicle'
@@ -75,6 +87,9 @@ class Vehicle(Base, SerializerMixin):
     SPZ = Column(Text)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
 
 class Config(Base, SerializerMixin):
     __tablename__ = 'Config'
@@ -83,6 +98,9 @@ class Config(Base, SerializerMixin):
     Customer_id = Column(ForeignKey('Customer.id'))
     Vehicle_id = Column(ForeignKey('Vehicle.id'))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
     #Customer = relationship('Customer')
     #Vehicle = relationship('Vehicle')
 
@@ -93,6 +111,9 @@ class Pattern(Base, SerializerMixin):
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     Customer_id = Column(ForeignKey('Customer.id'))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
     #Customer = relationship('Customer')
 
 
@@ -104,6 +125,9 @@ class User(Base, SerializerMixin):
     Last_name = Column(Text)
     User_Role_id = Column(ForeignKey('User_Role.id', match='FULL'))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
     #User_Role = relationship('UserRole')
 
 
@@ -114,6 +138,9 @@ class Advanced_user(Base, SerializerMixin):
     Config_id = Column(ForeignKey('Config.id'))
     User_code = Column(ForeignKey('User.code'))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
     #Config = relationship('Config')
     #User = relationship('User')
 
@@ -126,6 +153,9 @@ class Pattern_Item(Base, SerializerMixin):
     Pattern_id = Column(ForeignKey('Pattern.id'))
     Stillage_type_id = Column(ForeignKey('Stillage_type.id'))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
     #Pattern = relationship('Pattern')
     #Stillage_type = relationship('StillageType')
 
@@ -139,6 +169,9 @@ class Shipment(Base, SerializerMixin):
     Customer_id = Column(ForeignKey('Customer.id'))
     Vehicle_id = Column(ForeignKey('Vehicle.id'))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
     #Customer = relationship('Customer')
     #User = relationship('User')
     #Vehicle = relationship('Vehicle')
@@ -153,6 +186,9 @@ class Work_statement(Base, SerializerMixin):
     Time_end = Column(DateTime)
     id = Column(Text, primary_key=True, server_default=text("uuid_in((md5(((random())::text || (random())::text)))::cstring)"))
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
     #User = relationship('User')
 
 
@@ -177,6 +213,9 @@ class Stillage(Base, SerializerMixin):
     TLS_range_stop = Column(BigInteger)
     Note = Column(Text)
     last_sync = Column(DateTime, server_default=text("(now())::timestamp without time zone"))
+    doplnok = Column(Text)
+    vykonavatel = Column(BigInteger)
+
     #Shipment = relationship('Shipment')
     #Stillage_Type = relationship('StillageType')
 
