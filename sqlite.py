@@ -16,6 +16,101 @@ db = sqlite3.connect(db_path)
 cursor = db.cursor()
 tabulky = ["General", "User_Role", "Customer", "Vehicle", "User", "Config", "Shipment", "Pattern", "Work_statement","Stillage_type", "Advanced_user", "Stillage", "Pattern_Item"]  # Vsetky tabulky
 
+MAZACIA_KONSTANTA = "DELETED" #Doplnok obsahujuci tento text sa povazuje za zmazany
+
+def overit_zmazanie(tabulka,id):
+    if tabulka == "User":
+        cursor.execute(f"SELECT * FROM {tabulka} WHERE code=?", [id])  #
+    else:
+        cursor.execute(f"SELECT * FROM {tabulka} WHERE id=?", [id])  #
+    col_name = [i[0] for i in cursor.description]
+    test = cursor.fetchone()
+    if test is None:
+        return None
+    data = dict(zip(col_name, test))
+    if data['doplnok'] == MAZACIA_KONSTANTA:
+        return True
+    if data['doplnok'] == "" or data['doplnok']==None:
+        return False
+    return data['doplnok']
+
+def zmaz_zaznam(tabulka,id,ine = MAZACIA_KONSTANTA):
+    # dorobit kod pre User
+    if tabulka == "User":
+        cursor.execute(f"SELECT * FROM {tabulka} WHERE code=?", [id])  #
+    else:
+        cursor.execute(f"SELECT * FROM {tabulka} WHERE id=?", [id])  #
+    col_name = [i[0] for i in cursor.description]
+    test = cursor.fetchone()
+    if test is None:
+        return None
+    data = dict(zip(col_name, test))
+    if(data['doplnok'] == ine):
+        return False
+    if tabulka == "User":
+        db.execute(f"UPDATE {tabulka} set doplnok = '{ine}', last_sync = '{str(datetime.datetime.now())}' WHERE code = {id}")
+    else:
+        db.execute(f"UPDATE {tabulka} set doplnok = '{ine}', last_sync = '{str(datetime.datetime.now())}' WHERE id = '{id}'")
+    data['doplnok'] = ine
+    data['last_sync'] = str(parse(str(datetime.datetime.now())))
+    cursor.execute("COMMIT")
+    try:
+        client_server_nahraj_jeden(tabulka, data)  #
+    except requests.exceptions.HTTPError as errh:
+        print("Http Error:", errh)
+    except requests.exceptions.ConnectionError as errc:
+        print("Error Connecting:", errc)
+    except requests.exceptions.Timeout as errt:
+        print("Timeout Error:", errt)
+    except requests.exceptions.RequestException as err:
+        print("OOps: Something Else", err)
+    return True
+
+def overit_vykonavatela(tabulka,id):
+    if tabulka == "User":
+        cursor.execute(f"SELECT * FROM {tabulka} WHERE code=?", [id])  #
+    else:
+        cursor.execute(f"SELECT * FROM {tabulka} WHERE id=?", [id])  #
+    col_name = [i[0] for i in cursor.description]
+    test = cursor.fetchone()
+    if test is None:
+        return None
+    data = dict(zip(col_name, test))
+    if data['vykonavatel'] == None:
+        return None
+    return data['vykonavatel']
+
+def vloz_vykonavatela(tabulka,id,ine = None):
+    if tabulka == "User":
+        cursor.execute(f"SELECT * FROM {tabulka} WHERE code=?", [id])  #
+    else:
+        cursor.execute(f"SELECT * FROM {tabulka} WHERE id=?", [id])  #
+    col_name = [i[0] for i in cursor.description]
+    test = cursor.fetchone()
+    if test is None:
+        return None
+    data = dict(zip(col_name, test))
+    if(data['vykonavatel'] == ine):
+        return False
+    if tabulka == "User":
+        db.execute(f"UPDATE {tabulka} set vykonavatel = {ine}, last_sync = '{str(datetime.datetime.now())}' WHERE code = {id}")
+    else:
+        db.execute(f"UPDATE {tabulka} set vykonavatel = {ine}, last_sync = '{str(datetime.datetime.now())}' WHERE id = '{id}'")
+    data['vykonavatel'] = ine
+    data['last_sync'] = str(parse(str(datetime.datetime.now())))
+    cursor.execute("COMMIT")
+    try:
+        client_server_nahraj_jeden(tabulka, data)  #
+    except requests.exceptions.HTTPError as errh:
+        print("Http Error:", errh)
+    except requests.exceptions.ConnectionError as errc:
+        print("Error Connecting:", errc)
+    except requests.exceptions.Timeout as errt:
+        print("Timeout Error:", errt)
+    except requests.exceptions.RequestException as err:
+        print("OOps: Something Else", err)
+    return True
+
 
 def all_user_codes():
     cursor.execute("SELECT code FROM User")
@@ -103,9 +198,33 @@ def client_server_nahraj_jeden(nazov_tabulky,data):
 
 #Tu zacinaju tabulky ako classy --------------------------------------------------------------------------------------------------------------------
 class Customer:
+    __tablename__ = "Customer"
     def __init__(self):
         self.Name = None
         self.id = None
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -181,11 +300,37 @@ class Customer:
 
 
 class General():
+    __tablename__ = "General"
     def __int__(self):
         self.Last_changes = None
         self.Last_available = None
         self.Automatic_export = None
         self.id = None
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
+
+
     def vrat_vsetky(self,klasy = False): # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
             cursor.execute("Select * from General")  #
@@ -267,9 +412,35 @@ class General():
 
 
 class Stillage_type():
+    __tablename__ = "Stillage_type"
     def __int__(self):
         self.Name = None
         self.id = None
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
+
+
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -344,9 +515,34 @@ class Stillage_type():
 
 
 class User_Role():
+    __tablename__ = "User_Role"
     def __init__(self):
         self.name = None
         self.id = None
+
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -421,9 +617,34 @@ class User_Role():
 
 
 class Vehicle():
+    __tablename__ = "Vehicle"
     def __init__(self):
      self.SPZ = None
      self.id = None
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
+
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -498,6 +719,7 @@ class Vehicle():
 
 
 class Config():
+    __tablename__ = "Config"
     def __init__(self):
         self.id = None
         self.Customer_id = None
@@ -510,7 +732,28 @@ class Config():
             data.append(i)
         return data
 
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
 
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
 
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
@@ -589,6 +832,7 @@ class Config():
         return None
 
 class Pattern():
+    __tablename__ = "Pattern"
     def __init__(self):
         self.id = None
         self.Customer_id = None
@@ -602,6 +846,28 @@ class Pattern():
             data.append(i)
         return data
 
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -675,11 +941,35 @@ class Pattern():
         return None
 
 class User():
+    __tablename__ = "User"
     def __init__(self):
         self.code = None
         self.Name = None
         self.Last_name = None
         self.User_Role_id = None
+
+    def over_zmazanie(self):
+        if(self.code ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.code)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.code == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.code)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.code,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.code == None: return None
+        return overit_vykonavatela(self.__tablename__,self.code)
+    def nastav_vykonavatela(self,kod):
+        if self.code == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.code,kod)
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -769,10 +1059,35 @@ class User():
 
 
 class Advanced_user():
+     __tablename__ = "Advanced_user"
      def __init__(self):
         self.id = None
         self.Config_id = None
         self.User_code = None
+
+     def over_zmazanie(self):
+         if (self.id == None):
+             return None
+         over = overit_zmazanie(self.__tablename__, self.id)
+         return over
+
+     def zmazat(self, doplnok=""):
+         if (self.id == None):
+             return None
+         if doplnok == "":
+             zmaz = zmaz_zaznam(self.__tablename__, self.id)
+         else:
+             zmaz = zmaz_zaznam(self.__tablename__, self.id, doplnok)
+         return zmaz
+
+     def vrat_vykonavatela(self):
+         if self.id == None: return None
+         return overit_vykonavatela(self.__tablename__, self.id)
+
+     def nastav_vykonavatela(self, kod):
+         if self.id == None or kod == None or isinstance(kod, int) == False:
+             return None
+         return vloz_vykonavatela(self.__tablename__, self.id, kod)
 
      def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
          if klasy:
@@ -854,11 +1169,37 @@ class Advanced_user():
 
 
 class Pattern_Item():
+    __tablename__ = "Pattern_Item"
     def __init__(self):
      self.Number = None
      self.id = None
      self.Pattern_id = None
      self.Stillage_type_id = None
+
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
+
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -945,12 +1286,37 @@ class Pattern_Item():
 
 
 class Shipment():
+    __tablename__ = "Shipment"
     def __init__(self):
         self.User_code = None
         self.Date_time_close = None
         self.id = None
         self.Customer_id = None
         self.Vehicle_id = None
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
+
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -1040,12 +1406,37 @@ class Shipment():
         return None
 
 class Work_statement():
+    __tablename__ = "Work_statement"
     def __init__(self):
         self.User_code = None
         self.Work = None
         self.Time_start = None
         self.Time_end = None
         self.id = None
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
+
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -1135,6 +1526,7 @@ class Work_statement():
         return None
 
 class Stillage():
+    __tablename__ = "Stillage"
     def __init__(self):
         self.Date_time_start = None
         self.Date_time_end = None
@@ -1153,6 +1545,31 @@ class Stillage():
         self.TLS_range_start = None
         self.TLS_range_stop = None
         self.Note = None
+
+
+    def over_zmazanie(self):
+        if(self.id ==None):
+            return None
+        over = overit_zmazanie(self.__tablename__,self.id)
+        return over
+
+    def zmazat(self,doplnok = ""):
+        if (self.id == None):
+            return None
+        if doplnok == "":
+            zmaz = zmaz_zaznam(self.__tablename__,self.id)
+        else:
+            zmaz = zmaz_zaznam(self.__tablename__, self.id,doplnok)
+        return zmaz
+
+    def vrat_vykonavatela(self):
+        if self.id == None: return None
+        return overit_vykonavatela(self.__tablename__,self.id)
+    def nastav_vykonavatela(self,kod):
+        if self.id == None or kod==None or isinstance(kod,int)==False:
+            return None
+        return vloz_vykonavatela(self.__tablename__, self.id,kod)
+
 
     def vrat_vsetky(self, klasy=False):  # Vypíše všetky riadky, vráti ako dictionary
         if klasy:
@@ -1291,6 +1708,5 @@ class Stillage():
 
 if __name__ == '__main__':
     start_time = time.time()
-
     #synchronize_db_server_client()
     print("--- %s seconds ---" % (time.time() - start_time))

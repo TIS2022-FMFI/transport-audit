@@ -901,10 +901,55 @@ def over_synchronizacia():
         cur.execute(f""" SELECT COUNT(*) FROM "{tabulka}" """)
         assert cur.fetchone()[0] == db.execute(f""" SELECT COUNT(*) FROM {tabulka} """).fetchone()[0]
 
+def over_mazanie():
+    for tabulka in tabulky:
+        exec(f"k = {tabulka}()",globals())
+        if(tabulka=="User"):
+            random = db.execute(f"SELECT code FROM  {tabulka} ORDER BY RANDOM()").fetchone()[0]
+            eval(f"k.stiahni({random})")
+
+        else:
+            random = db.execute(f"SELECT id FROM {tabulka} ORDER BY RANDOM()").fetchone()[0]
+            eval(f"k.stiahni('{random}')")
+        assert eval("k.over_zmazanie()") == False
+        eval("k.zmazat()")
+        assert eval("k.over_zmazanie()") == True
+
+        if(tabulka=="User"):
+            cur.execute(f""" SELECT doplnok from "{tabulka}" where code = {eval("k.code")} """)
+            hodnota = db.execute(f"""SELECT doplnok FROM {tabulka} where code = '{eval("k.code")}'""").fetchone()[0]
+        else:
+            cur.execute(f""" SELECT doplnok from "{tabulka}" where id = '{eval("k.id")}' """)
+            hodnota = db.execute(f"""SELECT doplnok FROM {tabulka} where id = '{eval("k.id")}'""").fetchone()[0]
+        v = cur.fetchone()
+        assert str(v[0]) == hodnota
+        assert hodnota == MAZACIA_KONSTANTA
+        eval("k.zmazat('ODMAZANY')")
+        assert eval("k.over_zmazanie()") == 'ODMAZANY'
+
+
+def over_vykonavatela():
+    for tabulka in tabulky:
+        exec(f"k = {tabulka}()",globals())
+        if(tabulka=="User"):
+            random = db.execute(f"SELECT code FROM  {tabulka} ORDER BY RANDOM()").fetchone()[0]
+            eval(f"k.stiahni({random})")
+
+        else:
+            random = db.execute(f"SELECT id FROM {tabulka} ORDER BY RANDOM()").fetchone()[0]
+            eval(f"k.stiahni('{random}')")
+        assert eval("k.vrat_vykonavatela()") == None
+        assert eval("k.nastav_vykonavatela(666)") == True
+        assert eval("k.vrat_vykonavatela()") == 666
+        assert eval("k.nastav_vykonavatela(666)") == False
+        assert eval("k.nastav_vykonavatela('777')") == None
+
 
 
 
 if __name__ == '__main__':
+    #synchronize_db_server_client()
+    #exit(0)
     # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     # print(cursor.fetchall())
     start_time = time.time()
@@ -941,6 +986,8 @@ if __name__ == '__main__':
     over_data_advanced_user()
     over_data_Stillage()
     over_data_Pattern_Item()
+    over_mazanie()
+    over_vykonavatela()
     over_synchronizacia()
     vyprazdni_db()
     print("TEST OBSAHU DB OK - trval %s sekúnd" % (time.time() - start_time))
