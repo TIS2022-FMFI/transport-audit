@@ -11,7 +11,7 @@ class Edit_Vehicles (BoxLayout):
     drop1 = DropDown()
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
-    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['SPZ'] is not None])
+    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         super(Edit_Vehicles, self).__init__(**kwargs)

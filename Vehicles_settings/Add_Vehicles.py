@@ -10,6 +10,7 @@ class Add_Vehicles (BoxLayout):
     btn1 = Button(text="Pridaj")
     btn2 = Button(text="Späť")
     screenManager = None
+    vehicle_list = [i['SPZ'] for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def __init__(self, screenManager,**kwargs):
         super(Add_Vehicles, self).__init__(**kwargs)
         self.screenManager = screenManager
@@ -24,6 +25,8 @@ class Add_Vehicles (BoxLayout):
     def check (self):
         if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')) or (ord(x) == ' ') or (ord(x)>=ord('0') and ord(x)<= ord('9')))]) != len(self.text1.text) or self.text1.text == "SPZ":
             self.notify.text = "Please enter a valid SPZ"
+        elif self.text1.text in self.vehicle_list:
+            self.notify.text = "SPZ already exists"
         elif self.text1.text in [i['SPZ'] for i in Vehicle().vrat_vsetky()]:
             self.notify.text = "SPZ already exists"
         else:

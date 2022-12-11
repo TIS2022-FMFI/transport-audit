@@ -9,7 +9,7 @@ class Delete_Vehicles (BoxLayout):
     drop1 = DropDown()
     btn1 = Button(text="Vymaz")
     btn2 = Button(text="Späť")
-    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['SPZ'] is not None])
+    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         super(Delete_Vehicles, self).__init__(**kwargs)
@@ -36,6 +36,5 @@ class Delete_Vehicles (BoxLayout):
                 self.notify.text = "Please choose Vehicle by id you want delete."
         else:
             on_delete_Vehicle = Vehicle().stiahni(self.on_delete_selected)
-            on_delete_Vehicle.SPZ = None
-            on_delete_Vehicle.update()
+            on_delete_Vehicle.zmazat()
             self.call_Back()
