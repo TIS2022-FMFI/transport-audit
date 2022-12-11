@@ -16,17 +16,16 @@ class Delete_Configs(BoxLayout):
     btn1 = Button(text="Vymaz")
     btn2 = Button(text="Späť")
     edit_config_list = Config().edit_configs()
-    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
+    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     list_of_config_customers = set(i[0] for i in edit_config_list)
-    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['SPZ'] is not None])
+    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     list_of_config_vehicles = set()
     screenManager = None
     def __init__(self, screenManager,**kwargs):
         super(Delete_Configs, self).__init__(**kwargs)
         self.screenManager = screenManager
         for i in self.list_of_config_customers:
-            btn = Button(text=i, size_hint_y=None, height=40,
-                         on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
+            btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
             self.drop1.add_widget(btn)
         mainbutton1 = Button(text='Vyber zakaznika', size_hint=(.5, .25), pos=(60, 20))
@@ -48,17 +47,16 @@ class Delete_Configs(BoxLayout):
         self.select_vehicle = None
         self.drop2.clear_widgets()
         self.drop2.select('Vyber vozidlo')
-        self.list_of_config_vehicles = set(i[7] for i in self.edit_config_list if text == i[1])
+        self.list_of_config_vehicles = set(i[11] for i in self.edit_config_list if text == i[1])
         for i in self.list_of_config_vehicles:
-            btn = Button(text=i, size_hint_y=None, height=40,
-                         on_release=lambda btn: self.set_vehicle(self.vehicle_list[btn.text]))
+            btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_vehicle(self.vehicle_list[btn.text]))
             btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
             self.drop2.add_widget(btn)
     def set_vehicle(self, text):
         self.select_vehicle = text
-        for i in  self.edit_config_list:
-            if self.select_vehicle == i[8] and self.select_customer_id == i[1]:
-                self.select_config_id = i[3]
+        for i in self.edit_config_list:
+            if self.select_vehicle == i[7] and self.select_customer_id == i[1]:
+                self.select_config_id = i[5]
                 break
     def call_Back(self):
         self.screenManager.current = 'Settings_Configs'
@@ -68,9 +66,10 @@ class Delete_Configs(BoxLayout):
         elif self.select_vehicle is None:
             self.notify.text = "Please select SPZ"
         else:
-            print(self.select_config_id)
             on_delete = Config().stiahni(self.select_config_id)
-            on_delete.Customer_id = None
-            on_delete.update()
-            # on_delete.update()
+            on_delete.zmazat()
+            for i in Advanced_user().vrat_vsetky():
+                if i['Config_id'] == self.select_config_id:
+                    on_delete_advanced_user = Advanced_user().stiahni(i['id'])
+                    on_delete_advanced_user.zmazat()
             self.call_Back()

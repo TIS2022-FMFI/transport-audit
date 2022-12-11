@@ -18,8 +18,10 @@ class Add_Configs (BoxLayout):
     btn2 = Button(text="Späť")
     btn3 = Button(text="Pridaj polozku")
     btn4 = Button(text="Odstran polozku")
-    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
-    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['SPZ'] is not None])    
+    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']),str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    config_list =[(i["Customer_id"],i["Vehicle_id"] ) for i in Config().vrat_vsetky() if i['doplnok'] != 'DELETED']
     advanced_user_list = set()
     screenManager = None
     def __init__(self, screenManager,**kwargs):
@@ -33,8 +35,8 @@ class Add_Configs (BoxLayout):
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_vehicle(self.vehicle_list[btn.text]))
             btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
             self.drop2.add_widget(btn)
-        for i in User().vrat_vsetky():
-            btn = Button(text=str(i['code']), size_hint_y=None, height=40,on_release=lambda btn: self.set_advance_user(int(btn.text)))
+        for i in self.workers_list:
+            btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_advance_user(btn.text))
             btn.bind(on_release=lambda btn: self.drop3.select(btn.text))
             self.drop3.add_widget(btn)
         mainbutton1 = Button(text='Vyber zakaznika', size_hint=(.5, .25), pos=(60, 20))
@@ -96,7 +98,7 @@ class Add_Configs (BoxLayout):
         self.screenManager.current = 'Settings_Configs'
 
     def set_on_delete_advanced_user(self,text):
-        self.on_delete_advanced_user = int(text)
+        self.on_delete_advanced_user = text
     def check (self):
         if self.select_customer_id is None:
             self.notify.text = "Please select customer"
@@ -104,8 +106,10 @@ class Add_Configs (BoxLayout):
             self.notify.text = "Please select SPZ"
         elif len(self.advanced_user_list) == 0:
             self.notify.text = "Please select advanced user you want to add"
+        elif (self.select_customer_id,self.select_vehicle) in self.config_list:
+            self.notify.text = "This config with these SPZ and customer already exists"
         else:
             Konfig = Config().nahraj(self.select_customer_id,self.select_vehicle)
             for i in self.advanced_user_list:
-                Advanced_user().nahraj(Konfig.id,int(i))
+                Advanced_user().nahraj(Konfig.id,int(self.workers_list[i]))
             self.call_Back()

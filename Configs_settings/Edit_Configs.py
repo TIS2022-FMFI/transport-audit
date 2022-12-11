@@ -5,7 +5,6 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Customer, Vehicle, User, Config, Advanced_user
 
-
 class Edit_Configs(BoxLayout):
     select_config_id = None
     select_customer_id = None
@@ -22,9 +21,10 @@ class Edit_Configs(BoxLayout):
     btn3 = Button(text="Pridaj polozku")
     btn4 = Button(text="Odstran polozku")
     edit_config_list = Config().edit_configs()
-    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
+    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     list_of_config_customers = set(i[0] for i in edit_config_list)
-    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['SPZ'] is not None])
+    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']),str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     list_of_config_vehicles = set()
     advanced_user_list = set()
     old_advanced_user_list = set()
@@ -37,9 +37,9 @@ class Edit_Configs(BoxLayout):
                          on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
             self.drop1.add_widget(btn)
-        for i in User().vrat_vsetky():
-            btn = Button(text=str(i['code']), size_hint_y=None, height=40,
-                         on_release=lambda btn: self.set_advance_user(int(btn.text)))
+        for i in self.workers_list:
+            btn = Button(text=i, size_hint_y=None, height=40,
+                         on_release=lambda btn: self.set_advance_user(btn.text))
             btn.bind(on_release=lambda btn: self.drop3.select(btn.text))
             self.drop3.add_widget(btn)
         mainbutton1 = Button(text='Vyber zakaznika', size_hint=(.5, .25), pos=(60, 20))
@@ -75,7 +75,7 @@ class Edit_Configs(BoxLayout):
         self.drop2.select('Vyber vozidlo')
         self.advanced_user_list = set()
         self.synchronize_choosed_advanced_users()
-        self.list_of_config_vehicles = set(i[7] for i in self.edit_config_list if text == i[1])
+        self.list_of_config_vehicles = set(i[11] for i in self.edit_config_list if text == i[1])
         for i in self.list_of_config_vehicles:
             btn = Button(text=i, size_hint_y=None, height=40,
                          on_release=lambda btn: self.set_vehicle(self.vehicle_list[btn.text]))
@@ -84,11 +84,11 @@ class Edit_Configs(BoxLayout):
     def set_vehicle(self, text):
         self.select_vehicle = text
         for i in  self.edit_config_list:
-            if self.select_vehicle == i[8] and self.select_customer_id == i[1]:
-                self.select_config_id = i[3]
+            if self.select_vehicle == i[7] and self.select_customer_id == i[1]:
+                self.select_config_id = i[5]
                 break
-        self.advanced_user_list= set([i['User_code'] for i in Advanced_user().vrat_vsetky() if i['Config_id'] == self.select_config_id])
-        self.old_advanced_user_list = set([i['User_code'] for i in Advanced_user().vrat_vsetky() if i['Config_id'] == self.select_config_id])
+        self.advanced_user_list= set([User().stiahni(i['User_code']).Name[0] + ". " + User().stiahni(i['User_code']).Last_name + " " + str(i['User_code']) for i in Advanced_user().vrat_vsetky() if i['doplnok'] != 'DELETED' and i['Config_id'] == self.select_config_id])
+        self.old_advanced_user_list = set([User().stiahni(i['User_code']).Name[0] + ". " + User().stiahni(i['User_code']).Last_name + " " + str(i['User_code']) for i in Advanced_user().vrat_vsetky() if i['doplnok'] != 'DELETED' and i['Config_id'] == self.select_config_id])
         self.synchronize_choosed_advanced_users()
 
     def set_advance_user(self, text):
@@ -124,7 +124,7 @@ class Edit_Configs(BoxLayout):
         self.screenManager.current = 'Settings_Configs'
 
     def set_on_delete_advanced_user(self, text):
-        self.on_delete_advanced_user = int(text)
+        self.on_delete_advanced_user = text
 
     def check(self):
         if self.select_customer_id is None:
@@ -134,11 +134,15 @@ class Edit_Configs(BoxLayout):
         elif len(self.advanced_user_list) == 0:
             self.notify.text = "Please select advanced user you want to add"
         else:
-            Konfig = Config().nahraj(self.select_customer_id, self.select_vehicle)
-            for i in self.old_advanced_user_list:
-                if i in self.advanced_user_list:
-                    self.advanced_user_list.remove(i)
-            print(self.advanced_user_list)
+            for i in Advanced_user().vrat_vsetky():
+                if i['Config_id'] == self.select_config_id and i['doplnok'] != 'DELETED':
+                    on_edit_advanced_user = User().stiahni(i['User_code'])
+                    on_checking_edit_advanced_user = on_edit_advanced_user.Name[0] + ". " + on_edit_advanced_user.Last_name + " " + str(on_edit_advanced_user.code)
+                    if on_checking_edit_advanced_user in self.old_advanced_user_list and on_checking_edit_advanced_user in self.advanced_user_list:
+                        self.advanced_user_list.remove(on_checking_edit_advanced_user)
+                    elif on_checking_edit_advanced_user in self.old_advanced_user_list and on_checking_edit_advanced_user not in self.advanced_user_list:
+                        on_delete_advqanced_user = Advanced_user().stiahni(i['id'])
+                        on_delete_advqanced_user.zmazat()
             for i in self.advanced_user_list:
-                Advanced_user().nahraj(Konfig.id, int(i))
+                Advanced_user().nahraj(self.select_config_id,self.workers_list[i])
             self.call_Back()
