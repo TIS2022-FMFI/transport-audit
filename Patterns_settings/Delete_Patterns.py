@@ -12,8 +12,8 @@ class Delete_Patterns (BoxLayout):
     drop2 = DropDown()
     btn1 = Button(text="Vymaz")
     btn2 = Button(text="Späť")
-    customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
-    pattern_list = dict([( i['id'],i['Customer_id']) for i in Pattern().vrat_vsetky() if i['Customer_id'] is not None])
+    customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    pattern_list = dict([( i['id'],i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     Edit_data = Pattern().Data_on_editing()
     screenManager = None
     def __init__(self,screenManager, **kwargs):
@@ -44,9 +44,9 @@ class Delete_Patterns (BoxLayout):
         self.select_customer = self.customer_list[tex1]
         list_of_patterns=[]
         for i in self.Edit_data:
-            if i[1] == self.select_customer and i[3] not in list_of_patterns:
-                list_of_patterns.append(i[3])
-                btn = Button(text= i[3], size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
+            if i[1] == self.select_customer and i[5] not in list_of_patterns:
+                list_of_patterns.append(i[5])
+                btn = Button(text= i[5], size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
                 btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
                 self.drop1.add_widget(btn)
     def set_widgets(self,tex1):
@@ -60,6 +60,9 @@ class Delete_Patterns (BoxLayout):
             self.notify.text = "Please choose pattern"
         else:
             on_delete = Pattern().stiahni(self.select_pattern)
-            on_delete.Customer_id = None
-            on_delete.update()
+            on_delete.zmazat()
+            for i in Pattern_Item().vrat_vsetky():
+                on_delete_pattern_item = Pattern_Item().stiahni(i['id'])
+                if on_delete_pattern_item.Pattern_id == on_delete.id:
+                    on_delete_pattern_item.zmazat()
             self.call_Back()

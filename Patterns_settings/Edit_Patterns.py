@@ -22,10 +22,11 @@ class Edit_Patterns (BoxLayout):
     btn2 = Button(text="Späť")
     btn3 = Button(text="Pridaj polozku")
     btn4 = Button(text="Odstran polozku")
-    customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
-    stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['Name'] is not None])
+    customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     pattern_item_list = dict()
-    pattern_list = dict([( i['id'],i['Customer_id']) for i in Pattern().vrat_vsetky() if i['Customer_id'] is not None])
+    pattern_list = dict([( i['id'],i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    old_pattern_item_list = dict()
     Edit_data = Pattern().Data_on_editing()
     screenManager = None
     def __init__(self,screenManager, **kwargs):
@@ -81,14 +82,14 @@ class Edit_Patterns (BoxLayout):
         self.clear_choosed_items()
         self.select_pattern = None
         self.drop1.clear_widgets()
-        self.drop1.select("Vyber pat tern")
+        self.drop1.select("Vyber pattern")
 
         self.select_customer = self.customer_list[tex1]
         list_of_patterns=[]
         for i in self.Edit_data:
-            if i[1] == self.select_customer and i[3] not in list_of_patterns:
-                list_of_patterns.append(i[3])
-                btn = Button(text= i[3], size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
+            if  i[1] == self.select_customer and i[5] not in list_of_patterns:
+                list_of_patterns.append(i[5])
+                btn = Button(text= i[5], size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
                 btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
                 self.drop1.add_widget(btn)
     def set_number(self,text):
@@ -99,9 +100,10 @@ class Edit_Patterns (BoxLayout):
         self.clear_choosed_items()
         self.select_pattern = tex1
         for i in self.Edit_data:
-            if i[1] == self.select_customer and tex1 == i[3]:
-                self.pattern_item_list.update({i[11]:str(i[6])})
-                btn = Button(text=i[11] + " " + str(i[6]), size_hint_y=None, height=40,on_release=lambda btn: self.set_on_delete_type_stillage(btn.text))
+            if  i[1] == self.select_customer and tex1 == i[5]:
+                self.pattern_item_list.update({i[17]:str(i[10])})
+                self.old_pattern_item_list.update({i[17]: str(i[10])})
+                btn = Button(text=i[17] + " " + str(i[10]), size_hint_y=None, height=40,on_release=lambda btn: self.set_on_delete_type_stillage(btn.text))
                 btn.bind(on_release=lambda btn: self.drop4.select(btn.text))
                 self.drop4.add_widget(btn)
     def set_on_delete_type_stillage(self,tex):
@@ -151,13 +153,15 @@ class Edit_Patterns (BoxLayout):
             self.notify.text = "Add stillage_type"
         else:
             for i in self.Edit_data:
-                if self.select_pattern == i[3]:
-                    if i[11] in self.pattern_item_list.keys() and  i[1]== self.select_customer and i[3] == self.select_pattern:
-                        On_update_item = Pattern_Item().stiahni(i[7])
-                        if(On_update_item.Number != int(self.pattern_item_list[i[11]])):
-                            On_update_item.Number = int(self.pattern_item_list[i[11]])
-                            On_update_item.update()
-                        self.pattern_item_list.pop(i[11])
+                if i[5] == self.select_pattern:
+                    if i[17] in self.old_pattern_item_list.keys() and i[17] in self.pattern_item_list.keys():
+                        on_update = Pattern_Item().stiahni(i[11])
+                        on_update.Number = self.pattern_item_list[i[17]]
+                        on_update.update()
+                        self.pattern_item_list.pop(i[17])
+                    elif i[17] in self.old_pattern_item_list.keys() and i[17] not in self.pattern_item_list.keys():
+                        on_update = Pattern_Item().stiahni(i[11])
+                        on_update.zmazat()
             for i in self.pattern_item_list:
                 Pattern_Item().nahraj(int(self.pattern_item_list[i]),self.select_pattern,self.stillage_type_list[i])
             self.call_Back()

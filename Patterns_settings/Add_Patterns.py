@@ -20,8 +20,8 @@ class Add_Patterns (BoxLayout):
     btn2 = Button(text="Späť")
     btn3 = Button(text="Pridaj polozku")
     btn4 = Button(text="Odstran polozku")
-    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
-    stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['Name'] is not None])
+    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     pattern_item_list = dict()
     screenManager = None
     def __init__(self,screenManager, **kwargs):
