@@ -14,6 +14,8 @@ class Edit_Workers (BoxLayout):
     drop2 = DropDown()
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
+    btn3 = Button(text="Uzivatelsky kod")
+    workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']),str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     screenManager = None
     def __init__(self, screenManager,**kwargs):
         super(Edit_Workers, self).__init__(**kwargs)
@@ -22,11 +24,10 @@ class Edit_Workers (BoxLayout):
             btn = Button(text=i["name"], size_hint_y=None, height=40,on_release = lambda btn: self.set_select(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
             self.drop1.add_widget(btn)
-        for i in User().vrat_vsetky():
-            if (i['Name'] is not None):
-                btn = Button(text= str(i['code']), size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
-                btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
-                self.drop2.add_widget(btn)
+        for i in self.workers_list:
+            btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(self.workers_list[btn.text]))
+            btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
+            self.drop2.add_widget(btn)
         mainbutton = Button(text='Vyber rolu', size_hint=(.5, .25),pos=(60, 20))
         mainbutton.bind(on_release=self.drop1.open)
         mainbutton1 = Button(text='Vyber pracovnika na upravu', size_hint=(.5, .25), pos=(60, 20))
@@ -36,6 +37,7 @@ class Edit_Workers (BoxLayout):
         self.btn1.bind(on_release = lambda btn:self.check())
         self.btn2.bind(on_release=lambda btn: self.call_Back())
         self.add_widget(mainbutton1)
+        self.add_widget(self.btn3)
         self.add_widget(self.text1)
         self.add_widget(self.text2)
         self.add_widget(mainbutton)
@@ -50,6 +52,7 @@ class Edit_Workers (BoxLayout):
         self.text2.text = select_user.Last_name
         selected_role = User_Role().stiahni(select_user.User_Role_id)
         self.select_code = tex1
+        self.btn3.text = tex1
         if (selected_role is not None):
             self.drop1.select(selected_role.name)
             self.select_role = selected_role.name

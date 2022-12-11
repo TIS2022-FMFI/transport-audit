@@ -23,6 +23,7 @@ class Settings_Workers (BoxLayout):
         self.add_widget(self.btn3)
         self.add_widget(self.btn4)
     def call_add(self):
+        self.screenManager.current
         self.screenManager.current = 'Add_Workers'
     def call_edit(self):
         self.screenManager.current = 'Edit_Workers'
