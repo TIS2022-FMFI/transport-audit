@@ -11,7 +11,7 @@ class Edit_Customers (BoxLayout):
     drop1 = DropDown()
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
-    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
+    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         super(Edit_Customers, self).__init__(**kwargs)        

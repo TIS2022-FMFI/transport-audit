@@ -9,7 +9,7 @@ class Delete_Customers (BoxLayout):
     drop1 = DropDown()
     btn1 = Button(text="Vymaz")
     btn2 = Button(text="Späť")
-    customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['Name'] is not None])
+    customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     screenManager = None
     def __init__(self, screenManager,**kwargs):
         super(Delete_Customers, self).__init__(**kwargs)
@@ -36,6 +36,5 @@ class Delete_Customers (BoxLayout):
                 self.notify.text = "Please choose Customer by code you want delete."
         else:
             on_delete_customer = Customer().stiahni(self.on_delete_selected)
-            on_delete_customer.Name = None
-            on_delete_customer.update()
+            on_delete_customer.zmazat()
             self.call_Back()

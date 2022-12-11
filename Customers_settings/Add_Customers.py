@@ -8,6 +8,7 @@ class Add_Customers (BoxLayout):
     notify = Button(text = '')
     text1 = TextInput(text='Meno zakaznika')
     screenManager = None
+    customer_list = [i['Name'] for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def __init__(self,screenManager, **kwargs):
         super(Add_Customers, self).__init__(**kwargs)
         self.screenManager = screenManager
@@ -19,12 +20,13 @@ class Add_Customers (BoxLayout):
         self.add_widget(btn1)
         self.add_widget(btn2)
         self.add_widget(self.notify)
+
     def call_Back (self):
         self.screenManager.current = 'Settings_Customers'
     def check (self):
         if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) == 0 or self.text1.text == "Meno zakaznika":
             self.notify.text = "Please enter a valid name."
-        elif self.text1.text in [i['Name'] for i in Customer().vrat_vsetky()]:
+        elif self.text1.text in self.customer_list:
             self.notify.text = "Name already exists"
         else:
             Customer().nahraj(self.text1.text)
