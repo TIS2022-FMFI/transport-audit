@@ -726,7 +726,8 @@ class Config():
         self.Vehicle_id = None
 
     def edit_configs(self):
-        cursor.execute("select * from Customer C inner join Config C2 on C.id = C2.Customer_id inner join Vehicle V on V.id = C2.Vehicle_id;")
+        cursor.execute(
+            "select * from Customer C inner join Config C2 on C.id = C2.Customer_id inner join Vehicle V on V.id = C2.Vehicle_id where C.doplnok isnull and C2.doplnok isnull and V.doplnok isnull;")
         data = []
         for i in cursor.fetchall():
             data.append(i)
@@ -839,12 +840,13 @@ class Pattern():
 
     def Data_on_editing(self):  # Vráti None ak neexistuje, inak vráti class
         cursor.execute(
-            "select * from Customer c inner join Pattern P on c.id = P.Customer_id inner join Pattern_Item PI on P.id = PI.Pattern_id inner join Stillage_type St on St.id = PI.Stillage_type_id")
+            "select * from Customer c inner join Pattern P on c.id = P.Customer_id inner join Pattern_Item PI on P.id = PI.Pattern_id inner join Stillage_type St on St.id = PI.Stillage_type_id where c.doplnok isnull and P.doplnok isnull and PI.doplnok isnull and St.doplnok isnull;")
 
         data = []
         for i in cursor.fetchall():
             data.append(i)
         return data
+
 
     def over_zmazanie(self):
         if(self.id ==None):
