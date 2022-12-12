@@ -16,10 +16,6 @@ class Add_Workers (BoxLayout):
     def __init__(self, screenManager,**kwargs):
         super(Add_Workers, self).__init__(**kwargs)
         self.screenManager = screenManager
-        for i in User_Role().vrat_vsetky():
-            btn = Button(text=i["name"], size_hint_y=None, height=40,on_release = lambda btn: self.set_selected(btn.text))
-            btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
-            self.drop1.add_widget(btn)
         mainbutton = Button(text='Vyber rolu', size_hint=(.5, .25),pos=(60, 20))
         mainbutton.bind(on_release=self.drop1.open)
         self.drop1.bind(on_select=lambda instance, x: setattr(mainbutton, 'text', x))        
@@ -31,6 +27,14 @@ class Add_Workers (BoxLayout):
         self.add_widget(self.btn1)
         self.add_widget(self.btn2)
         self.add_widget(self.notify)
+    def synchronize_user_roles(self):
+        self.selected_role = None
+        self.drop1.clear_widgets()
+        self.drop1.select('Vyber rolu')
+        for i in User_Role().vrat_vsetky():
+            btn = Button(text=i["name"], size_hint_y=None, height=40,on_release = lambda btn: self.set_selected(btn.text))
+            btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
+            self.drop1.add_widget(btn)
     def set_selected(self,text):
         self.selected_role = text
     def call_Back (self):
@@ -49,3 +53,9 @@ class Add_Workers (BoxLayout):
                     break
             User().nahraj(self.text1.text, self.text2.text, self.selected_role)
             self.call_Back()
+    def clear_screen(self,*args):
+        self.text1.text = "Meno"
+        self.text2.text = "Priezvisko"
+        self.notify.text = ""
+        self.synchronize_user_roles()
+
