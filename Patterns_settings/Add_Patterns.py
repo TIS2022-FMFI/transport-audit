@@ -20,26 +20,18 @@ class Add_Patterns (BoxLayout):
     btn2 = Button(text="Späť")
     btn3 = Button(text="Pridaj polozku")
     btn4 = Button(text="Odstran polozku")
-    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
-    stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    customer_list = None
+    stillage_type_list = None
     pattern_item_list = dict()
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         super(Add_Patterns, self).__init__(**kwargs)
         self.screenManager = screenManager
-        for i in self.customer_list:
-            btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
-            btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
-            self.drop1.add_widget(btn)
-        for i in self.stillage_type_list:
-            btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_stillage_type(btn.text))
-            btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
-            self.drop2.add_widget(btn)
         for i in range (1,100):
             btn = Button(text= str(i), size_hint_y=None, height=40, on_release=lambda btn: self.set_number(btn.text))
             btn.bind(on_release=lambda btn: self.drop3.select(btn.text))
             self.drop3.add_widget(btn)
-        mainbutton1 = Button(text='Vyber pattern pre zakaznika', size_hint=(.5, .25), pos=(60, 20))
+        mainbutton1 = Button(text='Vyber zakaznika', size_hint=(.5, .25), pos=(60, 20))
         mainbutton1.bind(on_release=self.drop1.open)
         mainbutton2 = Button(text='Stillage_type', size_hint=(.5, .25), pos=(60, 20))
         mainbutton2.bind(on_release=self.drop2.open)
@@ -62,6 +54,24 @@ class Add_Patterns (BoxLayout):
         self.add_widget(self.btn1)
         self.add_widget(self.btn2)
         self.add_widget(self.notify)
+    def synchronize_customers(self):
+        self.select_customer_id = None
+        self.drop1.clear_widgets()
+        self.drop1.select("Vyber zakaznika")
+        self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        for i in self.customer_list:
+            btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
+            btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
+            self.drop1.add_widget(btn)
+    def synchronize_stillage_types(self):
+        self.select_stillage_type = None
+        self.drop2.clear_widgets()
+        self.drop2.select('Stillage_type')
+        self.stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        for i in self.stillage_type_list:
+            btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_stillage_type(btn.text))
+            btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
+            self.drop2.add_widget(btn)
     def set_number(self,text):
         self.select_number = text
     def set_stillage_type(self,text):
@@ -115,3 +125,13 @@ class Add_Patterns (BoxLayout):
             for i in self.pattern_item_list:
                 Pattern_Item().nahraj(int(self.pattern_item_list[i]),Updated_Pattern_id,self.stillage_type_list[i])
             self.call_Back()
+    def clear_screen(self, *args):
+        self.notify.text = ""
+        self.select_number = None
+        self.drop3.select('Number')
+        self.drop4.clear_widgets()
+        self.drop4.select("Zoznam vybratych stillage_types")
+        self.pattern_item_list = dict()
+        self.on_delete_type_stillage = None
+        self.synchronize_customers()
+        self.synchronize_stillage_types()

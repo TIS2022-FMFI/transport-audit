@@ -22,25 +22,16 @@ class Edit_Patterns (BoxLayout):
     btn2 = Button(text="Späť")
     btn3 = Button(text="Pridaj polozku")
     btn4 = Button(text="Odstran polozku")
-    customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
-    stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    customer_list = None
+    stillage_type_list = None
     pattern_item_list = dict()
-    pattern_list = dict([( i['id'],i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    pattern_list = None
     old_pattern_item_list = dict()
-    Edit_data = Pattern().Data_on_editing()
+    Edit_data = None
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         self.screenManager = screenManager
         super(Edit_Patterns, self).__init__(**kwargs)
-        for i in self.customer_list:
-            if self.customer_list[i] in self.pattern_list.values():
-                btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_customer_id(btn.text))
-                btn.bind(on_release=lambda btn: self.drop5.select(btn.text))
-                self.drop5.add_widget(btn)
-        for i in self.stillage_type_list:
-            btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_stillage_type(btn.text))
-            btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
-            self.drop2.add_widget(btn)
         for i in range (1,100):
             btn = Button(text= str(i), size_hint_y=None, height=40, on_release=lambda btn: self.set_number(btn.text))
             btn.bind(on_release=lambda btn: self.drop3.select(btn.text))
@@ -72,6 +63,31 @@ class Edit_Patterns (BoxLayout):
         self.add_widget(self.btn1)
         self.add_widget(self.btn2)
         self.add_widget(self.notify)
+    def synchronize_customers(self):
+        self.select_customer = None
+        self.drop5.clear_widgets()
+        self.drop5.select('Customer')
+        self.customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        for i in self.customer_list:
+            if self.customer_list[i] in self.pattern_list.values():
+                btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_customer_id(btn.text))
+                btn.bind(on_release=lambda btn: self.drop5.select(btn.text))
+                self.drop5.add_widget(btn)
+    def synchronize_stillage_types(self):
+        self.select_stillage_type = None
+        self.drop2.clear_widgets()
+        self.drop2.select("Stillage type")
+        self.stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        for i in self.stillage_type_list:
+            btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_stillage_type(btn.text))
+            btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
+            self.drop2.add_widget(btn)
+    def synchronize_pattern_list(self):
+        self.select_pattern = None
+        self.pattern_list = dict([(i['id'], i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        self.Edit_data = Pattern().Data_on_editing()
+        self.drop1.clear_widgets()
+        self.drop1.select("Vyber pattern")
     def clear_choosed_items(self):
         self.drop4.clear_widgets()
         self.drop4.select('Zoznam vybratych stillage_types')
@@ -165,3 +181,12 @@ class Edit_Patterns (BoxLayout):
             for i in self.pattern_item_list:
                 Pattern_Item().nahraj(int(self.pattern_item_list[i]),self.select_pattern,self.stillage_type_list[i])
             self.call_Back()
+    def clear_screen(self, *args):
+        self.notify.text = ""
+        self.synchronize_pattern_list()
+        self.synchronize_customers()
+        self.synchronize_stillage_types()
+        self.select_number = None
+        self.drop3.select("Number")
+        self.clear_choosed_items()
+        self.old_pattern_item_list = dict()
