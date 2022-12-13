@@ -20,28 +20,19 @@ class Edit_Configs(BoxLayout):
     btn2 = Button(text="Späť")
     btn3 = Button(text="Pridaj polozku")
     btn4 = Button(text="Odstran polozku")
-    edit_config_list = Config().edit_configs()
-    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
-    list_of_config_customers = set(i[0] for i in edit_config_list)
-    vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
-    workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']),str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    edit_config_list = None
+    customer_list = None
+    list_of_config_customers = None
+    vehicle_list = None
+    workers_list = None
     list_of_config_vehicles = set()
     advanced_user_list = set()
     old_advanced_user_list = set()
     screenManager = None
+
     def __init__(self, screenManager,**kwargs):
         super(Edit_Configs, self).__init__(**kwargs)
         self.screenManager = screenManager
-        for i in self.list_of_config_customers:
-            btn = Button(text=i, size_hint_y=None, height=40,
-                         on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
-            btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
-            self.drop1.add_widget(btn)
-        for i in self.workers_list:
-            btn = Button(text=i, size_hint_y=None, height=40,
-                         on_release=lambda btn: self.set_advance_user(btn.text))
-            btn.bind(on_release=lambda btn: self.drop3.select(btn.text))
-            self.drop3.add_widget(btn)
         mainbutton1 = Button(text='Vyber zakaznika', size_hint=(.5, .25), pos=(60, 20))
         mainbutton1.bind(on_release=self.drop1.open)
         self.drop1.bind(on_select=lambda instance, x: setattr(mainbutton1, 'text', x))
@@ -67,7 +58,37 @@ class Edit_Configs(BoxLayout):
         self.add_widget(self.btn1)
         self.add_widget(self.btn2)
         self.add_widget(self.notify)
-
+    def synchronize_customers(self):
+        self.select_customer_id = None
+        self.edit_config_list = Config().edit_configs()
+        self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        self.list_of_config_customers = set(i[0] for i in self.edit_config_list)
+        self.drop1.clear_widgets()
+        self.drop1.select("Vyber zakaznika")
+        for i in self.list_of_config_customers:
+            btn = Button(text=i, size_hint_y=None, height=40,
+                         on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
+            btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
+            self.drop1.add_widget(btn)
+    def synchronize_vehicles(self):
+        self.select_vehicle = None
+        self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        self.drop2.clear_widgets()
+        self.drop2.select("Vyber vozidlo")
+    def synchronize_workers(self):
+        self.select_advanced_user = None
+        self.workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']),str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        self.advanced_user_list = set()
+        self.old_advanced_user_list = set()
+        self.drop3.clear_widgets()
+        self.drop3.select("Vyber uzivatelov")
+        for i in self.workers_list:
+            btn = Button(text=i, size_hint_y=None, height=40,
+                         on_release=lambda btn: self.set_advance_user(btn.text))
+            btn.bind(on_release=lambda btn: self.drop3.select(btn.text))
+            self.drop3.add_widget(btn)
+    def synchronize_configs(self):
+        self.select_config_id = None
     def set_customer(self, text):
         self.select_customer_id = text
         self.select_vehicle = None
@@ -119,7 +140,7 @@ class Edit_Configs(BoxLayout):
         else:
             self.advanced_user_list.remove(self.on_delete_advanced_user)
             self.synchronize_choosed_advanced_users()
-
+            self.on_delete_advanced_user = None
     def call_Back(self):
         self.screenManager.current = 'Settings_Configs'
 
@@ -146,3 +167,14 @@ class Edit_Configs(BoxLayout):
             for i in self.advanced_user_list:
                 Advanced_user().nahraj(self.select_config_id,self.workers_list[i])
             self.call_Back()
+    def clear_screen(self, *args):
+        self.notify.text = ""
+
+        self.on_delete_advanced_user = None
+        self.drop4.clear_widgets()
+        self.drop4.select("Vybrati advanced users")
+
+        self.synchronize_customers()
+        self.synchronize_vehicles()
+        self.synchronize_workers()
+        self.synchronize_configs()
