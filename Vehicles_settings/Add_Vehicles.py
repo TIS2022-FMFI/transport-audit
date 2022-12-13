@@ -10,7 +10,9 @@ class Add_Vehicles (BoxLayout):
     btn1 = Button(text="Pridaj")
     btn2 = Button(text="Späť")
     screenManager = None
-    vehicle_list = [i['SPZ'] for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED']
+    vehicle_list = None
+    def synchronize_vehicles(self):
+        self.vehicle_list = [i['SPZ'] for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def __init__(self, screenManager,**kwargs):
         super(Add_Vehicles, self).__init__(**kwargs)
         self.screenManager = screenManager
@@ -32,3 +34,8 @@ class Add_Vehicles (BoxLayout):
         else:
             Vehicle().nahraj(self.text1.text)
             self.call_Back()
+
+    def clear_screen(self, *args):
+        self.notify.text = ""
+        self.text1.text = 'SPZ'
+        self.synchronize_vehicles()
