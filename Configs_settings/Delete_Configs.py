@@ -1,4 +1,5 @@
-from scanner import *
+from kivy.uix.button import Button
+#from scanner import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.dropdown import DropDown

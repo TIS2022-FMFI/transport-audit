@@ -1,9 +1,20 @@
 from Menu_screen import *
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
+
+from startScreen2 import StartScreen
+from skener import Scanner
+from auditUvod import UvodAuditu
+
+
+
+from sqlite import synchronize_db_server_client, Vehicle
+synchronize_db_server_client()
+
 class MainApp(App):
     def build(self):
-        self.sm = ScreenManager()
+        #Vehicle().stiahni('9a414a42-1edc-42dc-a562-e635de6db7d2').zmazat()
+        self.sm = self.screenManager = ScreenManager()
         # Configs
         scrn = Screen(name='Add_Configs')
         add_configs = Add_Configs(self.sm)
@@ -114,11 +125,28 @@ class MainApp(App):
         scrn = Screen(name='Settings_Workers')
         scrn.add_widget(Settings_Workers(self.sm))
         self.sm.add_widget(scrn)
-        #Menu screen
-        scrn = Screen (name = 'Menu_screen')
-        scrn.add_widget(Menu_screen(self.sm))
+
+
+
+        ###########
+        self.zamestnanec = None
+
+        self.startScreen = StartScreen('uvod', 'Menu_screen', self, name='startScreen')
+        self.screenManager.add_widget(self.startScreen)
+
+        # Menu screen
+        scrn = Screen(name='Menu_screen')
+        ms = Menu_screen(self, self.startScreen, 'uvodAudit')
+        scrn.add_widget(ms)
+        scrn.bind(on_enter=ms.vytvorMenu)
         self.sm.add_widget(scrn)
-        self.sm.current = 'Menu_screen'
+
+        self.auditUvodScreen = UvodAuditu(self, self.startScreen, self.startScreen, name='uvodAudit')
+        self.screenManager.add_widget(self.auditUvodScreen)
+        self.auditov = 0
+        self.audit = None
+        self.screenManager.current = 'startScreen'
+        #self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
     MainApp().run()

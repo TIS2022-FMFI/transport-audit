@@ -1,4 +1,5 @@
-from scanner import *
+from kivy.uix.button import Button
+#from scanner import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.dropdown import DropDown
@@ -67,6 +68,7 @@ class Add_Configs (BoxLayout):
         self.drop2.clear_widgets()
         self.drop2.select("Vyber vozidlo")
         self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        print(self.vehicle_list)
         for i in self.vehicle_list:
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_vehicle(self.vehicle_list[btn.text]))
             btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
