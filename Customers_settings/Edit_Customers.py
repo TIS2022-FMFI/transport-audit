@@ -11,15 +11,20 @@ class Edit_Customers (BoxLayout):
     drop1 = DropDown()
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
-    customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+    customer_list = None
     screenManager = None
-    def __init__(self,screenManager, **kwargs):
-        super(Edit_Customers, self).__init__(**kwargs)        
-        self.screenManager = screenManager
+    def synchronize_customers(self):
+        self.select_id = None
+        self.drop1.clear_widgets()
+        self.drop1.select("Vyber zakaznika na upravu")
+        self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         for i in self.customer_list:
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
             self.drop1.add_widget(btn)
+    def __init__(self,screenManager, **kwargs):
+        super(Edit_Customers, self).__init__(**kwargs)        
+        self.screenManager = screenManager
         mainbutton1 = Button(text='Vyber zakaznika na upravu', size_hint=(.5, .25), pos=(60, 20))
         mainbutton1.bind(on_release=self.drop1.open)
         self.drop1.bind(on_select=lambda instance, x: setattr(mainbutton1, 'text', x))
@@ -47,3 +52,7 @@ class Edit_Customers (BoxLayout):
             updated_customer.Name = self.text1.text
             updated_customer.update()
             self.call_Back()
+    def clear_screen(self, *args):
+        self.text1.text = "Meno"
+        self.notify.text = ""
+        self.synchronize_customers()

@@ -8,7 +8,7 @@ class Add_Customers (BoxLayout):
     notify = Button(text = '')
     text1 = TextInput(text='Meno zakaznika')
     screenManager = None
-    customer_list = [i['Name'] for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED']
+    customer_list = None
     def __init__(self,screenManager, **kwargs):
         super(Add_Customers, self).__init__(**kwargs)
         self.screenManager = screenManager
@@ -20,7 +20,8 @@ class Add_Customers (BoxLayout):
         self.add_widget(btn1)
         self.add_widget(btn2)
         self.add_widget(self.notify)
-
+    def synchronize_customers(self):
+        self.customer_list = [i['Name'] for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def call_Back (self):
         self.screenManager.current = 'Settings_Customers'
     def check (self):
@@ -31,3 +32,7 @@ class Add_Customers (BoxLayout):
         else:
             Customer().nahraj(self.text1.text)
             self.call_Back()
+    def clear_screen(self, *args):
+        self.notify.text = ""
+        self.text1.text = 'Meno zakaznika'
+        self.synchronize_customers()
