@@ -4,19 +4,21 @@ include('db.php');
 include('funkcie.php');
 require('fpdf/fpdf.php');
 $pdf = new FPDF();
-navigacia('Exporty');
+navigacia('Užívatelia');
 ?>
 
 
 
  
 <?php
-if(isset($_GET['strana'])) {
-    $aktualna_strana = $_GET['strana'];
+
+if (isset($_POST['meno']) && isset($_POST['priezvisko']) && isset($_POST['rola']) && isset($_POST['code'])  && isset($_POST['doplnok'])    ){
+	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
+	update_uzivatela_android($db2,$_POST['meno'],$_POST['priezvisko'],$_POST['rola'],$_POST['code'],$_POST['doplnok']);
+
 }
-else {
-	$aktualna_strana = 1;
-}
+
+
 $chyby = array();
 if (isset($_POST['odhlas'])){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
@@ -53,12 +55,12 @@ if (isset($_SESSION['prihlasovacie_meno'])){
 
 <div class="row">
     <div class="col-4 d-flex">
-        <?php vypis_audit($db2,$aktualna_strana); ?>
+       <?php  vypis_uzivatelov($db2);?>
     </div>
 </div>
 		
 				
-	<?php posuvanie_strany($db2,$aktualna_strana); ?>			
+			
 
 <?php
 

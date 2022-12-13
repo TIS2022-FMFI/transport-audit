@@ -36,6 +36,166 @@ function over_pouzivatela($db, $username, $pass) {
 	}
 }
 
+function navigacia($stranka){
+	echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> 
+';
+echo '<!doctype html>';
+echo '<nav class="navbar navbar-expand-lg bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Gefco</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="index.php">Exporty</a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Užívatelia
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="users-web.php">Web</a></li>
+            <li><hr class="dropdown-divider"></li>
+			<li><a class="dropdown-item" href="users.php">Android</a></li>
+          </ul>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+				<button class="btn btn-outline-success">
+				<form id="myform" method="post"><input type="hidden" id="odhlas" name="odhlas" value="odhlas"></form>
+				<a class="nav-link" onclick="document.getElementById("myform").submit();">Odhlásiť sa</a>
+			
+                </button>
+      </form>
+    </div>
+  </div>
+</nav>';
+
+}
+
+
+
+function vypis_user_role_option($db,$id) {
+	// do premennej $row treba priradiť jednotlivé položky objednávky $id 
+	if ($db) {
+		$sql = 'SELECT * FROM "User_Role"'; // definuj dopyt
+		$result = pg_query($db,$sql);
+		$array = pg_fetch_all($result);
+
+			foreach($array as $item) {
+					if($item['id'] == $id){
+						echo "<option selected='selected' value='{$item['id']}'>{$item['name']}</option>";
+					}
+					else{
+				echo "<option value='{$item['id']}'>{$item['name']}</option>";
+					}
+
+			}
+		} else {
+			// dopyt sa NEpodarilo vykonať!
+			echo '<p class="chyba">NEpodarilo sa získať údaje z databázy</p>' . $mysqli->error ;
+		}
+	}
+
+
+function update_uzivatela_android($db,$Name,$Last_name,$User_Role,$id,$doplnok){
+
+		//pg_get_result($db);
+		$date = date('Y-m-d H:i:s');
+			  $data = array('Name'=>$Name, 'Last_name'=>$Last_name, 'User_Role_id'=>$User_Role,'doplnok'=>$doplnok,'last_sync'=>$date);
+			  $condition = array('code' => $id);
+			  $res = pg_update($db, 'User', $data, $condition);
+			  if ($res) {
+				  echo "Data is updated: $res\n";
+			  } else {
+				  echo "User must have sent wrong inputs\n";
+			  }
+}
+
+function vypis_uzivatelov($db){
+	if ($db) {
+		$result = pg_query($db, 'SELECT * FROM "User" ORDER BY "last_sync" DESC');
+		if (!$result) {
+			echo "An error occurred.\n";
+			exit;
+		}
+
+		$array = pg_fetch_all($result);
+			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Rola</th><th scope='col'>Číslo užívateľa</th><th scope='col'>Naposledy upravené</th><th scope='col'>Upraviť</th></tr>";
+			foreach($array as $item) {
+				//získaj rolu
+			$code_string = "'".$item['code']."'";
+			$query_user_role = 'SELECT
+				"User_Role"."name"
+				FROM "User"
+				JOIN "User_Role"
+				  ON "User_Role_id" = "User_Role".id WHERE "User".code = ' . $code_string . ' ';
+				$result_user_role = pg_query($db,$query_user_role) or die('Error message: ' . pg_last_error());
+				$row_user_role = pg_fetch_row($result_user_role);
+			
+			echo"<tr>";
+			echo '<td>' . $item['Name'] . ' ' . $item['Last_name'] . '</td>';
+			echo "<td>{$row_user_role[0]}</td>";
+			echo "<td>{$item['code']}</td>";
+			echo "<td>{$item['last_sync']}</td>";
+			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['code']}'>Uprav</button></td>";
+			
+			echo'<div class="modal fade" id="modal' . $item['code'] . '" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['code'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
+			
+			        //Obsah v okne
+		echo '				
+					<form action="" method="POST">
+			<label>Meno: </label>
+			<input type="text" name="meno" value="' . $item['Name'] . '">
+			<br>
+			<label>Priezvisko: </label>
+			<input type="text" name="priezvisko" value="' . $item['Last_name'] . '">
+				<br>
+						<select name="rola">
+						' ;
+						vypis_user_role_option($db,$item['User_Role_id']);
+		echo '
+			</select>
+			<br>
+			<input type="hidden"  name="doplnok" value="' . $item['doplnok'] . '" />
+			<input type="hidden"  name="code" value="' . $item['code'] . '" />
+			<br><br>
+				<input type="submit" value="Upraviť" />
+			</form>
+		';
+
+		
+		
+		
+      echo '</div><div class="modal-footer"><button type="button" class="btn-primary"data-bs-dismiss="modal">Zavrieť</button></div></div></div></div>';	
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			echo"</tr>";
+			}
+			echo "</table>";
+	
+	} else {
+	return false;
+}
+	
+}
+
 function pocet_zaznamov_stillage($db){
 	
 		$result = pg_query($db, 'SELECT * FROM "Stillage" ORDER BY "last_sync" DESC');
@@ -61,9 +221,10 @@ function posuvanie_strany($db,$aktualna_strana){
 		}
 		$strana++;
 		}
+		if($aktualna_strana <ceil($number / 20)){
 		echo '<li class="page-item"><a class="page-link" href="?strana=' . $aktualna_strana+1 . '">Next</a></li></ul></nav>';
+		}
 }
-
 
 
 function vypis_audit($db,$aktualna_strana){
