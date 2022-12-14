@@ -46,7 +46,7 @@ class StartScreen(Screen):
         if not self.kodZamestnanca:
             return
         pouzivatel = User().stiahni(self.kodZamestnanca[0])
-        if pouzivatel is not None and pouzivatel.Name is not None:
+        if pouzivatel is not None and not pouzivatel.over_zmazanie():
             self.aplikacia.zamestanec = pouzivatel
             self.kodZamestnanca.clear()
             self.aplikacia.screenManager.current = self.dalsia

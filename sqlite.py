@@ -912,10 +912,14 @@ class Pattern():
         col_name = [i[0] for i in cursor.description]
         test = cursor.fetchone()
         if test is None:
+            #print("Ziaden najdeny")
             return None
         data = dict(zip(col_name, test))
         self.Customer_id = data['Customer_id']
         self.id = data['id']
+        print("doplnok je ", data['doplnok'])
+        if data['doplnok'] == 'DELETED':
+            return None
         return self
 
 
@@ -1264,7 +1268,8 @@ class Pattern_Item():
             r.id = riadok[1]
             r.Pattern_id = riadok[2]
             r.Stillage_type_id = riadok[3]
-            vysledok.append(r)
+            if not r.over_zmazanie():
+                vysledok.append(r)
 
         #['Number', 'id', 'Pattern_id', 'Stillage_type_id', 'last_sync', 'doplnok', 'vykonavatel']
 
