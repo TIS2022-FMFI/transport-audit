@@ -17,6 +17,7 @@ from PIL import Image as Im2
 
 kod = []
 
+from random import randint
 class Scanner(Screen):
 
     def __init__(self, screenManager, kody, povodnaScreen, dalsiaScreen, **kwargs):
@@ -73,9 +74,9 @@ class Scanner(Screen):
             image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.img.texture = image_texture  # display image from the texture
 
-            barcodes = pyzbar.decode(frame)  # detect barcode from image
-
             #barcodes = pyzbar.decode(Im2.open(image))  # detect barcode from image (frame)
+            barcodes = pyzbar.decode(frame)  # detect barcode from image
+            self.pouzitKod(str(randint(100, 1000)))
             for barcode in barcodes:
                 (x, y, w, h) = barcode.rect
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
@@ -85,14 +86,21 @@ class Scanner(Screen):
                     continue
                 #text = "{} ({})".format(barcodeData, barcode.type)
                 #cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                self.pouzitKod(barcodeData)
 
-                self.skenovat = False
-                self.najdene = barcodeData
 
-                self.butPouzit = Button(text=f'{barcodeData}', size_hint_y=None, height='48dp', on_press=self.koniec, pos_hint = {'center_y':0.15})
-                self.add_widget(self.butPouzit)
-                self.butNove = Button(text=f'skenovat dalej', size_hint_y=None, height='48dp', on_press= self.pokracovat, pos_hint = {'center_y':0.25})
-                self.add_widget(self.butNove)
+
+
+    def pouzitKod(self, kod):
+        self.skenovat = False
+        self.najdene = kod
+
+        self.butPouzit = Button(text=f'{kod}', size_hint_y=None, height='48dp', on_press=self.koniec,
+                                pos_hint={'center_y': 0.15})
+        self.add_widget(self.butPouzit)
+        self.butNove = Button(text=f'skenovat dalej', size_hint_y=None, height='48dp', on_press=self.pokracovat,
+                              pos_hint={'center_y': 0.25})
+        self.add_widget(self.butNove)
 
     def pokracovat(self, *args):
         self.skenovat = True

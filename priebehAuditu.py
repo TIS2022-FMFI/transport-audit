@@ -6,6 +6,14 @@ from kivy.uix.screenmanager import Screen
 from skener import Scanner
 from UzavretyAudit import UzavretyKamion
 from sqlite import Shipment, Pattern, Pattern_Item, Stillage_type
+
+
+from enum import Enum
+class NajblizsiKod(Enum):
+    VOZIK = 0
+    PRVY = 1
+    DRUHY = 2
+
 class PrebiehajuciAudit(Screen):
     def __init__(self, aplikacia, povodna, zakaznik, auto, **kwargs):
         super().__init__(**kwargs)
@@ -17,6 +25,7 @@ class PrebiehajuciAudit(Screen):
         self.prvy = None
         self.druhy = None
         self.kod = []
+        self.kodNaSkenovanie = NajblizsiKod.VOZIK
 
         #self.uzavretaScreen = dalsia
 
@@ -46,14 +55,14 @@ class PrebiehajuciAudit(Screen):
 
         self.bPrvy = Button(text='Naskenujte prvy produkt', background_color="#0003a8",
                              background_normal="", pos_hint={'center_x': 0.3, "top": 0.55}, size_hint=(0.3, 0.08))
-        # Label(text='Nepodarilo sa najst zamestnanca s naskenovanym kodom')
+        self.bPrvy.bind(on_press = self.skenPrvy)
         self.add_widget(self.bPrvy)
 
         self.lPrvy = Label(text='kod prvy', pos_hint={'center_x': 0.8, "top": 0.55}, size_hint=(0.5, 0.08))
         self.add_widget(self.lPrvy)
         self.bDruhy = Button(text='Naskenujte druhy produkt', background_color="#0003a8",
                              background_normal="", pos_hint={'center_x': 0.3, "top": 0.45}, size_hint=(0.3, 0.08))
-        # Label(text='Nepodarilo sa najst zamestnanca s naskenovanym kodom')
+        self.bDruhy.bind(on_press=self.skenDruhy)
         self.add_widget(self.bDruhy)
         self.lDruhy = Label(text='kod druhy', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
         self.add_widget(self.lDruhy)
@@ -63,10 +72,12 @@ class PrebiehajuciAudit(Screen):
         self.pattern = Pattern().patternZakaznika(self.zakaznik.id)
 
         if self.pattern is None:
-            self.spat()
+            print("pattern je none")
+            #self.spat()
+            return
         self.polozkyPatternu = Pattern_Item().vrat_vsetkyPattern(self.pattern.id)
         pouzStillage = set()
-        self.polozkyPatternuDict = {}
+        self.poctyPoloziekPatternu = {}
         from random import randint
         self.maxDielikov = 0
         for p in self.polozkyPatternu:
@@ -79,14 +90,14 @@ class PrebiehajuciAudit(Screen):
                 if stillageTupe is None:
                     continue
                 self.maxDielikov += p.Number
-                self.polozkyPatternuDict[stillageTupe.Name] = {'item':p, 'type':stillageTupe}
+                self.poctyPoloziekPatternu[stillageTupe.Name] = p.Number
 
         #print(Stillage_type().vrat_vsetky())
         self.sirka = 800
 
         self.sirkaDielika = self.sirka / self.maxDielikov
         self.dielikov = 0
-        print(self.size, "sffklsjflajflafjl")
+
         with self.canvas:
             Color(0.4, 0.4, 0.4)
             Rectangle(pos=(0, 450), size=(self.sirka, 70))
@@ -107,6 +118,7 @@ class PrebiehajuciAudit(Screen):
             Rectangle(pos=(0, 450), size=(self.dielikov* self.sirkaDielika, 70))
 
     def spat(self, *args):
+        print("navrat na uvod auditu")
         self.aplikacia.screenManager.remove_widget(self)
         self.aplikacia.screenManager.remove_widget(self.skenovanieScreen)
         self.aplikacia.screenManager.remove_widget(self.uzavretyScreen)
@@ -115,15 +127,56 @@ class PrebiehajuciAudit(Screen):
     def uzavriet(self, *args):
         self.aplikacia.screenManager.current = self.uzavretyScreen.name
 
+    def kontrolaVozik(self):
+        return True
+    def kontrolaPrveho(self):
+        return True
+    def kontrolaDruheho(self):
+        return True
+
     def kontrolaKodu(self, *args):
+        if self.pattern is None:
+            self.spat()
+
         if not self.kod:
             return
-        self.dielikov += 1
-        self.nakresliObdznik()
-        self.lVozik.text = self.kod[0]
+        if self.kodNaSkenovanie == NajblizsiKod.VOZIK:
+            self.lVozik.text = self.kod[0]
+            if self.kontrolaVozik():
+
+                self.kodNaSkenovanie = NajblizsiKod.PRVY
+
+        elif self.kodNaSkenovanie == NajblizsiKod.PRVY:
+            self.lPrvy.text = self.kod[0]
+            if self.kontrolaPrveho():
+                self.kodNaSkenovanie = NajblizsiKod.DRUHY
+
+        elif self.kodNaSkenovanie == NajblizsiKod.DRUHY:
+            self.lDruhy.text = self.kod[0]
+            if self.kontrolaDruheho():
+                self.kodNaSkenovanie = NajblizsiKod.VOZIK
+                self.dielikov += 1
+                self.nakresliObdznik()
+                self.lVozik.text = "kod vozik"
+                self.lPrvy.text = "kod prvy"
+                self.lDruhy.text = "kod druhy"
+
         self.kod.clear()
 
+    def skenPrvy(self, *args):
+
+        if self.kodNaSkenovanie != NajblizsiKod.PRVY:
+            return
+        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+
+    def skenDruhy(self, *args):
+        if self.kodNaSkenovanie != NajblizsiKod.DRUHY:
+            return
+        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+
     def skenVozik(self, *args):
+        if self.kodNaSkenovanie != NajblizsiKod.VOZIK:
+            return
         self.aplikacia.screenManager.current = self.skenovanieScreen.name
 
 

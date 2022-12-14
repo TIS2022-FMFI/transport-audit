@@ -36,14 +36,10 @@ class Menu_screen (BoxLayout):
     def vytvorMenu(self, *arg):
 
         self.clear_widgets()
-        #zamestnanec = self.aplikacia.zamestnanec
-
-        ind = randint(0, 2)
-        zamestnanec = User().vrat_vsetky(True)[ind]
-        id  = zamestnanec.User_Role_id
+        id  = self.aplikacia.zamestnanec.User_Role_id
         rola = User_Role().stiahni(id).name
 
-        print("rola : ", rola, ind)
+        print("rola : ", rola)
         if rola == 'Administrátor':
             self.add_widget(self.btn1)
         if rola in {'Administrátor', 'Operátor'}:

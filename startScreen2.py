@@ -6,6 +6,7 @@ from kivy.uix.screenmanager import Screen
 
 from skener import Scanner
 from sqlite import User
+from random import randint
 class StartScreen(Screen):
     def __init__(self, povodna, dalsia, aplikacia, **kwargs):
         super().__init__(**kwargs)
@@ -45,9 +46,17 @@ class StartScreen(Screen):
         print(self.kodZamestnanca, self.aplikacia.zamestnanec)
         if not self.kodZamestnanca:
             return
+
+
         pouzivatel = User().stiahni(self.kodZamestnanca[0])
+        if pouzivatel is None:
+            pouz = User().vrat_vsetky(True)
+            ind = randint(0, len(pouz)-1 )
+            pouzivatel = pouz[ind]
         if pouzivatel is not None and not pouzivatel.over_zmazanie():
-            self.aplikacia.zamestanec = pouzivatel
+
+            self.aplikacia.zamestnanec = pouzivatel
+            print("bol najdeny zamestnanec", self.aplikacia.zamestnanec, pouzivatel)
             self.kodZamestnanca.clear()
             self.aplikacia.screenManager.current = self.dalsia
         else:
