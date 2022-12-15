@@ -2,6 +2,7 @@ from Workers_settings.Settings_Workers import *
 from Customers_settings.Settings_Customers import *
 from Vehicles_settings.Settings_Vehicles import *
 from Configs_settings.Settings_Configs import *
+from Export_setting.Settings_export import *
 from Patterns_settings.Settings_Patterns import *
 
 from sqlite import User_Role, User
@@ -12,6 +13,7 @@ class Menu_screen (BoxLayout):
     btn3 = Button(text="Vozidla")
     btn4 = Button(text="Configy")
     btn5 = Button(text="Patterny")
+    btn6 = Button(text="Export settings")
     btnOdhlasenie = Button(text="Odhlasit")
     btnAudit = Button(text="Zacat audit")
     screenManager = None
@@ -26,12 +28,9 @@ class Menu_screen (BoxLayout):
         self.btn3.bind(on_release=lambda btn: self.call_Vehicles_settings())
         self.btn4.bind(on_release=lambda btn: self.call_Configs_settings())
         self.btn5.bind(on_release=lambda btn: self.call_Patterns_settings())
+        self.btn6.bind(on_release=lambda btn: self.call_Exportss_settings())
         self.btnOdhlasenie.bind(on_release=self.odhlasit)
         self.btnAudit.bind(on_release=self.zacatAudit)
-
-
-
-
 
     def vytvorMenu(self, *arg):
 
@@ -39,6 +38,11 @@ class Menu_screen (BoxLayout):
         id  = self.aplikacia.zamestnanec.User_Role_id
         rola = User_Role().stiahni(id).name
 
+        # mnou dorobene docasne
+        # rola = 'Administrátor'
+        # ignorovat
+
+        # ----------------------------
         print("rola : ", rola)
         if rola == 'Administrátor':
             self.add_widget(self.btn1)
@@ -47,6 +51,7 @@ class Menu_screen (BoxLayout):
             self.add_widget(self.btn3)
             self.add_widget(self.btn4)
             self.add_widget(self.btn5)
+            self.add_widget(self.btn6)
         self.add_widget(self.btnOdhlasenie)
         self.add_widget(self.btnAudit)
 
@@ -60,7 +65,8 @@ class Menu_screen (BoxLayout):
         self.screenManager.current = 'Settings_Configs'
     def call_Patterns_settings(self):
         self.screenManager.current = 'Settings_Patterns'
-
+    def call_Exportss_settings(self):
+        self.screenManager.current = 'Settings_Exports'
     def zacatAudit(self, *args):
         self.aplikacia.screenManager.current = self.auditScreen
 

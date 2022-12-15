@@ -6,8 +6,6 @@ from startScreen2 import StartScreen
 from skener import Scanner
 from auditUvod import UvodAuditu
 
-
-
 from sqlite import synchronize_db_server_client, Vehicle
 synchronize_db_server_client()
 
@@ -125,8 +123,12 @@ class MainApp(App):
         scrn = Screen(name='Settings_Workers')
         scrn.add_widget(Settings_Workers(self.sm))
         self.sm.add_widget(scrn)
-
-
+        # Exports settings
+        scrn = Screen(name='Settings_Exports')
+        settings_exports = Settings_Exports(self.sm)
+        scrn.add_widget(settings_exports)
+        scrn.bind(on_enter=settings_exports.clear_screen)
+        self.sm.add_widget(scrn)
 
         ###########
         self.zamestnanec = None
@@ -146,7 +148,7 @@ class MainApp(App):
         self.auditov = 0
         self.audit = None
         self.screenManager.current = 'startScreen'
-        #self.sm.current = 'Menu_screen'
+        # self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
     MainApp().run()
