@@ -25,20 +25,32 @@ class Settings_Exports (BoxLayout):
         self.add_widget(self.btn2)
         self.add_widget(self.notify)
     def set_selected(self,text):
-        self.selected_answer = text
+        self.selected_answer = 0
+        if text == "Yes":
+            self.selected_answer = 1
     def call_Back (self):
         self.screenManager.current = 'Menu_screen'
     def check (self):
         if self.selected_answer is None:
             self.notify.text = "Please select one of opportunities"
         else:
+            on_update_exporting = General().stiahni(General().vrat_vsetky()[-1]['id'])
+            on_update_exporting.Automatic_export = self.selected_answer
+            on_update_exporting.update()
             self.call_Back()
     def clear_screen(self,*args):
         self.notify.text = ""
-        self.selected_answer = None
         self.drop1.clear_widgets()
-        self.drop1.select('Vyber autoexport')
+        id = General().vrat_vsetky()[-1]['Automatic_export']
         for i in ["Yes","No"]:
             btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_selected(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
             self.drop1.add_widget(btn)
+        self.drop1.select('Vyber autoexport')
+        self.selected_answer = None
+        if id == 0:
+            self.drop1.select("No")
+            self.selected_answer = 1
+        if id == 1:
+            self.drop1.select("Yes")
+            self.selected_answer = 0
