@@ -59,7 +59,7 @@ class Add_Patterns (BoxLayout):
         self.select_customer_id = None
         self.drop1.clear_widgets()
         self.drop1.select("Vyber zakaznika")
-        self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
+        self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED' and i['id'] not in [i['Customer_id'] for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED']])
         for i in self.customer_list:
             btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
             btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
@@ -97,7 +97,6 @@ class Add_Patterns (BoxLayout):
                 btn.bind(on_release=lambda btn: self.drop4.select(btn.text))
                 self.drop4.add_widget(btn)
             self.on_delete_type_stillage = None
-            print(self.pattern_item_list)
     def check_added_pattern_item(self):
         if self.select_customer_id is None:
             self.notify.text = "Please select customer you want create pattern"

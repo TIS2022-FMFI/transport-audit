@@ -9,7 +9,6 @@ class Delete_Patterns (BoxLayout):
     select_customer = None
     select_pattern  = None
     notify = Button(text = '')
-    drop1 = DropDown()
     drop2 = DropDown()
     btn1 = Button(text="Vymaz")
     btn2 = Button(text="Späť")
@@ -20,24 +19,21 @@ class Delete_Patterns (BoxLayout):
     def __init__(self,screenManager, **kwargs):
         super(Delete_Patterns, self).__init__(**kwargs)
         self.screenManager = screenManager
-        mainbutton1 = Button(text='Vyber pattern', size_hint=(.5, .25), pos=(60, 20))
-        mainbutton1.bind(on_release=self.drop1.open)
         mainbutton2 = Button(text='Customer', size_hint=(.5, .25), pos=(60, 20))
         mainbutton2.bind(on_release=self.drop2.open)
-        self.drop1.bind(on_select=lambda instance, x: setattr(mainbutton1, 'text', x))
         self.drop2.bind(on_select=lambda instance, x: setattr(mainbutton2, 'text', x))
         self.btn1.bind(on_release = lambda btn:self.check())
         self.btn2.bind(on_release=lambda btn: self.call_Back())
         self.add_widget(mainbutton2)
-        self.add_widget(mainbutton1)
+        # self.add_widget(mainbutton1)
         self.add_widget(self.btn1)
         self.add_widget(self.btn2)
         self.add_widget(self.notify)
 
     def synchronize_customers(self):
         self.select_customer = None
-        self.drop1.clear_widgets()
-        self.drop1.select("Customer")
+        self.drop2.clear_widgets()
+        self.drop2.select("Customer")
         self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         for i in self.customer_list:
             if self.customer_list[i] in self.pattern_list.values():
@@ -47,29 +43,18 @@ class Delete_Patterns (BoxLayout):
     def synchronize_patterns(self):
         self.select_pattern = None
         self.pattern_list = dict([(i['id'], i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])
-        self.drop2.clear_widgets()
-        self.drop2.select("Vyber pattern")
     def set_customer_id(self,tex1):
         self.select_pattern = None
-        self.drop1.clear_widgets()
-        self.drop1.select("Vyber pattern")
         self.select_customer = self.customer_list[tex1]
-        list_of_patterns=[]
-        for i in self.Edit_data:
-            if i[1] == self.select_customer and i[5] not in list_of_patterns:
-                list_of_patterns.append(i[5])
-                btn = Button(text= i[5], size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
-                btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
-                self.drop1.add_widget(btn)
-    def set_widgets(self,tex1):
-        self.select_pattern = tex1
+        for i in Pattern().vrat_vsetky():
+            if i['doplnok'] != 'DELETED' and i['Customer_id'] == self.select_customer:
+                self.select_pattern = i['id']
+                break
     def call_Back (self):
         self.screenManager.current = 'Settings_Patterns'
     def check (self):
         if self.select_customer is None:
             self.notify.text = "Please choose customer"
-        elif self.select_pattern is None:
-            self.notify.text = "Please choose pattern"
         else:
             on_delete = Pattern().stiahni(self.select_pattern)
             on_delete.zmazat()

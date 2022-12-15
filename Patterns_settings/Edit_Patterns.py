@@ -12,7 +12,6 @@ class Edit_Patterns (BoxLayout):
     on_delete_type_stillage = None
     select_number = None
     notify = Button(text = '')
-    drop1 = DropDown()
     drop2 = DropDown()
     drop3 = DropDown()
     drop4 = DropDown()
@@ -37,15 +36,12 @@ class Edit_Patterns (BoxLayout):
             btn = Button(text= str(i), size_hint_y=None, height=40, on_release=lambda btn: self.set_number(btn.text))
             btn.bind(on_release=lambda btn: self.drop3.select(btn.text))
             self.drop3.add_widget(btn)
-        mainbutton1 = Button(text='Vyber pattern', size_hint=(.5, .25), pos=(60, 20))
-        mainbutton1.bind(on_release=self.drop1.open)
         mainbutton2 = Button(text='Stillage_type', size_hint=(.5, .25), pos=(60, 20))
         mainbutton2.bind(on_release=self.drop2.open)
         mainbutton3 = Button(text='Number', size_hint=(.5, .25), pos=(60, 20))
         mainbutton3.bind(on_release=self.drop3.open)
         mainbutton5 = Button(text='Customer', size_hint=(.5, .25), pos=(60, 20))
         mainbutton5.bind(on_release=self.drop5.open)
-        self.drop1.bind(on_select=lambda instance, x: setattr(mainbutton1, 'text', x))
         self.drop2.bind(on_select=lambda instance, x: setattr(mainbutton2, 'text', x))
         self.drop3.bind(on_select=lambda instance, x: setattr(mainbutton3, 'text', x))
         self.drop4.bind(on_select=lambda instance, x: setattr(self.mainbutton4, 'text', x))
@@ -55,7 +51,6 @@ class Edit_Patterns (BoxLayout):
         self.btn3.bind(on_release=lambda btn: self.check_added_pattern_item())
         self.btn4.bind(on_release=lambda btn: self.check_deleted_pattern_item())
         self.add_widget(mainbutton5)
-        self.add_widget(mainbutton1)
         self.add_widget(mainbutton2)
         self.add_widget(mainbutton3)
         self.add_widget(self.btn3)
@@ -87,8 +82,6 @@ class Edit_Patterns (BoxLayout):
         self.select_pattern = None
         self.pattern_list = dict([(i['id'], i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         self.Edit_data = Pattern().Data_on_editing()
-        self.drop1.clear_widgets()
-        self.drop1.select("Vyber pattern")
     def clear_choosed_items(self):
         self.drop4.clear_widgets()
         self.drop4.select('Zoznam vybratych stillage_types')
@@ -98,17 +91,13 @@ class Edit_Patterns (BoxLayout):
         # cistenie
         self.clear_choosed_items()
         self.select_pattern = None
-        self.drop1.clear_widgets()
-        self.drop1.select("Vyber pattern")
 
         self.select_customer = self.customer_list[tex1]
-        list_of_patterns=[]
-        for i in self.Edit_data:
-            if  i[1] == self.select_customer and i[5] not in list_of_patterns:
-                list_of_patterns.append(i[5])
-                btn = Button(text= i[5], size_hint_y=None, height=40, on_release=lambda btn: self.set_widgets(btn.text))
-                btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
-                self.drop1.add_widget(btn)
+        for i in Pattern().vrat_vsetky():
+            if i['doplnok'] != 'DELETED' and i['Customer_id'] == self.select_customer:
+                self.select_pattern = i['id']
+                break
+        self.set_widgets(self.select_pattern)
     def set_number(self,text):
         self.select_number = text
     def set_stillage_type(self,text):
@@ -142,9 +131,7 @@ class Edit_Patterns (BoxLayout):
                 self.drop4.add_widget(btn)
             self.on_delete_type_stillage = None
     def check_added_pattern_item(self):
-        if self.select_pattern is None:
-            self.notify.text = "Please select pattern you want edit"
-        elif self.select_stillage_type is None:
+        if self.select_stillage_type is None:
             self.notify.text = "Please select stillage type you want add to pattern"
         elif self.select_number is None:
             self.notify.text = "Please select number of stillage type you want add to pattern"
@@ -164,8 +151,6 @@ class Edit_Patterns (BoxLayout):
     def check (self):
         if self.select_customer is None:
             self.notify.text = "Please choose customer"
-        elif self.select_pattern is None:
-            self.notify.text = "Please choose pattern"
         elif len(self.pattern_item_list) ==0:
             self.notify.text = "Add stillage_type"
         else:
