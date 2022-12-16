@@ -63,5 +63,5 @@ class StartScreen(Screen):
             self.kodZamestnanca.clear()
             popup = Popup(title='Prihlasenie neprebehlo', content=Label(text='Nepodarilo sa najst zamestnanca s naskenovanym kodom'),size_hint=(0.5, 0.5))
             popup.open()
-            self.aplikacia.screenManager.current = self.dalsia
+            #self.aplikacia.screenManager.current = self.dalsia
             #self.aplikacia.screenManager.current = self.aplikacia.auditUvodScreen.name
