@@ -36,10 +36,11 @@ function over_pouzivatela($db, $username, $pass) {
 	}
 }
 
-function navigacia($stranka){
+function navigacia($stranka,$db = NULL){
 	echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> 
 ';
+echo '<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>';
 echo '<!doctype html>';
 echo '<nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
@@ -64,13 +65,49 @@ echo '<nav class="navbar navbar-expand-lg bg-light">
           </ul>
         </li>
       </ul>
-      <form class="d-flex" role="search">
+				'.($stranka == "Užívatelia" ? '
+					<!-- Button trigger modal -->
+					<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+					  Pridať užívateľa
+					</button>
+					
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+					  <div class="modal-dialog">
+						<div class="modal-content">
+						  <div class="modal-header">
+							<h1 class="modal-title fs-5" id="exampleModalLabel">Pridať užívateľa</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						  </div>
+						  <div class="modal-body">
+						  <form action="users.php" method="post">
+										<label>Meno: </label>
+			<input type="text" name="meno_i">
+			<br>
+			<label>Priezvisko: </label>
+			<input type="text" name="priezvisko_i">
+				<br>
+				<label>Rola: </label>
+						<select name="rola_i">
+						' .vypis_user_role_option_as_str($db,NULL) . '
+						</select>
+						
+						  </div>
+						  <div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<input type="submit" value="Send Request" />
+							</form>
+						  </div>
+						</div>
+					  </div>
+					</div>
+								
+				': '').'
 				<button class="btn btn-outline-success">
 				<form id="myform" method="post"><input type="hidden" id="odhlas" name="odhlas" value="odhlas"></form>
 				<a class="nav-link" onclick="document.getElementById("myform").submit();">Odhlásiť sa</a>
 			
                 </button>
-      </form>
     </div>
   </div>
 </nav>';
@@ -78,6 +115,43 @@ echo '<nav class="navbar navbar-expand-lg bg-light">
 }
 
 
+function vrat_user_code_android($db){
+		$sql = 'SELECT * FROM "User"'; // definuj dopyt
+		$result = pg_query($db,$sql);
+		$array = pg_fetch_all($result);
+		$vysledok = array();
+		foreach($array as $item){
+			$vysledok[] = $item['code'];
+		}
+		return $vysledok;
+}
+
+function pridaj_uzivatela_android($db,$Name,$Last_name,$User_Role){
+				  $min=10001;
+				  $max=99999;
+				  $kody = vrat_user_code_android($db);
+				  while(true){
+					  $cislo = rand($min,$max);
+					  if(in_array($cislo,$kody)){
+
+					  }
+					  else{
+						  //echo $cislo;
+						  break;
+					  }
+					  
+				  }
+		//pg_get_result($db);
+				$date = date('Y-m-d H:i:s');
+			  $data = array('Name'=>$Name, 'Last_name'=>$Last_name, 'User_Role_id'=>$User_Role,'code'=>$cislo,'last_sync'=>$date);
+			  $res = pg_insert($db, 'User', $data);
+			  if ($res) {
+				  //echo "Data is updated: $res\n";
+				  return True;
+			  } else {
+				  return False;
+			  }
+}
 
 function vypis_user_role_option($db,$id) {
 	// do premennej $row treba priradiť jednotlivé položky objednávky $id 
@@ -102,6 +176,34 @@ function vypis_user_role_option($db,$id) {
 	}
 
 
+function vypis_user_role_option_as_str($db,$id) {
+	// do premennej $row treba priradiť jednotlivé položky objednávky $id 
+	if ($db) {
+		$vysledok = "";
+		$sql = 'SELECT * FROM "User_Role"'; // definuj dopyt
+		$result = pg_query($db,$sql);
+		$array = pg_fetch_all($result);
+
+			foreach($array as $item) {
+					if($item['id'] == $id){
+						$vysledok.= "<option selected='selected' value='{$item['id']}'>{$item['name']}</option>";
+					}
+					else{
+				$vysledok.= "<option value='{$item['id']}'>{$item['name']}</option>";
+					}
+
+			}
+			return $vysledok;
+		} else {
+			// dopyt sa NEpodarilo vykonať!
+			echo '<p class="chyba">NEpodarilo sa získať údaje z databázy</p>' . $mysqli->error ;
+		}
+	}
+
+
+
+
+
 function update_uzivatela_android($db,$Name,$Last_name,$User_Role,$id,$doplnok){
 
 		//pg_get_result($db);
@@ -110,9 +212,10 @@ function update_uzivatela_android($db,$Name,$Last_name,$User_Role,$id,$doplnok){
 			  $condition = array('code' => $id);
 			  $res = pg_update($db, 'User', $data, $condition);
 			  if ($res) {
-				  echo "Data is updated: $res\n";
+				  //echo "Data is updated: $res\n";
+				  return True;
 			  } else {
-				  echo "User must have sent wrong inputs\n";
+				  return False;
 			  }
 }
 

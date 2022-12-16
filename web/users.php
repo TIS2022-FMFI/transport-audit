@@ -4,18 +4,66 @@ include('db.php');
 include('funkcie.php');
 require('fpdf/fpdf.php');
 $pdf = new FPDF();
-navigacia('Užívatelia');
+navigacia('Užívatelia',$db2);
+
 ?>
 
 
 
  
 <?php
+if (isset($_POST['meno_i']) && isset($_POST['priezvisko_i']) && isset($_POST['rola_i'])   ){
+	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
+	if(pridaj_uzivatela_android($db2,$_POST['meno_i'],$_POST['priezvisko_i'],$_POST['rola_i'])){
+	echo '<div class="modal fade" id="onload" tabindex="-1"">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">'. $_POST['meno_i']." ".$_POST['priezvisko_i'] .'</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Užívateľ úspešne pridaný.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>';
+echo "<script type='text/javascript'>
+    window.onload = () => {
+        $('#onload').modal('show');
+    }
+</script>";
+	}
+}
 
 if (isset($_POST['meno']) && isset($_POST['priezvisko']) && isset($_POST['rola']) && isset($_POST['code'])  && isset($_POST['doplnok'])    ){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
-	update_uzivatela_android($db2,$_POST['meno'],$_POST['priezvisko'],$_POST['rola'],$_POST['code'],$_POST['doplnok']);
-
+	if(update_uzivatela_android($db2,$_POST['meno'],$_POST['priezvisko'],$_POST['rola'],$_POST['code'],$_POST['doplnok']) ){
+	echo '<div class="modal fade" id="onload" tabindex="-1"">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">'. $_POST['code'] .'</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Užívateľ úspešne aktualizovaný.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>';
+echo "<script type='text/javascript'>
+    window.onload = () => {
+        $('#onload').modal('show');
+    }
+</script>";
+	}
 }
 
 
