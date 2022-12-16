@@ -2,12 +2,13 @@ from kivy.graphics import Rectangle, Color
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
+from kivy.uix.popup import Popup
 
 from skener import Scanner
 from UzavretyAudit import UzavretyKamion
-from sqlite import Shipment, Pattern, Pattern_Item, Stillage_type
+from sqlite import Shipment, Pattern, Pattern_Item, Stillage_type, Stillage
 
-
+from random import randint
 from enum import Enum
 class NajblizsiKod(Enum):
     VOZIK = 0
@@ -26,8 +27,21 @@ class PrebiehajuciAudit(Screen):
         self.druhy = None
         self.kod = []
         self.kodNaSkenovanie = NajblizsiKod.VOZIK
+        self.styllageTypeOpravaChyby = set()
 
         #self.uzavretaScreen = dalsia
+
+        self.bOdlozitOpravu = Button(text='Odlozit opravu', background_color="#0003a8",
+                                    background_normal="", pos_hint = {'center_x': 0.25, "top":0.3}, size_hint =(0.3, 0.08))
+        #self.add_widget(self.bOdlozitOpravu)
+        self.bOdlozitOpravu.bind(on_press = self.odlozitOpravu)
+
+        self.bPotvrditChybu = Button(text='Potvrdit chybu', background_color="#0003a8",
+                                     background_normal="", pos_hint={'center_x': 0.75, "top": 0.3},
+                                     size_hint=(0.3, 0.08))
+        self.bPotvrditChybu.bind(on_press = self.potvrditChybu)
+        #self.add_widget(self.bPotvrditChybu)
+        self.cervenyLabel = None
 
         bSpat = Button(text='Spat', background_color="#0003a8",
                                     background_normal="", pos_hint = {'center_x': 0.5, "top":0.2}, size_hint =(0.3, 0.08))
@@ -69,6 +83,7 @@ class PrebiehajuciAudit(Screen):
         self.skenovanieScreen.prveSpustenie = False
 
         self.bind(on_enter = self.kontrolaKodu)
+
         self.pattern = Pattern().patternZakaznika(self.zakaznik.id)
 
         if self.pattern is None:
@@ -104,7 +119,8 @@ class PrebiehajuciAudit(Screen):
         self.nakresliObdznik()
 
 
-        self.aplikacia.audit = Shipment()
+        self.aplikacia.shippment = Shipment().nahraj(self.aplikacia.zamestnanec.code, None, self.zakaznik.id, self.auto.id)
+        self.stillage = Stillage()
 
 
     def nakresliObdznik(self):
@@ -127,12 +143,62 @@ class PrebiehajuciAudit(Screen):
     def uzavriet(self, *args):
         self.aplikacia.screenManager.current = self.uzavretyScreen.name
 
+    def nahrajVozikZasielky(self):
+        #self.stillage.nahraj()
+        self.stillage = Stillage()
+        popup = Popup(title='Kontrola',
+                      content=Label(text='Kontrola vozika prebehla uspesne'), size_hint=(0.5, 0.5))
+        popup.open()
+
+    def schovatChyboveButtony(self):
+        self.remove_widget(self.bPotvrditChybu)
+        self.remove_widget(self.bOdlozitOpravu)
+        self.cervenyLabel.color = (1, 1, 1, 1)
+
+    def zobrazitChyboveButtony(self):
+        self.add_widget(self.bPotvrditChybu)
+        self.add_widget(self.bOdlozitOpravu)
+        self.cervenyLabel.color = (10, 0, 0, 1)
+    def odlozitOpravu(self, *args):
+        self.styllageTypeOpravaChyby.add(self.stillage.Stillage_Type_id)
+        self.stillage = Stillage()
+        self.schovatChyboveButtony()
+        self.kodNaSkenovanie = NajblizsiKod.VOZIK
+        self.lVozik.text = "kod vozik"
+        self.lPrvy.text = "kod prvy"
+        self.lDruhy.text = "kod druhy"
+    def potvrditChybu(self, *args):
+        self.schovatChyboveButtony()
+        if self.kodNaSkenovanie == NajblizsiKod.VOZIK:
+            self.ulozVozikKod()
+        elif self.kodNaSkenovanie == NajblizsiKod.PRVY:
+            self.ulozPrvyKod()
+        else:
+            self.ulozDruhyKod()
+
+
     def kontrolaVozik(self):
-        return True
+        return randint(0, 10) > 5
     def kontrolaPrveho(self):
-        return True
+        return randint(0, 10) > 5
     def kontrolaDruheho(self):
-        return True
+        return randint(0, 10) > 5
+
+    def ulozVozikKod(self):
+        self.kodNaSkenovanie = NajblizsiKod.PRVY
+
+    def ulozPrvyKod(self):
+        self.kodNaSkenovanie = NajblizsiKod.DRUHY
+
+    def ulozDruhyKod(self):
+        self.nahrajVozikZasielky()
+        self.styllageTypeOpravaChyby.discard(self.stillage.Stillage_Type_id)
+        self.kodNaSkenovanie = NajblizsiKod.VOZIK
+        self.dielikov += 1
+        self.nakresliObdznik()
+        self.lVozik.text = "kod vozik"
+        self.lPrvy.text = "kod prvy"
+        self.lDruhy.text = "kod druhy"
 
     def kontrolaKodu(self, *args):
         if self.pattern is None:
@@ -140,26 +206,36 @@ class PrebiehajuciAudit(Screen):
 
         if not self.kod:
             return
+        print(self.lVozik.color)
         if self.kodNaSkenovanie == NajblizsiKod.VOZIK:
             self.lVozik.text = self.kod[0]
             if self.kontrolaVozik():
-
-                self.kodNaSkenovanie = NajblizsiKod.PRVY
+                self.ulozVozikKod()
+                self.lVozik.color = (1, 1, 1, 1)
+            else:
+                #self.lVozik.color = (10, 0, 0, 1)
+                self.cervenyLabel = self.lVozik
+                self.zobrazitChyboveButtony()
 
         elif self.kodNaSkenovanie == NajblizsiKod.PRVY:
             self.lPrvy.text = self.kod[0]
             if self.kontrolaPrveho():
-                self.kodNaSkenovanie = NajblizsiKod.DRUHY
+                self.ulozPrvyKod()
+                self.lPrvy.color = (1, 1, 1, 1)
+            else:
+                #self.lPrvy.color = (10, 0, 0, 1)
+                self.cervenyLabel = self.lPrvy
+                self.zobrazitChyboveButtony()
 
         elif self.kodNaSkenovanie == NajblizsiKod.DRUHY:
             self.lDruhy.text = self.kod[0]
             if self.kontrolaDruheho():
-                self.kodNaSkenovanie = NajblizsiKod.VOZIK
-                self.dielikov += 1
-                self.nakresliObdznik()
-                self.lVozik.text = "kod vozik"
-                self.lPrvy.text = "kod prvy"
-                self.lDruhy.text = "kod druhy"
+                self.lDruhy.color = (1, 1, 1, 1)
+                self.ulozDruhyKod()
+            else:
+                #self.lDruhy.color = (10, 0, 0, 1)
+                self.cervenyLabel = self.lDruhy
+                self.zobrazitChyboveButtony()
 
         self.kod.clear()
 

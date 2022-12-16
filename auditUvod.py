@@ -18,7 +18,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
 
-from sqlite import Customer, Vehicle
+from sqlite import Customer, Vehicle, Pattern
 
 
 
@@ -126,7 +126,7 @@ class UvodAuditu(Screen):
         bOdhlasenie.bind(on_press=self.odhlasit)
         self.add_widget(bOdhlasenie)
 
-        self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie()], 'Zakaznici', self, 0.75)
+        self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None], 'Zakaznici', self, 0.75)
         self.scrollAuta =  ScrollbarVyber([x for x in Vehicle().vrat_vsetky(True) if not x.over_zmazanie()], 'SPZ', self, 0.40)
         self.scrollAuta.druhyScrollbar = self.scrollZakaznici
         self.prvyVstup = True
