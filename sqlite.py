@@ -773,6 +773,17 @@ class Config():
             temp = dict(zip(col_name, riadok))
             vysledok.append(temp)
         return vysledok
+
+    def configyZakaznika(self, idZakaznika):
+        cursor.execute("Select * from Config WHERE Customer_id=?", [idZakaznika])  #
+        vysledok = []
+        col_name = [i[0] for i in cursor.description]
+        for riadok in cursor.fetchall():
+            temp = dict(zip(col_name, riadok))
+            if temp['doplnok'] != 'DELETED':
+                vysledok.append(Config().stiahni(riadok[0]))
+        return vysledok
+
     def stiahni(self,id): #Vráti None ak neexistuje, inak vráti class
         cursor.execute("SELECT * FROM Config WHERE id=?", [id])#
         col_name = [i[0] for i in cursor.description]

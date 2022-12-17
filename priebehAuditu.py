@@ -201,6 +201,8 @@ class PrebiehajuciAudit(Screen):
         self.lDruhy.text = "kod druhy"
 
     def kontrolaKodu(self, *args):
+        if self.cervenyLabel is not None:
+            self.schovatChyboveButtony()
         if self.pattern is None:
             self.spat()
 
