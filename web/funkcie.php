@@ -103,9 +103,57 @@ echo '<nav class="navbar navbar-expand-lg bg-light">
 					</div>
 								
 				': '').'
-				<button class="btn btn-outline-success">
-				<form id="myform" method="post"><input type="hidden" id="odhlas" name="odhlas" value="odhlas"></form>
-				<a class="nav-link" onclick="document.getElementById("myform").submit();">Odhlásiť sa</a>
+				
+								'.($stranka == "Užívatelia-web" ? '
+					<!-- Button trigger modal -->
+					<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+					  Pridať užívateľa
+					</button>
+					
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+					  <div class="modal-dialog">
+						<div class="modal-content">
+						  <div class="modal-header">
+							<h1 class="modal-title fs-5" id="exampleModalLabel">Pridať užívateľa</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						  </div>
+						  <div class="modal-body">
+						  <form action="users-web.php" method="post">
+			<label>Meno: </label>
+			<input type="text" name="meno" value="">
+			<br>
+			<label>Používateľské meno: </label>
+			<input type="text" name="username" value="">
+				<br>
+				<label>Nové heslo: </label>
+				<input type="text" name="heslo">
+				<br>
+				<label for="cars">Rola: </label>
+				<select name="rola">
+				  <option value="0">Operátor</option>
+				  <option value="1">Administrátor</option>
+				</select>
+				<br>
+
+			<input type="hidden"  name="ano" value="" />
+
+						
+						  </div>
+						  <div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<input type="submit" value="Send Request" />
+							</form>
+						  </div>
+						</div>
+					  </div>
+					</div>
+								
+				': '').'
+				
+				<form id="myform" method="post"><input type="hidden" id="odhlas" name="odhlas" value="odhlas">
+				<button type="submit" class="btn btn-outline-success">Odhlásiť</button>
+				</form>
 			
                 </button>
     </div>
@@ -152,6 +200,21 @@ function pridaj_uzivatela_android($db,$Name,$Last_name,$User_Role){
 				  return False;
 			  }
 }
+
+
+function pridaj_uzivatela_web($db,$Name,$username,$User_Role,$passwd){
+
+		//pg_get_result($db);
+			  $data = array('real_name'=>$Name, 'username'=>$username, 'admin'=>$User_Role,'password'=>hash('sha256', $passwd));
+			  $res = pg_insert($db, 'users', $data);
+			  if ($res) {
+				  //echo "Data is updated: $res\n";
+				  return True;
+			  } else {
+				  return False;
+			  }
+}
+
 
 function vypis_user_role_option($db,$id) {
 	// do premennej $row treba priradiť jednotlivé položky objednávky $id 
@@ -211,6 +274,26 @@ function update_uzivatela_android($db,$Name,$Last_name,$User_Role,$id,$doplnok){
 			  $data = array('Name'=>$Name, 'Last_name'=>$Last_name, 'User_Role_id'=>$User_Role,'doplnok'=>$doplnok,'last_sync'=>$date);
 			  $condition = array('code' => $id);
 			  $res = pg_update($db, 'User', $data, $condition);
+			  if ($res) {
+				  //echo "Data is updated: $res\n";
+				  return True;
+			  } else {
+				  return False;
+			  }
+}
+
+function update_uzivatela_web($db,$Name,$username,$User_Role,$id,$passwd){
+
+		//pg_get_result($db);
+		$date = date('Y-m-d H:i:s');
+				if(strlen($passwd) > 0){		
+			  $data = array('real_name'=>$Name, 'username'=>$username, 'admin'=>$User_Role,'password'=>hash('sha256', $passwd));
+				}
+				else{
+					$data = array('real_name'=>$Name, 'username'=>$username, 'admin'=>$User_Role);
+				}
+			  $condition = array('id' => $id);
+			  $res = pg_update($db, 'users', $data, $condition);
 			  if ($res) {
 				  //echo "Data is updated: $res\n";
 				  return True;
@@ -298,6 +381,82 @@ function vypis_uzivatelov($db){
 }
 	
 }
+
+function vypis_uzivatelov_web($db){
+	if ($db) {
+		$result = pg_query($db, 'SELECT * FROM "users"');
+		if (!$result) {
+			echo "An error occurred.\n";
+			exit;
+		}
+
+		$array = pg_fetch_all($result);
+			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Prihlasovacie meno</th><th scope='col'>Admin</th><th scope='col'>Upraviť</th></tr>";
+			foreach($array as $item) {
+				//získaj rolu
+			
+			
+			echo"<tr>";
+			echo '<td>' . $item['real_name'] . '</td>';
+			echo "<td>{$item['username']}</td>";
+			echo "<td>{$item['admin']}</td>";
+			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['id']}'>Uprav</button></td>";
+			
+			echo'<div class="modal fade" id="modal' . $item['id'] . '" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['id'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
+			
+			        //Obsah v okne
+		echo '				
+					<form action="" method="POST">
+			<label>Meno: </label>
+			<input type="text" name="meno" value="' . $item['real_name'] . '">
+			<br>
+			<label>Používateľské meno: </label>
+			<input type="text" name="username" value="' . $item['username'] . '">
+				<br>
+				<label>Nové heslo: </label>
+				<input type="text" name="heslo">
+				<br>
+				<label for="cars">Rola: </label>
+				<select name="rola">
+				  <option value="0" '.(($item['admin']=='0')?'selected="selected"':"").'>Operátor</option>
+				  <option value="1" '.(($item['admin']=='1')?'selected="selected"':"").'>Administrátor</option>
+				</select>
+				<br>
+
+			<input type="hidden"  name="id" value="' . $item['id'] . '" />
+			<br><br>
+				<input type="submit" value="Upraviť" />
+			</form>
+		';
+
+		
+		
+		
+      echo '</div><div class="modal-footer"><button type="button" class="btn-primary"data-bs-dismiss="modal">Zavrieť</button></div></div></div></div>';	
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			echo"</tr>";
+			}
+			echo "</table>";
+	
+	} else {
+	return false;
+}
+	
+}
+
 
 function pocet_zaznamov_stillage($db){
 	
