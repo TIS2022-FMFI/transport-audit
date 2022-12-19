@@ -1,3 +1,5 @@
+import sqlite3
+
 from Menu_screen import *
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -146,9 +148,18 @@ class MainApp(App):
         self.auditUvodScreen = UvodAuditu(self, self.startScreen, self.startScreen, name='uvodAudit')
         self.screenManager.add_widget(self.auditUvodScreen)
         self.auditov = 0
-        self.audit = None
+        self.shippment = None
+        self.shippmentStillages = set()
+        self.vozikyVOprave = {}
         self.screenManager.current = 'startScreen'
         # self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
+    from sqlite import Shipment, Stillage
+    print()
+    for r in Shipment().vrat_vsetky():
+        print(r)
+    for r in Stillage().vrat_vsetky():
+        if r['Date_time_start'][:10] == "2022-12-19":
+            print(r)
     MainApp().run()

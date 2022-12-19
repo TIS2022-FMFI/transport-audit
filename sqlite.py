@@ -466,6 +466,18 @@ class Stillage_type():
         self.Name = data['Name']
         self.id = data['id']
         return self
+
+    def stiahniMeno(self,meno): #Vráti None ak neexistuje, inak vráti class
+        cursor.execute("SELECT * FROM Stillage_type WHERE Name=?", [meno])#
+        col_name = [i[0] for i in cursor.description]
+        test = cursor.fetchall()
+        for r in test:
+            data = dict(zip(col_name, test))
+            if data['doplnok'] != 'DELETED':
+                self.Name = data['Name']
+                self.id = data['id']
+                return self
+        return
     def nahraj(self,Name): #Ak záznam existuje vráti None, inak ho nahra do db a vrati class
         self.Name = Name
         self.id = str(uuid.uuid4())

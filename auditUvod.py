@@ -53,6 +53,8 @@ class ScrollbarVyber:
             s.value = value
 
     def vyberPoloziek(self):
+        if not self.naVyber:
+            return
         if isinstance(self.naVyber[0], Vehicle) and self.druhyScrollbar.vybrate is None:
             return
         self.polozkyZobrazene = True
@@ -92,7 +94,7 @@ class ScrollbarVyber:
         if vybrate is not None:
             self.vybrate = vybrate
             text = vybrate.Name
-            if isinstance(self.naVyber[0], Customer):
+            if self.naVyber and isinstance(self.naVyber[0], Customer):
                 idAutZakaznika = set([x.Vehicle_id for x in Config().configyZakaznika(self.vybrate.id)])
                 #print(idAutZakaznika, "configy", self.vybrate.id)
                 if self.druhyScrollbar.vybrate is None:
@@ -117,7 +119,7 @@ class ScrollbarVyber:
 
     def vynuluj(self):
         if self.polozkyZobrazene:
-            print(self.naVyber[0].Name)
+            #print(self.naVyber[0].Name)
             self.uvodnaPonuka(None, False)
             return
         if self.vybrate is None:
