@@ -1,3 +1,5 @@
+from kivy.lang import Builder
+
 from Menu_screen import *
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -11,6 +13,7 @@ synchronize_db_server_client()
 
 class MainApp(App):
     def build(self):
+        Builder.load_file('design.kv')
         #Vehicle().stiahni('9a414a42-1edc-42dc-a562-e635de6db7d2').zmazat()
         self.sm = self.screenManager = ScreenManager()
         # Configs
@@ -123,6 +126,7 @@ class MainApp(App):
         scrn = Screen(name='Settings_Workers')
         scrn.add_widget(Settings_Workers(self.sm))
         self.sm.add_widget(scrn)
+
         # Exports settings
         scrn = Screen(name='Settings_Exports')
         settings_exports = Settings_Exports(self.sm)

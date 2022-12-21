@@ -1,0 +1,552 @@
+#:import Factory kivy.factory.Factory
+
+<MySpinnerOption@SpinnerOption>:
+    background_color: (0.18,0.23,0.79, 1)
+    color: (1, 1, 1, 1)
+
+<MyButton@Button>:
+    fonty_size: 60
+    background_color:rgba('#021D49')
+    color:(1, 1, 1, 1)
+    size_hint:(1, 0.5)
+    pos:(0, 0)
+    pos_hint:{"bottom": 0}
+
+<MyTextInput@TextInput>:
+    hint_font_size: '16sp'
+    background_color:rgba('#999999')
+    hint_text_color:(0,0,0,1)
+    multiline: False
+    size_hint_y: None
+    height: '30sp'
+    font_size: '15sp'
+    halign: 'center'
+    pos_hint: {'center_x': 0.5, 'center_y': 0.705}
+
+<MySpinner@Spinner>:
+    fonty_size:'20sp'
+    background_color:rgba('#BDD6E6')
+    color:(1, 1, 1, 1)
+    size_hint:(1, 0.3)
+    pos_hint:{"bottom": 0}
+    option_cls: Factory.get("MySpinnerOption")
+
+<Menu_screen>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+
+
+
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                id: MSbtn1
+                text: "Zamestnanci"
+                on_press: root.call_Workers_settings()
+            MyButton:
+                id: MSbtn2
+                text: "Zakaznici"
+                on_press: root.call_Customers_settings()
+            MyButton:
+                id: MSbtn3
+                text: "Vozidla"
+                on_press: root.call_Vehicles_settings()
+            MyButton:
+                id: MSbtn4
+                text: "Pattern"
+                on_press: root.call_Patterns_settings()
+            MyButton:
+                id: MSbtn5
+                text: "Config"
+                on_press: root.call_Configs_settings()
+            MyButton:
+                id: MSbtn6
+                text: "Export Settings"
+                on_press: root.call_Exportss_settings()
+        MyButton:
+            id: MSbtn7
+            text: "Odhlasit"
+            size_hint:(1, 0.2)
+            on_press: root.newclr(self)
+
+
+
+
+<Settings_Workers>
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [0, '250sp', 0, 0]
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.call_add()
+            MyButton:
+                text: "Uprav"
+                on_press: root.call_edit()
+            MyButton:
+                text: "Vymaz"
+                on_press: root.call_delete()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_back()
+
+
+<MySpinnerOption@SpinnerOption>:
+    background_color: (0.18,0.23,0.79, 1)
+    color: (1, 1, 1, 1)
+
+<Add_Workers>
+    BoxLayout:
+        padding: [0, 0, 0, 0]
+        orientation: 'vertical'
+        spacing:'80sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bg4.png'
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyTextInput:
+                id: input
+                hint_text: 'Meno'
+            MyTextInput:
+                id: input1
+                hint_text: 'Priezvisko'
+        MySpinner:
+            id: spinner_id
+            on_text: root.set_selected(spinner_id.text)
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.check()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_Back()
+
+
+
+<Delete_Workers>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        MySpinner:
+            id: spinner_delete_worker
+            on_text: root.select_code(spinner_delete_worker.text)
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                id: button_delete_worker
+                text: "Uzivatelsky kod"
+            MyButton:
+                text: "Vymaz"
+                on_press: root.check()
+            MyButton:
+                text: "Späť"
+                on_press: root.call_Back()
+
+<Edit_Workers>
+    BoxLayout:
+        padding: [0, '20sp', 0, '20sp']
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bg4.png'
+        MySpinner:
+            id: spinner_edit_worker_1
+            on_text: root.set_widgets(spinner_edit_worker_1.text)
+        MyButton:
+            id: button_edit_worker
+            text: "Uzivatelsky kod"
+        MyTextInput:
+            id: input_edit_worker_1
+            hint_text: 'Meno'
+        MyTextInput:
+            id: input_edit_worker_2
+            hint_text: 'Priezvisko'
+        MySpinner:
+            id: spinner_edit_worker_2
+            on_text: root.set_select(spinner_edit_worker_2.text)
+        MyButton:
+            text: "Uprav"
+            on_press: root.check()
+        MyButton:
+            text: "Spat"
+            on_press: root.call_Back()
+
+<Settings_Vehicles>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.call_add()
+            MyButton:
+                text: "Uprav"
+                on_press: root.call_edit()
+            MyButton:
+                text: "Vymaz"
+                on_press: root.call_delete()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_back()
+
+<Add_Vehicles>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyTextInput:
+                id: input_vehicle
+                hint_text: 'SPZ'
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.check()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_Back()
+
+<Delete_Vehicles>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        MySpinner:
+            id: spinner_delete_vehicle
+            on_text: root.select_id(spinner_delete_vehicle.text)
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Vymaz"
+                on_press: root.check()
+            MyButton:
+                text: "Späť"
+                on_press: root.call_Back()
+
+<Edit_Vehicles>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        MySpinner:
+            id: spinner_edit_vehicle
+            on_text: root.set_widgets(spinner_edit_vehicle.text)
+        MyTextInput:
+            id: input_edit_vehicle
+            hint_text: 'SPZ'
+        MyButton:
+            text: "Uprav"
+            on_press: root.check()
+        MyButton:
+            text: "Spat"
+            on_press: root.call_Back()
+
+<Settings_Patterns>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.call_add()
+            MyButton:
+                text: "Uprav"
+                on_press: root.call_edit()
+            MyButton:
+                text: "Vymaz"
+                on_press: root.call_delete()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_back()
+
+<Delete_Patterns>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        MySpinner:
+            id: spinner_delete_patter
+            on_text: root.set_customer_id(spinner_delete_patter.text)
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Vymaz"
+                on_press: root.check()
+            MyButton:
+                text: "Späť"
+                on_press: root.call_Back()
+
+<Settings_Customers>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.call_add()
+            MyButton:
+                text: "Uprav"
+                on_press: root.call_edit()
+            MyButton:
+                text: "Vymaz"
+                on_press: root.call_delete()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_back()
+
+<Delete_Customers>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        MySpinner:
+            id: spinner_delete_customer
+            on_text: root.select_code(spinner_delete_customer.text)
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Vymaz"
+                on_press: root.check()
+            MyButton:
+                text: "Späť"
+                on_press: root.call_Back()
+
+<Settings_Exports>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        MySpinner:
+            id: spinner_export
+            on_text: root.set_selected(spinner_export.text)
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Nastav"
+                on_press: root.check()
+            MyButton:
+                text: "Späť"
+                on_press: root.call_Back()
+
+<Settings_Configs>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.call_add()
+            MyButton:
+                text: "Uprav"
+                on_press: root.call_edit()
+            MyButton:
+                text: "Vymaz"
+                on_press: root.call_delete()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_back()
+
+<Delete_Configs>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        MySpinner:
+            id: spinner_delete_config1
+            on_text: root.set_customer(spinner_delete_config1.text)
+        MySpinner:
+            id: spinner_delete_config2
+            on_text: root.set_vehicle(spinner_delete_config2.text)
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Vymaz"
+                on_press: root.check()
+            MyButton:
+                text: "Späť"
+                on_press: root.call_Back()
+
+<Add_Patterns>
+    BoxLayout:
+        padding: [0, '20sp', 0, '20sp']
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bg4.png'
+        MySpinner:
+            id: spinner_add_pattern_1
+            on_text: root.set_widgets(spinner_add_pattern_1.text)
+        MySpinner:
+            id: spinner_add_pattern_2
+            on_text: root.set_stillage_type(spinner_add_pattern_2.text)
+        MySpinner:
+            id: spinner_add_pattern_3
+            on_text: root.set_number(spinner_add_pattern_3.text)
+        MyButton:
+            text: "Pridaj Polozku"
+            on_press: root.check_added_pattern_item()
+        MySpinner:
+            id: spinner_add_pattern_4
+            on_text: root.set_on_delete_type_stillage(spinner_add_pattern_4.text)
+        MyButton:
+            text: "Odstran polozku"
+            on_press: root.check_deleted_pattern_tem()
+        MyButton:
+            text: "Pridaj"
+            on_press: root.check()
+        MyButton:
+            text: "Spat"
+            on_press: root.call_Back()
+
+<Edit_Patterns>
+    BoxLayout:
+        padding: [0, '20sp', 0, '20sp']
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bg4.png'
+        MySpinner:
+            id: spinner_edit_pattern_1
+            on_text: root.set_widgets(spinner_edit_pattern_1.text)
+        MySpinner:
+            id: spinner_edit_pattern_2
+            on_text: root.set_stillage_type(spinner_edit_pattern_2.text)
+        MySpinner:
+            id: spinner_edit_pattern_3
+            on_text: root.set_number(spinner_edit_pattern_3.text)
+        MyButton:
+            text: "Pridaj Polozku"
+            on_press: root.check_added_pattern_item()
+        MySpinner:
+            id: spinner_edit_pattern_4
+            on_text: root.set_on_delete_type_stillage(spinner_edit_pattern_4.text)
+        MyButton:
+            text: "Odstran polozku"
+            on_press: root.check_deleted_pattern_tem()
+        MyButton:
+            text: "Pridaj"
+            on_press: root.check()
+        MyButton:
+            text: "Spat"
+            on_press: root.call_Back()

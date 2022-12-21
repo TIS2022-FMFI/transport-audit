@@ -59,5 +59,5 @@ class Pridať(Resource):
 
 api.add_resource(Get, '/')
 api.add_resource(Pridať, '/pridat') # do buducna zmazať
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5100)
+# if __name__ == '__main__':
+#     app.run(host="0.0.0.0", port=5100)
