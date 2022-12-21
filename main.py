@@ -28,12 +28,6 @@ class MainApp(App):
         scrn.bind(on_enter=delete_configs.clear_screen)
         self.sm.add_widget(scrn)
 
-        scrn = Screen(name='Edit_Configs')
-        edit_configs = Edit_Configs(self.sm)
-        scrn.add_widget(edit_configs)
-        scrn.bind(on_enter=edit_configs.clear_screen)
-        self.sm.add_widget(scrn)
-
         scrn = Screen(name='Settings_Configs')
         scrn.add_widget(Settings_Configs(self.sm))
         self.sm.add_widget(scrn)
@@ -151,8 +145,8 @@ class MainApp(App):
         self.shippment = None
         self.shippmentStillages = set()
         self.vozikyVOprave = {}
-        self.screenManager.current = 'startScreen'
-        # self.sm.current = 'Menu_screen'
+        # self.screenManager.current = 'startScreen'
+        self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
     from sqlite import Shipment, Stillage
