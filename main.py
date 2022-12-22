@@ -145,8 +145,8 @@ class MainApp(App):
         self.shippment = None
         self.shippmentStillages = set()
         self.vozikyVOprave = {}
-        # self.screenManager.current = 'startScreen'
-        self.sm.current = 'Menu_screen'
+        self.screenManager.current = 'startScreen'
+        #self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
     from sqlite import Shipment, Stillage
