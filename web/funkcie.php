@@ -460,7 +460,7 @@ function vypis_uzivatelov_web($db){
 
 function pocet_zaznamov_stillage($db){
 	
-		$result = pg_query($db, 'SELECT * FROM "Stillage" ORDER BY "last_sync" DESC');
+		$result = pg_query($db, 'SELECT * FROM "Shipment" ORDER BY "last_sync" DESC');
 		$array = pg_fetch_all($result);
 		$number = pg_num_rows($result);
 		return $number;
@@ -494,7 +494,7 @@ function vypis_audit($db,$aktualna_strana){
 	$ofset = $ofset * 20;
 	$limiter = 20;
 	if ($db) {
-		$result = pg_query($db, 'SELECT * FROM "Stillage" ORDER BY "last_sync" DESC LIMIT ' . $limiter . ' OFFSET ' . $ofset . '');
+		$result = pg_query($db, 'SELECT * FROM "Shipment" ORDER BY "last_sync" DESC LIMIT ' . $limiter . ' OFFSET ' . $ofset . '');
 		if (!$result) {
 			echo "An error occurred.\n";
 			exit;
@@ -504,50 +504,39 @@ function vypis_audit($db,$aktualna_strana){
 			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Číslo užívateľa</th><th scope='col'>Naposledy upravené</th><th scope='col'>Export</th></tr>";
 			$number = pocet_zaznamov_stillage($db);
 			foreach($array as $item) {
+				$id_string = "'".$item['id']."'";
 			//Ziskanie SPZ
-			$ajdi_SPZ = "'".$item['id']."'";
-			$query_SPZ = 'SELECT
+						$query_spz = 'SELECT
 				"Vehicle"."SPZ"
-				FROM "Stillage"
-				JOIN "Shipment"
-				  ON "Shipment_id" = "Shipment".id
+				FROM "Shipment"
 				JOIN "Vehicle"
-				  ON "Vehicle_id" = "Vehicle".id WHERE "Stillage".id = ' . $ajdi_SPZ . ' ';
-				$result_SPZ = pg_query($db,$query_SPZ) or die('Error message: ' . pg_last_error());
-				$row_SPZ = pg_fetch_row($result_SPZ);
-			//Ziskanie Customera
-			$ajdi_customer = "'".$item['id']."'";
-			$query_customer = 'SELECT
-				"Customer"."Name"
-				FROM "Stillage"
-				JOIN "Shipment"
-				  ON "Shipment_id" = "Shipment".id
-				JOIN "Customer"
-				  ON "Customer_id" = "Customer".id WHERE "Stillage".id = ' . $ajdi_customer . ' ';
-				$result_customer = pg_query($db,$query_customer) or die('Error message: ' . pg_last_error());
-				$row_customer = pg_fetch_row($result_customer);
+				  ON "Vehicle_id" = "Vehicle".id WHERE "Shipment".id = ' . $id_string . ' ';
+				$result_spz = pg_query($db,$query_spz) or die('Error message: ' . pg_last_error());
+				$row_spz = pg_fetch_row($result_spz);
+
+
 			//Ziskanie Usera
-			$ajdi_user = "'".$item['id']."'";
+			
 			$query_user = 'SELECT
 				"User"."code",
 				"User"."Name",
 				"User"."Last_name"
-				FROM "Stillage"
-				JOIN "Shipment"
-				  ON "Shipment_id" = "Shipment".id
+				FROM "Shipment"
 				JOIN "User"
-				  ON "User_code" = "User".code WHERE "Stillage".id = ' . $ajdi_user . ' ';
+				  ON "User_code" = "User".code WHERE "Shipment".id = ' . $id_string . ' ';
 				$result_user = pg_query($db,$query_user) or die('Error message: ' . pg_last_error());
 				$row_user = pg_fetch_row($result_user);
-			//Ziskanie Stillage_type_Name
-			$ajdi_stillage_type = "'".$item['id']."'";
-			$query_stillage_type = 'SELECT
-				"Stillage_type"."Name"
-				FROM "Stillage"
-				JOIN "Stillage_type"
-				  ON "Stillage_Type_id" = "Stillage_type".id WHERE "Stillage".id = ' . $ajdi_stillage_type . ' ';
-				$result_stillage_type = pg_query($db,$query_stillage_type) or die('Error message: ' . pg_last_error());
-				$row_stillage_type = pg_fetch_row($result_stillage_type);
+				
+						//Ziskanie Customera
+				$query_customer = 'SELECT
+				"Customer"."Name"
+				FROM "Shipment"
+				JOIN "Customer"
+				  ON "Customer_id" = "Customer".id WHERE "Shipment".id = ' . $id_string . ' ';
+				$result_customer = pg_query($db,$query_customer) or die('Error message: ' . pg_last_error());
+				$row_customer = pg_fetch_row($result_customer);
+
+
 			echo"<tr>";
 			echo '<td>' . $row_user[1] . ' ' . $row_user[2] . '</td>';
 			echo "<td>{$row_user[0]}</td>";
@@ -558,78 +547,98 @@ function vypis_audit($db,$aktualna_strana){
 			
 			        //Obsah v okne
 		echo '				
-					<form target="_blank" action="export.php" method="POST">
-
-			<input type="checkbox" id="shipment_ajdi" name="shipment_ajdi" value="Shipment ID: ' . $number . '">
+					<form target="_blank" action="export.php" method="POST" >';
+					
+						echo "<script type='text/javascript'>
+	$('#select-all').click(function(event) {   
+    if(this.checked) {
+        // Iterate each checkbox
+        $(':checkbox').each(function() {
+            this.checked = true;                        
+        });
+    } else {
+        $(':checkbox').each(function() {
+            this.checked = false;                       
+        });
+    }
+}); 
+	</script><input type='checkbox' name='select-all' id='select-all' /><label for='select-all'>Označiť / odznačiť všetko</label><br><br>";
+		echo'
+			
+			<input type="checkbox" id="shipment_ajdi" name="shipment_ajdi" value="' . $number . '">
 			<label for="shipment_ajdi">Shipment ID</label><br>
 			
 
-			<input type="checkbox" id="Plate_NO" name="Plate_NO" value="Plate_NO: ' . $row_SPZ[0] . '">
-			<label for="Plate_NO">Plate_NO</label><br>
+			<input type="checkbox" id="Plate_NO" name="Plate_NO" value="' . $row_spz[0] . '">
+			<label for="Plate number">Plate_NO</label><br>
 			
-			<input type="checkbox" id="Customer" name="Customer" value="Customer: ' . $row_customer[0] . '">
+			<input type="checkbox" id="Customer" name="Customer" value="' . $row_customer[0] . '">
 			<label for="Customer">Customer</label><br>
 			
-			<input type="checkbox" id="User" name="User" value="User: ' . $row_user[1] . ' ' . $row_user[2] . ' ( ' . $row_user[0] . ' )">
+			<input type="checkbox" id="User" name="User" value="' . $row_user[1] . ' ' . $row_user[2] . ' ( ' . $row_user[0] . ' )">
 			<label for="User">User</label><br>
-
-			<input type="checkbox" id="time_start" name="time_start" value="Date Time start: ' . $item['Date_time_start'] . '">
-			<label for="time_start"> time_start</label><br>
-
-			<input type="checkbox" id="time_end" name="time_end" value="Date Time end: ' . $item['Date_time_end'] . '">
-			<label for="time_end"> time_end</label><br>
 			
-						<input type="checkbox" id="time_close" name="time_close" value="Date Time Close: DOIMPLEMENTOVAŤ!(zatial by mohol byť last_sync)">
-			<label for="time_close"> time_close</label><br>
+						<input type="checkbox" id="time_close_s" name="time_close_s" value="' . $item['Date_time_close'] . '">
+			<label for="time_close_s">Time close</label><br>
+
+			<input type="checkbox" id="time_start" name="time_start" value="1">
+			<label for="time_start">(Stillage)Time start</label><br>
+
+			<input type="checkbox" id="time_end" name="time_end" value="1">
+			<label for="time_end">(Stillage)Time end</label><br>
 			
 			
-			<input type="checkbox" id="Type" name="Type" value="Type: ' . $row_stillage_type[0] . '">
-			<label for="Type">Type</label><br>
+			<input type="checkbox" id="Type" name="Type" value="1">
+			<label for="Type">(Stillage)Type</label><br>
 			
 
 
-			<input type="checkbox" id="Stillage_number" name="Stillage_number" value="Stillage No: ' . $item['Stillage_number'] . '">
-			<label for="Stillage_number"> Stillage_number</label><br>
+			<input type="checkbox" id="Stillage_number" name="Stillage_number" value="1">
+			<label for="Stillage_number">(Stillage)Stillage number</label><br>
 
-			<input type="checkbox" id="Stillage_Number_on_Header" name="Stillage_Number_on_Header" value="Stillage_header: ' . $item['Stillage_Number_on_Header'] . '">
-			<label for="Stillage_Number_on_Header"> Stillage_Number_on_Header</label><br>
+			<input type="checkbox" id="Stillage_Number_on_Header" name="Stillage_Number_on_Header" value="1">
+			<label for="Stillage_Number_on_Header">(Stillage)Stillage number on header</label><br>
 
-			<input type="checkbox" id="First_scan_product" name="First_scan_product" value="First-Product: ' . $item['First_scan_product'] . '">
-			<label for="First_scan_product"> First_scan_product</label><br>
+			<input type="checkbox" id="First_scan_product" name="First_scan_product" value="1">
+			<label for="First_scan_product">(Stillage)First scan product</label><br>
 
-			<input type="checkbox" id="Last_scan_product" name="Last_scan_product" value="Last-Product' . $item['Last_scan_product'] . '">
-			<label for="Last_scan_product"> Last_scan_product</label><br>
+			<input type="checkbox" id="Last_scan_product" name="Last_scan_product" value="1">
+			<label for="Last_scan_product">(Stillage)Last scan product</label><br>
 
-			<input type="checkbox" id="JLR_Header_NO" name="JLR_Header_NO" value="JLR... : ' . $item['JLR_Header_NO'] . '">
-			<label for="JLR_Header_NO"> JLR_Header_NO</label><br>
+			<input type="checkbox" id="JLR_Header_NO" name="JLR_Header_NO" value="1">
+			<label for="JLR_Header_NO">(Stillage)JLR Header NO</label><br>
 
-			<input type="checkbox" id="Carriage" name="Carriage" value="Carriage ... : ' . $item['Carriage_L_JLR_H'] . '">
-			<label for="Carriage"> Carriage</label><br>
+			<input type="checkbox" id="Carriage" name="Carriage" value="1">
+			<label for="Carriage">(Stillage)Carriage</label><br>
 
-			<input type="checkbox" id="Check" name="Check" value="Check: ' . $item['_Check'] . '">
-			<label for="Check"> Check</label><br>
+			<input type="checkbox" id="Check" name="Check" value="1">
+			<label for="Check">(Stillage)Check</label><br>
 
-			<input type="checkbox" id="First_scan_TLS" name="First_scan_TLS" value="TLS: ' . $item['First_scan_TLS_code'] . '">
-			<label for="First_scan_TLS"> First_scan_TLS</label><br>
+			<input type="checkbox" id="First_scan_TLS" name="First_scan_TLS" value="1">
+			<label for="First_scan_TLS">(Stillage)First scan TLS</label><br>
 
-			<input type="checkbox" id="Last_scan_TLS" name="Last_scan_TLS" value="TLS_stop: ' . $item['Last_scan_TLS_code'] . '">
-			<label for="First_scan_TLS"> Last_scan_TLS</label><br>
+			<input type="checkbox" id="Last_scan_TLS" name="Last_scan_TLS" value="1">
+			<label for="First_scan_TLS">(Stillage)Last scan TLS</label><br>
 
-			<input type="checkbox" id="TLS_Range_start" name="TLS_Range_start" value="TLS_Range_start: ' . $item['TLS_range_start'] . '">
-			<label for="TLS_Range_start"> TLS_Range_start</label><br>
+			<input type="checkbox" id="TLS_Range_start" name="TLS_Range_start" value="1">
+			<label for="TLS_Range_start">(Stillage)TLS Range start</label><br>
 
-			<input type="checkbox" id="TLS_Range_stop" name="TLS_Range_stop" value="TLS_range_stop: ' . $item['TLS_range_stop'] . '">
-			<label for="TLS_Range_stop"> TLS_Range_stop</label><br>
+			<input type="checkbox" id="TLS_Range_stop" name="TLS_Range_stop" value="1">
+			<label for="TLS_Range_stop">(Stillage)TLS range stop</label><br>
 
-			<input type="checkbox" id="Note" name="Note" value="Poznámka: ' . $item['Note'] . '">
-			<label for="Note"> Note</label><br>
-
-			<br><br>
-				<input type="submit" value="Generuj" />
-			</form>
+			<input type="checkbox" id="Note" name="Note" value="1">
+			<label for="Note">(Stillage)Note</label><br>
+			<input type="hidden" id="shipment_id_r" name="shipment_id_r" value="'.$id_string.'">
 		
 		';
 
+
+	
+		
+
+echo '			<br><br>
+				<input type="submit" value="Generuj" />
+			</form>';
 		
 		
 		
