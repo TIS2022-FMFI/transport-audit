@@ -1,4 +1,4 @@
-import sqlite3
+from kivy.lang import Builder
 
 from Menu_screen import *
 from kivy.app import App
@@ -13,6 +13,7 @@ synchronize_db_server_client()
 
 class MainApp(App):
     def build(self):
+        Builder.load_file('design.kv')
         #Vehicle().stiahni('9a414a42-1edc-42dc-a562-e635de6db7d2').zmazat()
         self.sm = self.screenManager = ScreenManager()
         # Configs
@@ -26,6 +27,12 @@ class MainApp(App):
         delete_configs = Delete_Configs(self.sm)
         scrn.add_widget(delete_configs)
         scrn.bind(on_enter=delete_configs.clear_screen)
+        self.sm.add_widget(scrn)
+
+        scrn = Screen(name='Edit_Configs')
+        edit_configs = Edit_Configs(self.sm)
+        scrn.add_widget(edit_configs)
+        scrn.bind(on_enter=edit_configs.clear_screen)
         self.sm.add_widget(scrn)
 
         scrn = Screen(name='Settings_Configs')
@@ -119,6 +126,7 @@ class MainApp(App):
         scrn = Screen(name='Settings_Workers')
         scrn.add_widget(Settings_Workers(self.sm))
         self.sm.add_widget(scrn)
+
         # Exports settings
         scrn = Screen(name='Settings_Exports')
         settings_exports = Settings_Exports(self.sm)
@@ -142,18 +150,9 @@ class MainApp(App):
         self.auditUvodScreen = UvodAuditu(self, self.startScreen, self.startScreen, name='uvodAudit')
         self.screenManager.add_widget(self.auditUvodScreen)
         self.auditov = 0
-        self.shippment = None
-        self.shippmentStillages = set()
-        self.vozikyVOprave = {}
-        # self.screenManager.current = 'startScreen'
-        self.sm.current = 'Menu_screen'
+        self.audit = None
+        self.screenManager.current = 'startScreen'
+        # self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
-    from sqlite import Shipment, Stillage
-    print()
-    for r in Shipment().vrat_vsetky():
-        print(r)
-    for r in Stillage().vrat_vsetky():
-        if r['Date_time_start'][:10] == "2022-12-19":
-            print(r)
     MainApp().run()

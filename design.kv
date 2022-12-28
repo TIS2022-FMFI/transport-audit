@@ -550,3 +550,25 @@
         MyButton:
             text: "Spat"
             on_press: root.call_Back()
+
+
+<Add_Customers>
+    BoxLayout:
+        padding: [0, 0, 0, 0]
+        orientation: 'vertical'
+        spacing:'80sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        MyTextInput:
+            id: input_add_customer
+            hint_text: 'Meno zakaznika'
+
+        MyButton:
+            text: "Pridaj"
+            on_press: root.check()
+        MyButton:
+            text: "Spat"
+            on_press: root.call_Back()
