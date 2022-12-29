@@ -15,7 +15,7 @@ from random import randint
 from enum import Enum
 from datetime import datetime
 from dateutil.parser import parse
-from parser import citaj_report_dict
+from parser import *
 class NajblizsiKod(Enum):
     VOZIK = 0
     STILLAGE_NUMBER = 1
@@ -45,6 +45,7 @@ class PrebiehajuciAudit(Screen):
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
         self.report = citaj_report_dict()
         self.prebiehaAudit = False
+
 
 
         #####################################
@@ -332,6 +333,7 @@ class PrebiehajuciAudit(Screen):
         print("audit v priebehu ", self.prebiehaAudit)
         if self.prebiehaAudit:
             return
+        self.report = citaj_report_dict()
         self.clear_widgets()
 
         self.bPotvrditVozik = Button(text='Potvrdit vozik kontrolorom', background_color="#ff0000",
