@@ -23,18 +23,25 @@ class Menu_screen (BoxLayout):
         self.povodna = povodna
         self.auditScreen = auditScreen
         self.screenManager = aplikacia.screenManager
-        self.btn1.bind(on_release=lambda btn:self.call_Workers_settings())
-        self.btn2.bind(on_release=lambda btn: self.call_Customers_settings())
-        self.btn3.bind(on_release=lambda btn: self.call_Vehicles_settings())
-        self.btn4.bind(on_release=lambda btn: self.call_Configs_settings())
-        self.btn5.bind(on_release=lambda btn: self.call_Patterns_settings())
-        self.btn6.bind(on_release=lambda btn: self.call_Exportss_settings())
-        self.btnOdhlasenie.bind(on_release=self.odhlasit)
-        self.btnAudit.bind(on_release=self.zacatAudit)
+        self.btn1 = self.ids.MSbtn1
+        self.btn2 = self.ids.MSbtn2
+        self.btn3 = self.ids.MSbtn3
+        self.btn4 = self.ids.MSbtn4
+        self.btn5 = self.ids.MSbtn5
+        self.btn6 = self.ids.MSbtn6
+        self.btnOdhlasenie = self.ids.MSbtn7
+        # self.btn1.bind(on_release=lambda btn:self.call_Workers_settings())
+        # self.btn2.bind(on_release=lambda btn: self.call_Customers_settings())
+        # self.btn3.bind(on_release=lambda btn: self.call_Vehicles_settings())
+        # self.btn4.bind(on_release=lambda btn: self.call_Configs_settings())
+        # self.btn5.bind(on_release=lambda btn: self.call_Patterns_settings())
+        # self.btn6.bind(on_release=lambda btn: self.call_Exportss_settings())
+        # self.btnOdhlasenie.bind(on_release=self.odhlasit)
+        # self.btnAudit.bind(on_release=self.zacatAudit)
 
     def vytvorMenu(self, *arg):
 
-        self.clear_widgets()
+        # self.clear_widgets()
         id  = self.aplikacia.zamestnanec.User_Role_id
         rola = User_Role().stiahni(id).name
 
@@ -44,16 +51,18 @@ class Menu_screen (BoxLayout):
 
         # ----------------------------
         print("rola : ", rola)
-        if rola == 'Administrátor':
-            self.add_widget(self.btn1)
-        if rola in {'Administrátor', 'Operátor'}:
-            self.add_widget(self.btn2)
-            self.add_widget(self.btn3)
-            self.add_widget(self.btn4)
-            self.add_widget(self.btn5)
-            self.add_widget(self.btn6)
-        self.add_widget(self.btnOdhlasenie)
-        self.add_widget(self.btnAudit)
+
+
+        # if rola == 'Administrátor':
+        #     self.add_widget(self.btn1)
+        # if rola in {'Administrátor', 'Operátor'}:
+        #     self.add_widget(self.btn2)
+        #     self.add_widget(self.btn3)
+        #     self.add_widget(self.btn4)
+        #     self.add_widget(self.btn5)
+        #     self.add_widget(self.btn6)
+        # self.add_widget(self.btnOdhlasenie)
+        # self.add_widget(self.btnAudit)
 
     def call_Workers_settings(self):
         self.screenManager.current = 'Settings_Workers'
