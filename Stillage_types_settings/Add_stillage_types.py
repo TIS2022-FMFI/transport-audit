@@ -21,7 +21,7 @@ class Add_Stillage_type (BoxLayout):
         self.add_widget(btn1)
         self.add_widget(btn2)
         self.add_widget(self.notify)
-    def synchronize_customers(self):
+    def synchronize_stillage_types(self):
         self.stillage_type_list = [i['Name'] for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def call_Back (self):
         # dorob
@@ -37,4 +37,4 @@ class Add_Stillage_type (BoxLayout):
     def clear_screen(self, *args):
         self.notify.text = ""
         self.text1.text = 'Meno typu vozika'
-        self.synchronize_customers()
+        self.synchronize_stillage_types()

@@ -13,7 +13,7 @@ class Edit_Stillage_type (BoxLayout):
     btn2 = Button(text="Späť")
     stillage_type_list = None
     screenManager = None
-    def synchronize_customers(self):
+    def synchronize_stillage_types(self):
         self.select_id = None
         self.drop1.clear_widgets()
         self.drop1.select("Vyber stillage type na upravu")
@@ -55,4 +55,4 @@ class Edit_Stillage_type (BoxLayout):
     def clear_screen(self, *args):
         self.text1.text = "Meno typu vozika"
         self.notify.text = ""
-        self.synchronize_customers()
+        self.synchronize_stillage_types()

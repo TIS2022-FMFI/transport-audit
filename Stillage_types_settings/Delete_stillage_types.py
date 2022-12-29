@@ -11,7 +11,7 @@ class Delete_Stillage_type (BoxLayout):
     btn2 = Button(text="Späť")
     stillage_type_list = None
     screenManager = None
-    def synchronize_customers(self):
+    def synchronize_stillage_types(self):
         self.on_delete_selected = None
         self.stillage_type_list = dict([(i['Name'],i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         self.drop1.clear_widgets()
@@ -45,4 +45,4 @@ class Delete_Stillage_type (BoxLayout):
             self.call_Back()
     def clear_screen(self, *args):
         self.notify.text = ""
-        self.synchronize_customers()
+        self.synchronize_stillage_types()
