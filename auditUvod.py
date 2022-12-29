@@ -168,7 +168,7 @@ class UvodAuditu(Screen):
         #self.aplikacia.screenManager.current = self.povodna
         print("odhladujem")
         self.aplikacia.zamestnanec = None
-        self.povodna.kodZamestnanca.clear()
+        self.aplikacia.kod.clear()
         self.aplikacia.screenManager.current = self.povodna.name
 
     def pokracovat(self, *args):

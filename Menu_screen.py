@@ -34,6 +34,7 @@ class Menu_screen (BoxLayout):
         self.btn7 = self.ids.MSbtn8
 
         self.btnOdhlasenie = self.ids.MSbtn7
+        self.btnAudit = self.ids.MSbtn9
         # self.btn1.bind(on_release=lambda btn:self.call_Workers_settings())
         # self.btn2.bind(on_release=lambda btn: self.call_Customers_settings())
         # self.btn3.bind(on_release=lambda btn: self.call_Vehicles_settings())
