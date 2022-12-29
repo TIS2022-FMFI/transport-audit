@@ -1,4 +1,5 @@
 from kivy.lang import Builder
+import sqlite3
 
 from Menu_screen import *
 from kivy.app import App
@@ -27,12 +28,6 @@ class MainApp(App):
         delete_configs = Delete_Configs(self.sm)
         scrn.add_widget(delete_configs)
         scrn.bind(on_enter=delete_configs.clear_screen)
-        self.sm.add_widget(scrn)
-
-        scrn = Screen(name='Edit_Configs')
-        edit_configs = Edit_Configs(self.sm)
-        scrn.add_widget(edit_configs)
-        scrn.bind(on_enter=edit_configs.clear_screen)
         self.sm.add_widget(scrn)
 
         scrn = Screen(name='Settings_Configs')
@@ -150,9 +145,18 @@ class MainApp(App):
         self.auditUvodScreen = UvodAuditu(self, self.startScreen, self.startScreen, name='uvodAudit')
         self.screenManager.add_widget(self.auditUvodScreen)
         self.auditov = 0
-        self.audit = None
+        self.shippment = None
+        self.shippmentStillages = set()
+        self.vozikyVOprave = {}
         self.screenManager.current = 'startScreen'
-        # self.sm.current = 'Menu_screen'
+        #self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
+    from sqlite import Shipment, Stillage
+    print()
+    for r in Shipment().vrat_vsetky():
+        print(r)
+    for r in Stillage().vrat_vsetky():
+        if r['Date_time_start'][:10] == "2022-12-19":
+            print(r)
     MainApp().run()

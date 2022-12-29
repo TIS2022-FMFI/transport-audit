@@ -466,6 +466,18 @@ class Stillage_type():
         self.Name = data['Name']
         self.id = data['id']
         return self
+
+    def stiahniMeno(self,meno): #Vráti None ak neexistuje, inak vráti class
+        cursor.execute("SELECT * FROM Stillage_type WHERE Name=?", [meno])#
+        col_name = [i[0] for i in cursor.description]
+        test = cursor.fetchall()
+        for r in test:
+            data = dict(zip(col_name, test))
+            if data['doplnok'] != 'DELETED':
+                self.Name = data['Name']
+                self.id = data['id']
+                return self
+        return
     def nahraj(self,Name): #Ak záznam existuje vráti None, inak ho nahra do db a vrati class
         self.Name = Name
         self.id = str(uuid.uuid4())
@@ -773,6 +785,17 @@ class Config():
             temp = dict(zip(col_name, riadok))
             vysledok.append(temp)
         return vysledok
+
+    def configyZakaznika(self, idZakaznika):
+        cursor.execute("Select * from Config WHERE Customer_id=?", [idZakaznika])  #
+        vysledok = []
+        col_name = [i[0] for i in cursor.description]
+        for riadok in cursor.fetchall():
+            temp = dict(zip(col_name, riadok))
+            if temp['doplnok'] != 'DELETED':
+                vysledok.append(Config().stiahni(riadok[0]))
+        return vysledok
+
     def stiahni(self,id): #Vráti None ak neexistuje, inak vráti class
         cursor.execute("SELECT * FROM Config WHERE id=?", [id])#
         col_name = [i[0] for i in cursor.description]
@@ -908,19 +931,14 @@ class Pattern():
         return data
 
     def patternZakaznika(self,id): #Vráti None ak neexistuje, inak vráti class
-        cursor.execute("SELECT * FROM Pattern WHERE Customer_id=?", [id])#
+        cursor.execute("SELECT * FROM Pattern WHERE Customer_id=? ", [id])#
         col_name = [i[0] for i in cursor.description]
-        test = cursor.fetchone()
-        if test is None:
-            #print("Ziaden najdeny")
-            return None
-        data = dict(zip(col_name, test))
-        self.Customer_id = data['Customer_id']
-        self.id = data['id']
-        print("doplnok je ", data['doplnok'])
-        if data['doplnok'] == 'DELETED':
-            return None
-        return self
+
+        for riadok in cursor.fetchall():
+            data = dict(zip(col_name, riadok))
+            if data['doplnok'] != 'DELETED':
+                return Pattern().stiahni(riadok[0])
+        return None
 
 
     def nahraj(self,Customer_id): #Ak záznam existuje vráti None, inak ho nahra do db a vrati class

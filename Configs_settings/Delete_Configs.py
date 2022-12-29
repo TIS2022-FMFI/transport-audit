@@ -93,10 +93,6 @@ class Delete_Configs(BoxLayout):
         else:
             on_delete = Config().stiahni(self.select_config_id)
             on_delete.zmazat()
-            for i in Advanced_user().vrat_vsetky():
-                if i['Config_id'] == self.select_config_id:
-                    on_delete_advanced_user = Advanced_user().stiahni(i['id'])
-                    on_delete_advanced_user.zmazat()
             self.call_Back()
 
     def clear_screen(self, *args):

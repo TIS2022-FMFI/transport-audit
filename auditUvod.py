@@ -18,7 +18,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
 
-from sqlite import Customer, Vehicle
+from sqlite import Customer, Vehicle, Pattern, Config
 
 
 
@@ -41,6 +41,7 @@ class ScrollbarVyber:
         self.root = None
         self.y = y
         self.druhyScrollbar = None
+        self.polozkyZobrazene = False
 
         self.uvodnaPonuka(None, None)
 
@@ -52,20 +53,20 @@ class ScrollbarVyber:
             s.value = value
 
     def vyberPoloziek(self):
+        if not self.naVyber:
+            return
         if isinstance(self.naVyber[0], Vehicle) and self.druhyScrollbar.vybrate is None:
             return
-        print(self.buttonHlavny, "Rreefsjkshcjksdhcksh", self.root)
+        self.polozkyZobrazene = True
+        self.vybrate= None
+
         self.screen.remove_widget(self.buttonHlavny)
         self.buttonHlavny.parent = None
 
         if self.root is None:
             self.layout2 = GridLayout(cols=1, spacing=10, size_hint_y=None)
             self.layout2.bind(minimum_height=self.screen.setter('height'))
-            for polozka in self.naVyber:
-                btn = Button(text=polozka.Name, size_hint_y=None, height=40, background_color="#0003a8",
-                             background_normal="")
-                btn.bind(on_press=partial(self.uvodnaPonuka, polozka))
-                self.buttonyVyber.append(btn)
+
             self.root = ScrollView(size_hint=(0.8, 0.3), pos_hint={'center_y': self.y, 'center_x': 0.5},
                                    do_scroll_x=False,
                                    do_scroll_y=True, bar_color=(1, 0, 0, 1), bar_width=50)
@@ -75,16 +76,33 @@ class ScrollbarVyber:
             self.slider.bind(value=partial(self.scroll_change, self.root))
             self.root.add_widget(self.layout2)
 
-        for btn in self.buttonyVyber:
+        self.buttonyVyber = []
+        for polozka in self.naVyber:
+            btn = Button(text=polozka.Name, size_hint_y=None, height=40, background_color="#0003a8",
+                         background_normal="")
+            btn.bind(on_press=partial(self.uvodnaPonuka, polozka))
+            self.buttonyVyber.append(btn)
             self.layout2.add_widget(btn)
+
+
         self.screen.add_widget(self.slider)
         self.screen.add_widget(self.root)
 
     def uvodnaPonuka(self, vybrate, button):
+        self.polozkyZobrazene = False
         text = self.text
         if vybrate is not None:
             self.vybrate = vybrate
             text = vybrate.Name
+            if self.naVyber and isinstance(self.naVyber[0], Customer):
+                idAutZakaznika = set([x.Vehicle_id for x in Config().configyZakaznika(self.vybrate.id)])
+                #print(idAutZakaznika, "configy", self.vybrate.id)
+                if self.druhyScrollbar.vybrate is None:
+                    self.druhyScrollbar.vynuluj()
+                #print([[x.SPZ, x.id] for x in self.druhyScrollbar.naVyber])
+                self.druhyScrollbar.naVyber.sort(key = lambda x : x.id in idAutZakaznika, reverse=True)
+                #print([[x.SPZ, x.id] for x in self.druhyScrollbar.naVyber])
+
 
         self.buttonHlavny = Button(text=text, pos_hint={"center_y": self.y}, background_color="#dddddd",
                                    background_normal="", color="#1c1b1d", size_hint=(1, 0.08))
@@ -100,6 +118,10 @@ class ScrollbarVyber:
         self.root.parent = None
 
     def vynuluj(self):
+        if self.polozkyZobrazene:
+            #print(self.naVyber[0].Name)
+            self.uvodnaPonuka(None, False)
+            return
         if self.vybrate is None:
             return
         self.screen.remove_widget(self.buttonHlavny)
@@ -120,15 +142,16 @@ class UvodAuditu(Screen):
         bPokracovat = Button(text='Pokracovat', background_color="#0003a8",
                                     background_normal="", pos_hint = {'center_x': 0.5, "top":0.2}, size_hint =(1, 0.08))
         bPokracovat.bind(on_press=self.pokracovat)
-        self.add_widget(bPokracovat) #upravit, toto je len na skusku
+        self.add_widget(bPokracovat)
         bOdhlasenie = Button(text='Odhlasit', pos_hint={"top":0.1, 'center_x': 0.5}, background_color="#0003a8",
                                     background_normal="",size_hint =(1, 0.08))
         bOdhlasenie.bind(on_press=self.odhlasit)
         self.add_widget(bOdhlasenie)
 
-        self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie()], 'Zakaznici', self, 0.75)
+        self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None], 'Zakaznici', self, 0.75)
         self.scrollAuta =  ScrollbarVyber([x for x in Vehicle().vrat_vsetky(True) if not x.over_zmazanie()], 'SPZ', self, 0.40)
         self.scrollAuta.druhyScrollbar = self.scrollZakaznici
+        self.scrollZakaznici.druhyScrollbar = self.scrollAuta
         self.prvyVstup = True
         self.bind(on_enter = self.povodnyStav)
 

@@ -81,9 +81,6 @@ class Scanner(Screen):
                 (x, y, w, h) = barcode.rect
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
                 barcodeData = barcode.data.decode("utf-8")
-                if barcode.type == 'QRCODE':
-
-                    continue
                 #text = "{} ({})".format(barcodeData, barcode.type)
                 #cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                 self.pouzitKod(barcodeData)
@@ -119,7 +116,5 @@ class Scanner(Screen):
         self.cam.release()
         self.cam = None
         self.screenManager.current = self.dalsiaScreen
-
-
 
 
