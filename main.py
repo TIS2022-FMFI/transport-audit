@@ -5,6 +5,8 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from startScreen2 import StartScreen
+from UzavretyAudit import UzavretyKamion
+from priebehAuditu import PrebiehajuciAudit
 from skener import Scanner
 from auditUvod import UvodAuditu
 
@@ -170,6 +172,15 @@ class MainApp(App):
 
         self.auditUvodScreen = UvodAuditu(self, self.startScreen, self.startScreen, name='uvodAudit')
         self.screenManager.add_widget(self.auditUvodScreen)
+
+        self.prebiehajuciAudit = PrebiehajuciAudit(self, self.auditUvodScreen, None, None,
+                                                   name='priebehAuditu')
+        self.screenManager.add_widget(self.prebiehajuciAudit)
+
+        self.uzavretyScreen = UzavretyKamion(self, self.prebiehajuciAudit, self.auditUvodScreen, name='uzavrety')
+        self.screenManager.add_widget(self.uzavretyScreen)
+
+
         self.auditov = 0
         self.audit = None
         self.sm.current = 'startScreen'

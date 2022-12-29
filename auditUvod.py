@@ -188,6 +188,7 @@ class UvodAuditu(Screen):
             return
 
         self.aplikacia.auditov += 1
-        self.dalsia = PrebiehajuciAudit(self.aplikacia, self, self.scrollZakaznici.vybrate, self.scrollAuta.vybrate, name='priebeh'+str(self.aplikacia.auditov))
-        self.aplikacia.screenManager.add_widget(self.dalsia)
-        self.aplikacia.screenManager.current = self.dalsia.name
+
+        self.aplikacia.prebiehajuciAudit.zakaznik = self.scrollZakaznici.vybrate
+        self.aplikacia.prebiehajuciAudit.auto = self.scrollAuta.vybrate
+        self.aplikacia.screenManager.current = self.aplikacia.prebiehajuciAudit.name

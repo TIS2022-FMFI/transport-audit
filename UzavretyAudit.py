@@ -25,67 +25,74 @@ class UzavretyKamion(Screen):
         self.potvrdenie = False
         self.kod = []
 
-        logo = Image(source='logo.webp')
-        logo.size_hint_x = 0.2
-        logo.pos_hint = {'center_x': 0.5, 'top': 1.3}
-        self.add_widget(logo)
 
-        self.lUzavrete = Label(text='Vozidlo je uzavrete', pos_hint={'center_x': 0.5, "top": 0.5}, size_hint=(0.6, 0.12), font_size='40sp')
-        self.add_widget(self.lUzavrete)
 
-        bOtvorit = Button(text='Otvorit vozidlo', background_color="#0003a8",
-                             background_normal="", pos_hint={'center_x': 0.5, "top": 0.2}, size_hint=(1, 0.08))
-        bOtvorit.bind(on_press=self.otvorit)
-        self.add_widget(bOtvorit)
 
-        bNovyAudit = Button(text='Dalsi audit', background_color="#0003a8",
-                          background_normal="", pos_hint={'center_x': 0.5, "top": 0.1}, size_hint=(1, 0.08))
-        bNovyAudit.bind(on_press=self.novyAudit)
-        self.add_widget(bNovyAudit)
-        self.bsken = Button(text='Potvrdit porusenie patternu', background_color="#0003a8",
-                            background_normal="", pos_hint={'center_x': 0.5, "top": 0.3}, size_hint=(1, 0.08))
-        self.bsken.bind(on_press = self.skenovanie)
-
-        self.skenovanieScreen = Scanner(self.aplikacia.screenManager, self.kod, self.name, self.name,
-                                        name='skener' + self.name)
-        self.skenovanieScreen.prveSpustenie  =False
-        self.aplikacia.screenManager.add_widget(self.skenovanieScreen)
 
         self.bind(on_enter=self.kontrolaPatternu)
     def skenovanie(self, *args):
-        self.aplikacia.screenManager.current  = self.skenovanieScreen.name
+        self.aplikacia.screenManager.current  = self.aplikacia.skenovanieScreen.name
     def kontrolaPatternu(self, *args):
-        if not self.kod:
+        self.screen()
+        if not self.aplikacia.kod:
             splneniePatternu = self.povodna.kontrolaSplneniaPatternu()
             if splneniePatternu != 0:
-                self.bsken.parent = None
+                #self.bsken.parent = None
                 self.add_widget(self.bsken)
                 self.potvrdenie = False
             else:
-                self.remove_widget(self.bsken)
+                #self.remove_widget(self.bsken)
                 self.potvrdenie = True
             return
-        zamestnanec = User().stiahni(self.kod[0])
+        zamestnanec = User().stiahni(self.aplikacia.kod[0])
         if zamestnanec is not None and not zamestnanec.over_zmazanie():
             self.potvrdenie = False
 
             rola = User_Role().stiahni(zamestnanec.User_Role_id)
             if rola is not None and not rola.over_zmazanie() and rola.name == 'Operátor':
                 self.potvrdenie = True
-                self.kod.clear()
+                self.aplikacia.kod.clear()
                 return
         popup = Popup(title='Autentifikacia neprebehla',
                       content=Label(text='Nebol najdeny zamestanec s naskenovanym kodom alebo nemal potrebne opravnenie'),
                       size_hint=(0.5, 0.5))
         popup.open()
-        self.kod.clear()
+        self.aplikacia.kod.clear()
         self.potvrdenie = False
+        self.add_widget(self.bsken)
 
 
     def otvorit(self, *args):
+        self.aplikacia.kod.clear()
         self.aplikacia.screenManager.current = self.povodna.name
 
+    def screen(self):
+        self.aplikacia.skenovanieScreen.povodnaScreen = self.name
+        self.aplikacia.skenovanieScreen.dalsiaScreen = self.name
+        self.clear_widgets()
+        logo = Image(source='logo.webp')
+        logo.size_hint_x = 0.2
+        logo.pos_hint = {'center_x': 0.5, 'top': 1.3}
+        self.add_widget(logo)
+
+        self.lUzavrete = Label(text='Vozidlo je uzavrete', pos_hint={'center_x': 0.5, "top": 0.5},
+                               size_hint=(0.6, 0.12), font_size='40sp')
+        self.add_widget(self.lUzavrete)
+
+        bOtvorit = Button(text='Otvorit vozidlo', background_color="#0003a8",
+                          background_normal="", pos_hint={'center_x': 0.5, "top": 0.2}, size_hint=(1, 0.08))
+        bOtvorit.bind(on_press=self.otvorit)
+        self.add_widget(bOtvorit)
+
+        bNovyAudit = Button(text='Dalsi audit', background_color="#0003a8",
+                            background_normal="", pos_hint={'center_x': 0.5, "top": 0.1}, size_hint=(1, 0.08))
+        bNovyAudit.bind(on_press=self.novyAudit)
+        self.add_widget(bNovyAudit)
+        self.bsken = Button(text='Potvrdit porusenie patternu', background_color="#0003a8",
+                            background_normal="", pos_hint={'center_x': 0.5, "top": 0.3}, size_hint=(1, 0.08))
+        self.bsken.bind(on_press=self.skenovanie)
     def novyAudit(self, *args):
+
         if not self.potvrdenie:
             popup = Popup(title='Porusenie patternu',
                           content=Label(text='Pre uzavretie auditu musite potrvdit porusenie patternu'), size_hint=(0.5, 0.5))

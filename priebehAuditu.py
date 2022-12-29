@@ -15,7 +15,7 @@ from random import randint
 from enum import Enum
 from datetime import datetime
 from dateutil.parser import parse
-from parser import *
+from parser import citaj_report_dict
 class NajblizsiKod(Enum):
     VOZIK = 0
     STILLAGE_NUMBER = 1
@@ -44,129 +44,24 @@ class PrebiehajuciAudit(Screen):
         self.styllageTypeOpravaChyby = set()
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
         self.report = citaj_report_dict()
+        self.prebiehaAudit = False
 
-        self.bPotvrditVozik = Button(text='Potvrdit vozik kontrolorom', background_color="#ff0000",
-                                     background_normal="", pos_hint={'center_x': 0.5, "top": 0.2},
-                                     size_hint=(0.5, 0.08))
-        self.bPotvrditVozik.bind(on_press=self.skenKontrolor)
 
-        self.bOdlozitOpravu = Button(text='Odlozit opravu', background_color="#ff0000",
-                                    background_normal="", pos_hint = {'center_x': 0.25, "top":0.2}, size_hint =(0.3, 0.08))
-        self.bOdlozitOpravu.bind(on_press = self.odlozitOpravu)
-
-        self.bPotvrditChybu = Button(text='Potvrdit chybu', background_color="#ff0000",
-                                     background_normal="", pos_hint={'center_x': 0.75, "top": 0.2},
-                                     size_hint=(0.3, 0.08))
-        self.bPotvrditChybu.bind(on_press = self.potvrditChybu)
-        self.cervenyLabel = None
-
-        ##########################################
-
-        bSpat = Button(text='Spat', background_color="#0003a8",
-                                    background_normal="", pos_hint = {'center_x': 5 * 1/6, "top":0.1}, size_hint =(0.3, 0.08))
-        bSpat.bind(on_press=self.spat)
-        self.add_widget(bSpat)
-        bUzavriet = Button(text='Uzavriet kamion', pos_hint={"top":0.1, 'center_x': 3 * 1/6}, background_color="#0003a8",
-                                    background_normal="",size_hint =(0.3, 0.08))
-        bUzavriet.bind(on_press=self.uzavriet)
-        self.add_widget(bUzavriet)
-        self.bVymazatVozik = Button(text='Zrusit vozik', pos_hint={"top": 0.1, 'center_x': 1 / 6},
-                           background_color="#0003a8",
-                           background_normal="", size_hint=(0.3, 0.08))
-        self.bVymazatVozik.bind(on_press=self.vynulovatVozik)
-        self.add_widget(self.bVymazatVozik)
         #####################################
 
-        self.skenovanieScreen = Scanner(self.aplikacia.screenManager, self.kod, self.name, self.name,
-                                        name='skener' + self.name)
-        self.aplikacia.screenManager.add_widget(self.skenovanieScreen)
+        #self.skenovanieScreen = Scanner(self.aplikacia.screenManager, self.kod, self.name, self.name,
+        #                                name='skener' + self.name)
+        #self.aplikacia.screenManager.add_widget(self.skenovanieScreen)
 
-        self.uzavretyScreen = UzavretyKamion(self.aplikacia, self, self.povodna, name='uzavrety'+self.name)
-        self.aplikacia.screenManager.add_widget(self.uzavretyScreen)
+
         ##########################################
 
-        self.bVozik = Button(text='Naskenujte vozik', background_color="#0003a8",
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.75}, size_hint=(0.3, 0.08))
-        self.bVozik.bind(on_press = self.skenVozik)
-        self.add_widget(self.bVozik)
 
-        self.lVozik = Label(text='kod vozika', pos_hint={'center_x': 0.8, "top": 0.75}, size_hint=(0.5, 0.08))
-        self.add_widget(self.lVozik)
-
-        self.bStillage = Button(text='Naskenujte stillage number', background_color="#0003a8",
-                            background_normal="", pos_hint={'center_x': 0.3, "top": 0.65}, size_hint=(0.3, 0.08))
-        self.bStillage.bind(on_press=self.skenStillage)
-        self.add_widget(self.bStillage)
-        self.lStillage = Label(text='stillage number', pos_hint={'center_x': 0.8, "top": 0.65}, size_hint=(0.5, 0.08))
-        self.add_widget(self.lStillage)
-
-        self.bRange = Button(text='Naskenujte TLS range', background_color="#0003a8",
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.55}, size_hint=(0.3, 0.08))
-        self.bRange.bind(on_press=self.skenRange)
-        self.add_widget(self.bRange)
-        self.lRange = Label(text='TLS range', pos_hint={'center_x': 0.8, "top": 0.55}, size_hint=(0.5, 0.08))
-        self.add_widget(self.lRange)
-
-        self.bPrvy = Button(text='Naskenujte prvy produkt', background_color="#0003a8",
-                            background_normal="", pos_hint={'center_x': 0.3, "top": 0.45}, size_hint=(0.3, 0.08))
-        self.bPrvy.bind(on_press=self.skenPrvy)
-        self.add_widget(self.bPrvy)
-        self.lPrvy = Label(text='kod prvy', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
-        self.add_widget(self.lPrvy)
-        self.bDruhy = Button(text='Naskenujte druhy produkt', background_color="#0003a8",
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.35}, size_hint=(0.3, 0.08))
-        self.bDruhy.bind(on_press=self.skenDruhy)
-        self.add_widget(self.bDruhy)
-        self.lDruhy = Label(text='kod druhy', pos_hint={'center_x': 0.8, "top": 0.35}, size_hint=(0.5, 0.08))
-        self.add_widget(self.lDruhy)
         #######################
-        self.skenovanieScreen.prveSpustenie = False
+        #self.skenovanieScreen.prveSpustenie = False
 
         self.bind(on_enter = self.kontrolaKodu)
 
-        self.pattern = Pattern().patternZakaznika(self.zakaznik.id)
-
-        if self.pattern is None:
-            print("pattern je none")
-            #self.spat()
-            return
-        self.polozkyPatternu = Pattern_Item().vrat_vsetkyPattern(self.pattern.id)
-        pouzStillage = set()
-        self.poctyPoloziekPatternu = {}
-        from random import randint
-        self.maxDielikov = 0
-        for p in self.polozkyPatternu:
-            if p.Stillage_type_id not in pouzStillage:
-                pouzStillage.add(p.Stillage_type_id)
-                if p.Number == 0:
-                    p.Number = randint(1, 5)
-
-                stillageTupe = Stillage_type().stiahni(p.Stillage_type_id)
-                if stillageTupe is None:
-                    continue
-                self.maxDielikov += p.Number
-                self.poctyPoloziekPatternu[stillageTupe.Name] = p.Number
-
-        #print(Stillage_type().vrat_vsetky())
-        self.sirka = 800
-
-        self.sirkaDielika = self.sirka / self.maxDielikov
-        self.dielikov = 0
-
-        with self.canvas:
-            Color(0.4, 0.4, 0.4)
-            Rectangle(pos=(0, 500), size=(self.sirka, 70))
-        self.nakresliObdznik()
-
-
-        self.aplikacia.shippment = Shipment()
-        self.aplikacia.shippment.User_code = self.aplikacia.zamestnanec.code
-        self.aplikacia.shippment.Customer_id = self.zakaznik.id
-        self.aplikacia.shippment.Vehicle_id = self.auto.id
-
-        self.aplikacia.shippmentStillages = set()
-        self.stillage = Stillage()
-        self.opravovany = False
 
 
     def nakresliObdznik(self):
@@ -182,14 +77,16 @@ class PrebiehajuciAudit(Screen):
     def spat(self, *args):
         print("navrat na uvod auditu")
         self.aplikacia.shippment = None
+        self.prebiehaAudit = False
         self.aplikacia.shippmentStillages = set()
-        self.aplikacia.screenManager.remove_widget(self)
-        self.aplikacia.screenManager.remove_widget(self.skenovanieScreen)
-        self.aplikacia.screenManager.remove_widget(self.uzavretyScreen)
+        self.aplikacia.kod.clear()
+        #prebiehaAuditself.aplikacia.screenManager.remove_widget(self)
+        #self.aplikacia.screenManager.remove_widget(self.aplikacia.skenovanieScreen)
+        #self.aplikacia.screenManager.remove_widget(self.uzavretyScreen)
         self.aplikacia.screenManager.current = self.povodna.name
 
     def vynulovatVozik(self, *args):
-        self.kod.clear()
+        self.aplikacia.kod.clear()
         self.lVozik.text = ""
         self.lStillage.text = ""
         self.lRange.text = ""
@@ -200,7 +97,7 @@ class PrebiehajuciAudit(Screen):
         self.opravovany = False
 
     def uzavriet(self, *args):
-        self.aplikacia.screenManager.current = self.uzavretyScreen.name
+        self.aplikacia.screenManager.current = self.aplikacia.uzavretyScreen.name
     def kontrolaVozika(self):
         poradoveCislo = int(self.stillage.JLR_Header_NO)
         najdenaChyba = False
@@ -431,14 +328,141 @@ class PrebiehajuciAudit(Screen):
 
         self.styllageTypeOpravaChyby.discard(self.stillage.Stillage_Type_id) #doplnit do nahravania vozika
 
+    def vynulovanieObrazovky(self, *args):
+        print("audit v priebehu ", self.prebiehaAudit)
+        if self.prebiehaAudit:
+            return
+        self.clear_widgets()
+
+        self.bPotvrditVozik = Button(text='Potvrdit vozik kontrolorom', background_color="#ff0000",
+                                     background_normal="", pos_hint={'center_x': 0.5, "top": 0.2},
+                                     size_hint=(0.5, 0.08))
+        self.bPotvrditVozik.bind(on_press=self.skenKontrolor)
+
+        self.bOdlozitOpravu = Button(text='Odlozit opravu', background_color="#ff0000",
+                                     background_normal="", pos_hint={'center_x': 0.25, "top": 0.2},
+                                     size_hint=(0.3, 0.08))
+        self.bOdlozitOpravu.bind(on_press=self.odlozitOpravu)
+
+        self.bPotvrditChybu = Button(text='Potvrdit chybu', background_color="#ff0000",
+                                     background_normal="", pos_hint={'center_x': 0.75, "top": 0.2},
+                                     size_hint=(0.3, 0.08))
+        self.bPotvrditChybu.bind(on_press=self.potvrditChybu)
+        self.cervenyLabel = None
+
+        ##########################################
+
+        bSpat = Button(text='Spat', background_color="#0003a8",
+                       background_normal="", pos_hint={'center_x': 5 * 1 / 6, "top": 0.1}, size_hint=(0.3, 0.08))
+        bSpat.bind(on_press=self.spat)
+        self.add_widget(bSpat)
+        bUzavriet = Button(text='Uzavriet kamion', pos_hint={"top": 0.1, 'center_x': 3 * 1 / 6},
+                           background_color="#0003a8",
+                           background_normal="", size_hint=(0.3, 0.08))
+        bUzavriet.bind(on_press=self.uzavriet)
+        self.add_widget(bUzavriet)
+        self.bVymazatVozik = Button(text='Zrusit vozik', pos_hint={"top": 0.1, 'center_x': 1 / 6},
+                                    background_color="#0003a8",
+                                    background_normal="", size_hint=(0.3, 0.08))
+        self.bVymazatVozik.bind(on_press=self.vynulovatVozik)
+        self.add_widget(self.bVymazatVozik)
+
+        self.bVozik = Button(text='Naskenujte vozik', background_color="#0003a8",
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.75}, size_hint=(0.3, 0.08))
+        self.bVozik.bind(on_press=self.skenVozik)
+        self.add_widget(self.bVozik)
+
+        self.lVozik = Label(text='kod vozika', pos_hint={'center_x': 0.8, "top": 0.75}, size_hint=(0.5, 0.08))
+        self.add_widget(self.lVozik)
+
+        self.bStillage = Button(text='Naskenujte stillage number', background_color="#0003a8",
+                                background_normal="", pos_hint={'center_x': 0.3, "top": 0.65}, size_hint=(0.3, 0.08))
+        self.bStillage.bind(on_press=self.skenStillage)
+        self.add_widget(self.bStillage)
+        self.lStillage = Label(text='stillage number', pos_hint={'center_x': 0.8, "top": 0.65}, size_hint=(0.5, 0.08))
+        self.add_widget(self.lStillage)
+
+        self.bRange = Button(text='Naskenujte TLS range', background_color="#0003a8",
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.55}, size_hint=(0.3, 0.08))
+        self.bRange.bind(on_press=self.skenRange)
+        self.add_widget(self.bRange)
+        self.lRange = Label(text='TLS range', pos_hint={'center_x': 0.8, "top": 0.55}, size_hint=(0.5, 0.08))
+        self.add_widget(self.lRange)
+
+        self.bPrvy = Button(text='Naskenujte prvy produkt', background_color="#0003a8",
+                            background_normal="", pos_hint={'center_x': 0.3, "top": 0.45}, size_hint=(0.3, 0.08))
+        self.bPrvy.bind(on_press=self.skenPrvy)
+        self.add_widget(self.bPrvy)
+        self.lPrvy = Label(text='kod prvy', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
+        self.add_widget(self.lPrvy)
+        self.bDruhy = Button(text='Naskenujte druhy produkt', background_color="#0003a8",
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.35}, size_hint=(0.3, 0.08))
+        self.bDruhy.bind(on_press=self.skenDruhy)
+        self.add_widget(self.bDruhy)
+        self.lDruhy = Label(text='kod druhy', pos_hint={'center_x': 0.8, "top": 0.35}, size_hint=(0.5, 0.08))
+        self.add_widget(self.lDruhy)
+
+        if self.zakaznik is None:
+            return
+        self.pattern = Pattern().patternZakaznika(self.zakaznik.id)
+
+        if self.pattern is None:
+            print("pattern je none")
+            #self.spat()
+            return
+        self.polozkyPatternu = Pattern_Item().vrat_vsetkyPattern(self.pattern.id)
+        pouzStillage = set()
+        self.poctyPoloziekPatternu = {}
+        from random import randint
+        self.maxDielikov = 0
+        for p in self.polozkyPatternu:
+            if p.Stillage_type_id not in pouzStillage:
+                pouzStillage.add(p.Stillage_type_id)
+                if p.Number == 0:
+                    p.Number = randint(1, 5)
+
+                stillageTupe = Stillage_type().stiahni(p.Stillage_type_id)
+                if stillageTupe is None:
+                    continue
+                self.maxDielikov += p.Number
+                self.poctyPoloziekPatternu[stillageTupe.Name] = p.Number
+
+        #print(Stillage_type().vrat_vsetky())
+        self.sirka = 800
+
+        self.sirkaDielika = self.sirka / self.maxDielikov
+        self.dielikov = 0
+
+        with self.canvas:
+            Color(0.4, 0.4, 0.4)
+            Rectangle(pos=(0, 500), size=(self.sirka, 70))
+        self.nakresliObdznik()
+
+
+        self.aplikacia.shippment = Shipment()
+        self.aplikacia.shippment.User_code = self.aplikacia.zamestnanec.code
+        self.aplikacia.shippment.Customer_id = self.zakaznik.id
+        self.aplikacia.shippment.Vehicle_id = self.auto.id
+
+        self.aplikacia.shippmentStillages = set()
+        self.stillage = Stillage()
+        self.opravovany = False
+
 
     def kontrolaKodu(self, *args):
         #upravit
 
-        if self.pattern is None:
-            self.spat()
 
-        if not self.kod:
+        self.vynulovanieObrazovky()
+        print("po volani vynulovania")
+        if self.pattern is None:
+            print("nemame pattern")
+            self.spat()
+        self.aplikacia.skenovanieScreen.povodnaScreen = self.name
+        self.aplikacia.skenovanieScreen.dalsiaScreen = self.name
+
+
+        if not self.aplikacia.kod:
             if self.aplikacia.shippment is None:
                 self.aplikacia.shippment = Shipment()
                 self.aplikacia.shippment.User_code = self.aplikacia.zamestnanec.code
@@ -446,10 +470,11 @@ class PrebiehajuciAudit(Screen):
                 self.aplikacia.shippment.Vehicle_id = self.auto.id
             return
 
-        self.kodVybraty = self.kod[0]
+        self.kodVybraty = self.aplikacia.kod[0]
 
         if self.kodNaSkenovanie == NajblizsiKod.VOZIK:
             if self.vyhovujeKodVozika(self.kodVybraty):
+
                 self.lVozik.text = self.kodVybraty
                 self.ulozVozikKod()
                 self.kodNaSkenovanie = NajblizsiKod.STILLAGE_NUMBER
@@ -475,13 +500,13 @@ class PrebiehajuciAudit(Screen):
                 self.kontrolaVozika()
         elif self.kodNaSkenovanie == NajblizsiKod.KONTROLOR:
             ###doplnit kontrolu koda kontrolora
-            zamestnanec = User().stiahni(self.kod[0])
+            zamestnanec = User().stiahni(self.aplikacia.kod[0])
             if zamestnanec is not None and not zamestnanec.over_zmazanie():
                 rola = User_Role().stiahni(zamestnanec.User_Role_id)
                 if rola is not None and not rola.over_zmazanie() and rola.name == 'Operátor':
                     self.remove_widget(self.bPotvrditVozik)
                     self.nahrajVozikZasielky(True)
-                    self.kod.clear()
+                    self.aplikacia.kod.clear()
                     return
             popup = Popup(title='Autentifikacia neprebehla',
                           content=Label(
@@ -489,36 +514,38 @@ class PrebiehajuciAudit(Screen):
                           size_hint=(0.5, 0.5))
             popup.open()
 
-        self.kod.clear()
+        self.aplikacia.kod.clear()
 
     def skenPrvy(self, *args):
+
         if self.kodNaSkenovanie != NajblizsiKod.PRVY:
             return
-        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+        self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenDruhy(self, *args):
         if self.kodNaSkenovanie != NajblizsiKod.DRUHY:
             return
-        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+        self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenVozik(self, *args):
+        self.prebiehaAudit = True
         if self.kodNaSkenovanie != NajblizsiKod.VOZIK:
             return
-        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+        self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenStillage(self, *args):
         if self.kodNaSkenovanie != NajblizsiKod.STILLAGE_NUMBER:
             return
-        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+        self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenRange(self, *args):
         if self.kodNaSkenovanie != NajblizsiKod.TLS_RANGE:
             return
-        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+        self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenKontrolor(self, *args):
         self.kodNaSkenovanie = NajblizsiKod.KONTROLOR
-        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+        self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
 
 
