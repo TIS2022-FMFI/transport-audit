@@ -1,6 +1,6 @@
-from Add_stillage_types import *
-from Edit__stillage_types import *
-from Delete_stillage_types import *
+from Stillage_types_settings.Add_stillage_types import *
+from Stillage_types_settings.Edit__stillage_types import *;
+from Stillage_types_settings.Delete_stillage_types import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.app import App
@@ -19,6 +19,7 @@ class Settings_Stillage_types (BoxLayout):
         self.btn3.bind(on_release=lambda btn: self.call_delete())
         self.btn4.bind(on_release=lambda btn: self.call_back())
         self.add_widget(self.btn1)
+        self.add_widget(self.btn2)
         self.add_widget(self.btn3)
         self.add_widget(self.btn4)
     def call_add(self):

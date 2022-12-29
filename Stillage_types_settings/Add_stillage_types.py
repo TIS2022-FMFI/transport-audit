@@ -6,13 +6,13 @@ from kivy.app import App
 from sqlite import Stillage_type
 class Add_Stillage_type (BoxLayout):
     notify = Button(text = '')
-    text1 = TextInput(text='Meno typu vozika')
+    text1 = TextInput()
     screenManager = None
     stillage_type_list = None
     def __init__(self,screenManager, **kwargs):
         super(Add_Stillage_type, self).__init__(**kwargs)
         self.screenManager = screenManager
-        self.text1 = self.ids.input_add_customer
+        self.text1 = TextInput(text = 'Meno typu vozika')
         btn1 = Button(text="Pridaj")
         btn1.bind(on_release = lambda btn:self.check())
         btn2 = Button(text="Späť")
@@ -32,7 +32,7 @@ class Add_Stillage_type (BoxLayout):
         elif self.text1.text in self.stillage_type_list:
             self.notify.text = "Name already exists"
         else:
-            Stillage_type.nahraj(self.text1.text)
+            Stillage_type().nahraj(self.text1.text)
             self.call_Back()
     def clear_screen(self, *args):
         self.notify.text = ""

@@ -128,13 +128,13 @@ class MainApp(App):
         self.sm.add_widget(scrn)
 
         scrn = Screen(name='Delete_Stillage_types')
-        delete_stillage_types = Delete_Stillage_types(self.sm)
+        delete_stillage_types = Delete_Stillage_type(self.sm)
         scrn.add_widget(delete_stillage_types)
         scrn.bind(on_enter=delete_stillage_types.clear_screen)
         self.sm.add_widget(scrn)
 
         scrn = Screen(name='Edit_Stillage_types')
-        edit_stillage_types = Edit_Stillage_types(self.sm)
+        edit_stillage_types = Edit_Stillage_type(self.sm)
         scrn.add_widget(edit_stillage_types)
         scrn.bind(on_enter=edit_stillage_types.clear_screen)
         self.sm.add_widget(scrn)
