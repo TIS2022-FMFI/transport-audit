@@ -151,6 +151,12 @@ class MainApp(App):
 
         ###########
         self.zamestnanec = None
+        self.kod = []
+
+        self.skenovanieScreen = Scanner(self.screenManager, self.kod, None, None,
+                                        name='skener')
+        self.screenManager.add_widget(self.skenovanieScreen)
+        self.skenovanieScreen.prveSpustenie = False
 
         self.startScreen = StartScreen('uvod', 'Menu_screen', self, name='startScreen')
         self.screenManager.add_widget(self.startScreen)
@@ -166,8 +172,8 @@ class MainApp(App):
         self.screenManager.add_widget(self.auditUvodScreen)
         self.auditov = 0
         self.audit = None
-        # self.screenManager.current = 'startScreen'
-        self.sm.current = 'Menu_screen'
+        self.sm.current = 'startScreen'
+        #self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
     MainApp().run()

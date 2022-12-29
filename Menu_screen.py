@@ -88,6 +88,6 @@ class Menu_screen (BoxLayout):
 
     def odhlasit(self, *args):
         self.aplikacia.zamestnanec = None
-        self.povodna.kodZamestnanca.clear()
+        self.aplikacia.kod.clear()
         self.aplikacia.screenManager.current = self.povodna.name
 

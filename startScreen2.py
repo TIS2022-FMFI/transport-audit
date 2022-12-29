@@ -14,9 +14,7 @@ class StartScreen(Screen):
         self.dalsia = dalsia
         self.kodZamestnanca = []
         self.aplikacia = aplikacia
-        self.skenovanieScreen = Scanner(self.aplikacia.screenManager, self.kodZamestnanca, self.name, self.name, name='skener')
-        self.aplikacia.screenManager.add_widget(self.skenovanieScreen)
-        self.skenovanieScreen.prveSpustenie = False
+
 
         bSkenovanie = Button(text='Naskenujte svoj kod', background_color="#0003a8",
                                     background_normal="", pos_hint = {'center_x': 0.5, "top":0.5}, size_hint =(0.3, 0.08))
@@ -38,17 +36,19 @@ class StartScreen(Screen):
 
 
     def skenovanie(self, *args):
-        self.aplikacia.screenManager.current = self.skenovanieScreen.name
+        self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def kontrolaPrihlasenia(self, *args):
+        self.aplikacia.skenovanieScreen.povodnaScreen = self.name
+        self.aplikacia.skenovanieScreen.dalsiaScreen = self.name
         #self.scrollZakaznici.vynuluj()
         #self.scrollAuta.vynuluj()
-        print(self.kodZamestnanca, self.aplikacia.zamestnanec)
-        if not self.kodZamestnanca:
+        print(self.aplikacia.kod, self.aplikacia.zamestnanec)
+        if not self.aplikacia.kod:
             return
 
 
-        pouzivatel = User().stiahni(self.kodZamestnanca[0])
+        pouzivatel = User().stiahni(self.aplikacia.kod[0])
         if pouzivatel is None:
             pouz = User().vrat_vsetky(True)
             ind = randint(0, len(pouz)-1 )
@@ -57,10 +57,10 @@ class StartScreen(Screen):
 
             self.aplikacia.zamestnanec = pouzivatel
             print("bol najdeny zamestnanec", self.aplikacia.zamestnanec, pouzivatel)
-            self.kodZamestnanca.clear()
+            self.aplikacia.kod.clear()
             self.aplikacia.screenManager.current = self.dalsia
         else:
-            self.kodZamestnanca.clear()
+            self.aplikacia.kod.clear()
             popup = Popup(title='Prihlasenie neprebehlo', content=Label(text='Nepodarilo sa najst zamestnanca s naskenovanym kodom'),size_hint=(0.5, 0.5))
             popup.open()
             #self.aplikacia.screenManager.current = self.dalsia
