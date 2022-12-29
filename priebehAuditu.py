@@ -15,7 +15,7 @@ from random import randint
 from enum import Enum
 from datetime import datetime
 from dateutil.parser import parse
-#from parser import *
+from parser import citaj_report_dict
 class NajblizsiKod(Enum):
     VOZIK = 0
     STILLAGE_NUMBER = 1
@@ -43,10 +43,10 @@ class PrebiehajuciAudit(Screen):
         self.kodNaSkenovanie = NajblizsiKod.VOZIK
         self.styllageTypeOpravaChyby = set()
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
-        self.report = {} ###stiahnut si to zo spracovaneho reportu
+        self.report = citaj_report_dict()
 
         self.bPotvrditVozik = Button(text='Potvrdit vozik kontrolorom', background_color="#ff0000",
-                                     background_normal="", pos_hint={'center_x': 0.25, "top": 0.2},
+                                     background_normal="", pos_hint={'center_x': 0.5, "top": 0.2},
                                      size_hint=(0.5, 0.08))
         self.bPotvrditVozik.bind(on_press=self.skenKontrolor)
 
@@ -164,7 +164,7 @@ class PrebiehajuciAudit(Screen):
         self.aplikacia.shippment.Customer_id = self.zakaznik.id
         self.aplikacia.shippment.Vehicle_id = self.auto.id
 
-        self.aplikacia.shippentStillages = set()
+        self.aplikacia.shippmentStillages = set()
         self.stillage = Stillage()
         self.opravovany = False
 
@@ -173,16 +173,16 @@ class PrebiehajuciAudit(Screen):
         if self.dielikov > self.maxDielikov:
             with self.canvas:
                 Color(1, 0, 0)
-                Rectangle(pos=(0, 450), size=(self.sirka, 70))
+                Rectangle(pos=(0, 500), size=(self.sirka, 70))
             return
         with self.canvas:
             Color(0, 1, 0)
-            Rectangle(pos=(0, 450), size=(self.dielikov* self.sirkaDielika, 70))
+            Rectangle(pos=(0, 500), size=(self.dielikov* self.sirkaDielika, 70))
 
     def spat(self, *args):
         print("navrat na uvod auditu")
         self.aplikacia.shippment = None
-        self.aplikacia.shippentStillages = set()
+        self.aplikacia.shippmentStillages = set()
         self.aplikacia.screenManager.remove_widget(self)
         self.aplikacia.screenManager.remove_widget(self.skenovanieScreen)
         self.aplikacia.screenManager.remove_widget(self.uzavretyScreen)
@@ -205,18 +205,19 @@ class PrebiehajuciAudit(Screen):
         poradoveCislo = int(self.stillage.JLR_Header_NO)
         najdenaChyba = False
 
-        if self.stillage.Stillage_Type_id in self.poradoveCisloNasledujucehoVozikaPodlaType.keys():
-            if najdenaChyba != self.poradoveCisloNasledujucehoVozikaPodlaType[self.stillage.Stillage_Type_id]:
+        if self.stillageTypMenoZKodu(self.stillage.kod) in self.poradoveCisloNasledujucehoVozikaPodlaType:
+            if poradoveCislo != self.poradoveCisloNasledujucehoVozikaPodlaType[self.stillageTypMenoZKodu(self.stillage.kod)]:
                 popup = Popup(title='Najdena chyba',
                               content=Label(text=f'Nespravne poradie vozikov typu {self.stillageTypMenoZKodu(self.stillage.kod)}'), size_hint=(0.5, 0.5))
                 popup.open()
                 najdenaChyba = True
 
-        dataReport = self.report[self.stillage.Stillage_Number_on_Header]
+        dataReport = self.report.get(self.stillage.Stillage_Number_on_Header, None)
+        #self.report[]
         TLS = True
-        if PrebiehajuciAudit.dlzkaIONO == self.stillage.First_scan_product:
+        if PrebiehajuciAudit.dlzkaIONO == len(self.stillage.First_scan_product):
             TLS = False
-        if dataReport is not None:
+        if dataReport is not None and dataReport:
             if TLS:
                 if dataReport[0]['TLS']!= self.stillage.First_scan_product:
                     popup = Popup(title='Najdena chyba',
@@ -225,7 +226,7 @@ class PrebiehajuciAudit(Screen):
                                   size_hint=(0.5, 0.5))
                     popup.open()
                     najdenaChyba = True
-                if dataReport[1]['TLS']!= self.stillage.Last_scan_product:
+                if dataReport[-1]['TLS']!= self.stillage.Last_scan_product:
                     popup = Popup(title='Najdena chyba',
                                   content=Label(
                                       text=f'Kod posledneho produktu sa nezhoduje s reportom'),
@@ -233,14 +234,14 @@ class PrebiehajuciAudit(Screen):
                     popup.open()
                     najdenaChyba = True
             else:
-                if dataReport[0]['asmsequence_s']!= self.stillage.First_scan_product:
+                if dataReport[0]['vehicleid']!= self.stillage.First_scan_product:
                     popup = Popup(title='Najdena chyba',
                                   content=Label(
                                       text=f'Kod prveho produktu sa nezhoduje s reportom'),
                                   size_hint=(0.5, 0.5))
                     popup.open()
                     najdenaChyba = True
-                if dataReport[1]['asmsequence_s']!= self.stillage.Last_scan_product:
+                if dataReport[-1]['vehicleid']!= self.stillage.Last_scan_product:
                     popup = Popup(title='Najdena chyba',
                                   content=Label(
                                       text=f'Kod posledneho produktu sa nezhoduje s reportom'),
@@ -266,9 +267,11 @@ class PrebiehajuciAudit(Screen):
             else:
                 self.kodNaSkenovanie = NajblizsiKod.KONTROLOR
                 self.add_widget(self.bPotvrditVozik)
+                return
         if najdenaChyba:
             self.zobrazitChyboveButtony()
             return
+
         self.nahrajVozikZasielky(True)
 
 
@@ -276,9 +279,11 @@ class PrebiehajuciAudit(Screen):
 
     def nahrajVozikZasielky(self, bezChyby):
         ##############upravit
+        if self.opravovany:
+            self.aplikacia.vozikyVOprave[self.stillage.kod] = None
 
         poradoveCislo = int(self.stillage.JLR_Header_NO)
-        self.poradoveCisloNasledujucehoVozikaPodlaType[self.stillage.Stillage_Type_id] = poradoveCislo + 1
+        self.poradoveCisloNasledujucehoVozikaPodlaType[self.stillageTypMenoZKodu(self.stillage.kod)] = poradoveCislo + 1
 
         self.dielikov += 1
         self.nakresliObdznik()
@@ -303,7 +308,7 @@ class PrebiehajuciAudit(Screen):
         #upravit
         self.remove_widget(self.bPotvrditChybu)
         self.remove_widget(self.bOdlozitOpravu)
-        self.remove_widget(self.bVymazatVozik)
+        #self.remove_widget(self.bVymazatVozik)
 
     def zobrazitChyboveButtony(self):
         #upravit
@@ -311,18 +316,19 @@ class PrebiehajuciAudit(Screen):
         self.stillage.Note = "Expected correction"
         self.add_widget(self.bPotvrditChybu)
         self.add_widget(self.bOdlozitOpravu)
-        self.add_widget(self.bVymazatVozik)
+        #self.add_widget(self.bVymazatVozik)
 
     def odlozitOpravu(self, *args):
         #self.styllageTypeOpravaChyby.add(self.stillage.Stillage_Type_id)
-        self.aplikacia.vozikyVOprave[self.stillage.Stillage_Number_on_Header] = self.stillage
+        self.aplikacia.vozikyVOprave[self.stillage.kod] = self.stillage
         self.schovatChyboveButtony()
         self.vynulovatVozik()
+        #print(self.aplikacia.)
 
     def potvrditChybu(self, *args):
         self.schovatChyboveButtony()
-        if self.stillage.Stillage_Number_on_Header in self.aplikacia.vozikyVOprave.keys():
-            self.aplikacia.vozikyVOprave[self.stillage.Stillage_Number_on_Header] = None
+        if self.stillage.kod in self.aplikacia.vozikyVOprave:
+            self.aplikacia.vozikyVOprave[self.stillage.kod] = None
         #self.styllageTypeOpravaChyby.discard(self.stillage.Stillage_Type_id)
         self.nahrajVozikZasielky(False)
         self.vynulovatVozik()
@@ -351,8 +357,9 @@ class PrebiehajuciAudit(Screen):
         return prve.isnumeric() and druhe.isnumeric()
 
     def vyhovujeProdukt(self, kod):
-        if len(kod) != PrebiehajuciAudit.dlzkaTLS or len(kod) != PrebiehajuciAudit.dlzkaIONO:
+        if len(kod) != PrebiehajuciAudit.dlzkaTLS and len(kod) != PrebiehajuciAudit.dlzkaIONO:
             return False
+
         return kod.isnumeric()
 
     def stillageTypMenoZKodu(self, kod):
@@ -386,6 +393,8 @@ class PrebiehajuciAudit(Screen):
         return 0
 
     def ulozVozikKod(self):
+        print("oprava ", self.aplikacia.vozikyVOprave)
+
         if self.kodVybraty in self.aplikacia.vozikyVOprave and self.aplikacia.vozikyVOprave[self.kodVybraty] is not None:
             self.opravovany = True
             self.stillage = self.aplikacia.vozikyVOprave[self.kodVybraty]
@@ -440,18 +449,18 @@ class PrebiehajuciAudit(Screen):
         self.kodVybraty = self.kod[0]
 
         if self.kodNaSkenovanie == NajblizsiKod.VOZIK:
-            if self.vyhovujeKodVozika(self.kod):
+            if self.vyhovujeKodVozika(self.kodVybraty):
                 self.lVozik.text = self.kodVybraty
                 self.ulozVozikKod()
                 self.kodNaSkenovanie = NajblizsiKod.STILLAGE_NUMBER
         elif self.kodNaSkenovanie == NajblizsiKod.STILLAGE_NUMBER:
             if self.vyhovujeStillageNumberOnHeader(self.kodVybraty):
-                self.lStillage = self.kodVybraty
+                self.lStillage.text = self.kodVybraty
                 self.ulozStillageNumber()
                 self.kodNaSkenovanie = NajblizsiKod.TLS_RANGE
         elif self.kodNaSkenovanie == NajblizsiKod.TLS_RANGE:
             if self.vyhovujeTlsRange(self.kodVybraty):
-                self.lRange = self.kodVybraty
+                self.lRange.text = self.kodVybraty
                 self.ulozRange()
                 self.kodNaSkenovanie = NajblizsiKod.PRVY
         elif self.kodNaSkenovanie == NajblizsiKod.PRVY:
