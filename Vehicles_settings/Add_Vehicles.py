@@ -17,12 +17,13 @@ class Add_Vehicles (BoxLayout):
     def __init__(self, screenManager,**kwargs):
         super(Add_Vehicles, self).__init__(**kwargs)
         self.screenManager = screenManager
-        self.btn1.bind(on_release = lambda btn:self.check())
-        self.btn2.bind(on_release=lambda btn: self.call_Back())
-        self.add_widget(self.text1)        
-        self.add_widget(self.btn1)
-        self.add_widget(self.btn2)
-        self.add_widget(self.notify)    
+        self.text1 = self.ids.input_vehicle
+        # self.btn1.bind(on_release = lambda btn:self.check())
+        # self.btn2.bind(on_release=lambda btn: self.call_Back())
+        # self.add_widget(self.text1)
+        # self.add_widget(self.btn1)
+        # self.add_widget(self.btn2)
+        # self.add_widget(self.notify)
     def call_Back (self):
         self.screenManager.current = 'Settings_Vehicles'
     def check (self):
@@ -38,5 +39,5 @@ class Add_Vehicles (BoxLayout):
 
     def clear_screen(self, *args):
         self.notify.text = ""
-        self.text1.text = 'SPZ'
+        # self.text1.text = 'SPZ'
         self.synchronize_vehicles()

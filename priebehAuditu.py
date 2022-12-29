@@ -511,7 +511,3 @@ class PrebiehajuciAudit(Screen):
         self.kodNaSkenovanie = NajblizsiKod.KONTROLOR
         self.aplikacia.screenManager.current = self.skenovanieScreen.name
 
-
-
-
-

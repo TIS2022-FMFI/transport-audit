@@ -118,5 +118,3 @@ class Scanner(Screen):
         self.screenManager.current = self.dalsiaScreen
 
 
-
-
