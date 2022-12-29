@@ -29,12 +29,6 @@ class MainApp(App):
         scrn.bind(on_enter=delete_configs.clear_screen)
         self.sm.add_widget(scrn)
 
-        scrn = Screen(name='Edit_Configs')
-        edit_configs = Edit_Configs(self.sm)
-        scrn.add_widget(edit_configs)
-        scrn.bind(on_enter=edit_configs.clear_screen)
-        self.sm.add_widget(scrn)
-
         scrn = Screen(name='Settings_Configs')
         scrn.add_widget(Settings_Configs(self.sm))
         self.sm.add_widget(scrn)
@@ -126,7 +120,28 @@ class MainApp(App):
         scrn = Screen(name='Settings_Workers')
         scrn.add_widget(Settings_Workers(self.sm))
         self.sm.add_widget(scrn)
+        # Stillage_types
+        scrn = Screen(name='Add_Stillage_types')
+        add_stillage_types = Add_Stillage_type(self.sm)
+        scrn.add_widget(add_stillage_types)
+        scrn.bind(on_enter=add_stillage_types.clear_screen)
+        self.sm.add_widget(scrn)
 
+        scrn = Screen(name='Delete_Stillage_types')
+        delete_stillage_types = Delete_Stillage_types(self.sm)
+        scrn.add_widget(delete_stillage_types)
+        scrn.bind(on_enter=delete_stillage_types.clear_screen)
+        self.sm.add_widget(scrn)
+
+        scrn = Screen(name='Edit_Stillage_types')
+        edit_stillage_types = Edit_Stillage_types(self.sm)
+        scrn.add_widget(edit_stillage_types)
+        scrn.bind(on_enter=edit_stillage_types.clear_screen)
+        self.sm.add_widget(scrn)
+
+        scrn = Screen(name='Settings_Stillage_types')
+        scrn.add_widget(Settings_Stillage_types(self.sm))
+        self.sm.add_widget(scrn)
         # Exports settings
         scrn = Screen(name='Settings_Exports')
         settings_exports = Settings_Exports(self.sm)
@@ -151,8 +166,8 @@ class MainApp(App):
         self.screenManager.add_widget(self.auditUvodScreen)
         self.auditov = 0
         self.audit = None
-        self.screenManager.current = 'startScreen'
-        # self.sm.current = 'Menu_screen'
+        # self.screenManager.current = 'startScreen'
+        self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
     MainApp().run()

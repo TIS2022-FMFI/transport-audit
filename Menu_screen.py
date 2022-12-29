@@ -2,6 +2,7 @@ from Workers_settings.Settings_Workers import *
 from Customers_settings.Settings_Customers import *
 from Vehicles_settings.Settings_Vehicles import *
 from Configs_settings.Settings_Configs import *
+from Stillage_types_settings.Settings_Stillage_types import *
 from Export_setting.Settings_export import *
 from Patterns_settings.Settings_Patterns import *
 
@@ -14,6 +15,7 @@ class Menu_screen (BoxLayout):
     btn4 = Button(text="Configy")
     btn5 = Button(text="Patterny")
     btn6 = Button(text="Export settings")
+    btn7 = Button(text = "Typy vozikov")
     btnOdhlasenie = Button(text="Odhlasit")
     btnAudit = Button(text="Zacat audit")
     screenManager = None
@@ -29,6 +31,8 @@ class Menu_screen (BoxLayout):
         self.btn4 = self.ids.MSbtn4
         self.btn5 = self.ids.MSbtn5
         self.btn6 = self.ids.MSbtn6
+        self.btn7 = self.ids.MSbtn7
+
         self.btnOdhlasenie = self.ids.MSbtn7
         # self.btn1.bind(on_release=lambda btn:self.call_Workers_settings())
         # self.btn2.bind(on_release=lambda btn: self.call_Customers_settings())
@@ -42,11 +46,12 @@ class Menu_screen (BoxLayout):
     def vytvorMenu(self, *arg):
 
         # self.clear_widgets()
-        id  = self.aplikacia.zamestnanec.User_Role_id
-        rola = User_Role().stiahni(id).name
+        # id  = self.aplikacia.zamestnanec.User_Role_id
+        # rola = User_Role().stiahni(id).name
 
         # mnou dorobene docasne
-        # rola = 'Administrátor'
+        rola = 'Administrátor'
+        id = '0f32fe18-0407-338b-dbd2-b8336b563381'
         # ignorovat
 
         # ----------------------------
@@ -74,6 +79,8 @@ class Menu_screen (BoxLayout):
         self.screenManager.current = 'Settings_Configs'
     def call_Patterns_settings(self):
         self.screenManager.current = 'Settings_Patterns'
+    def call_Stillage_types_settings(self):
+        self.screenManager.current = 'Settings_Stillage_types'
     def call_Exportss_settings(self):
         self.screenManager.current = 'Settings_Exports'
     def zacatAudit(self, *args):
