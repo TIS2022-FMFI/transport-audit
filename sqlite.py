@@ -472,7 +472,8 @@ class Stillage_type():
         col_name = [i[0] for i in cursor.description]
         test = cursor.fetchall()
         for r in test:
-            data = dict(zip(col_name, test))
+            data = dict(zip(col_name, r))
+            print(data)
             if data['doplnok'] != 'DELETED':
                 self.Name = data['Name']
                 self.id = data['id']

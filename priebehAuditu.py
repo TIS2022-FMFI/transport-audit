@@ -283,6 +283,7 @@ class PrebiehajuciAudit(Screen):
             self.poctyPoloziekPatternu[meno] -= 1
 
     def kontrolaSplneniaPatternu(self):
+        print(self.dielikov, self.maxDielikov)
         if self.dielikov > self.maxDielikov:
             return 1
         for st, pocet in self.poctyPoloziekPatternu.items():
@@ -327,7 +328,7 @@ class PrebiehajuciAudit(Screen):
         if len(self.kodVybraty) == PrebiehajuciAudit.dlzkaTLS:
             self.stillage.Last_scan_TLS_code = self.kodVybraty
 
-        self.styllageTypeOpravaChyby.discard(self.stillage.Stillage_Type_id) #doplnit do nahravania vozika
+        #self.styllageTypeOpravaChyby.discard(self.stillage.Stillage_Type_id) #doplnit do nahravania vozika
 
     def vynulovanieObrazovky(self, *args):
         print("audit v priebehu ", self.prebiehaAudit)
@@ -374,34 +375,34 @@ class PrebiehajuciAudit(Screen):
         self.bVozik.bind(on_press=self.skenVozik)
         self.add_widget(self.bVozik)
 
-        self.lVozik = Label(text='kod vozika', pos_hint={'center_x': 0.8, "top": 0.75}, size_hint=(0.5, 0.08))
+        self.lVozik = Label(text='', pos_hint={'center_x': 0.8, "top": 0.75}, size_hint=(0.5, 0.08))
         self.add_widget(self.lVozik)
 
         self.bStillage = Button(text='Naskenujte stillage number', background_color="#0003a8",
                                 background_normal="", pos_hint={'center_x': 0.3, "top": 0.65}, size_hint=(0.3, 0.08))
         self.bStillage.bind(on_press=self.skenStillage)
         self.add_widget(self.bStillage)
-        self.lStillage = Label(text='stillage number', pos_hint={'center_x': 0.8, "top": 0.65}, size_hint=(0.5, 0.08))
+        self.lStillage = Label(text='', pos_hint={'center_x': 0.8, "top": 0.65}, size_hint=(0.5, 0.08))
         self.add_widget(self.lStillage)
 
         self.bRange = Button(text='Naskenujte TLS range', background_color="#0003a8",
                              background_normal="", pos_hint={'center_x': 0.3, "top": 0.55}, size_hint=(0.3, 0.08))
         self.bRange.bind(on_press=self.skenRange)
         self.add_widget(self.bRange)
-        self.lRange = Label(text='TLS range', pos_hint={'center_x': 0.8, "top": 0.55}, size_hint=(0.5, 0.08))
+        self.lRange = Label(text='', pos_hint={'center_x': 0.8, "top": 0.55}, size_hint=(0.5, 0.08))
         self.add_widget(self.lRange)
 
         self.bPrvy = Button(text='Naskenujte prvy produkt', background_color="#0003a8",
                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.45}, size_hint=(0.3, 0.08))
         self.bPrvy.bind(on_press=self.skenPrvy)
         self.add_widget(self.bPrvy)
-        self.lPrvy = Label(text='kod prvy', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
+        self.lPrvy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
         self.add_widget(self.lPrvy)
         self.bDruhy = Button(text='Naskenujte druhy produkt', background_color="#0003a8",
                              background_normal="", pos_hint={'center_x': 0.3, "top": 0.35}, size_hint=(0.3, 0.08))
         self.bDruhy.bind(on_press=self.skenDruhy)
         self.add_widget(self.bDruhy)
-        self.lDruhy = Label(text='kod druhy', pos_hint={'center_x': 0.8, "top": 0.35}, size_hint=(0.5, 0.08))
+        self.lDruhy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.35}, size_hint=(0.5, 0.08))
         self.add_widget(self.lDruhy)
 
         if self.zakaznik is None:
@@ -428,6 +429,7 @@ class PrebiehajuciAudit(Screen):
                     continue
                 self.maxDielikov += p.Number
                 self.poctyPoloziekPatternu[stillageTupe.Name] = p.Number
+        print(self.poctyPoloziekPatternu)
 
         #print(Stillage_type().vrat_vsetky())
         self.sirka = 800
