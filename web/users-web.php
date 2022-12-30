@@ -66,6 +66,32 @@ echo "<script type='text/javascript'>
 	}
 }
 
+if (isset($_POST['delete23']) && isset($_POST['meno32'])  ){
+	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
+	if(delete_uzivatela_web($db,$_POST['delete23']) ){
+	echo '<div class="modal fade" id="onload" tabindex="-1"">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">'. $_POST['meno32'] .'</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Užívateľ úspešne zmazaný.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>';
+echo "<script type='text/javascript'>
+    window.onload = () => {
+        $('#onload').modal('show');
+    }
+</script>";
+	}
+}
 
 $chyby = array();
 if (isset($_POST['odhlas'])){

@@ -64,6 +64,18 @@ echo '<nav class="navbar navbar-expand-lg bg-light">
 			<li><a class="dropdown-item" href="users.php">Android</a></li>
           </ul>
         </li>
+		
+		        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Logy
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="logy-web.php">Web</a></li>
+            <li><hr class="dropdown-divider"></li>
+			<li><a class="dropdown-item" href="logy-android.php">Android</a></li>
+          </ul>
+        </li>
+		
       </ul>
 				'.($stranka == "Užívatelia" ? '
 					<!-- Button trigger modal -->
@@ -302,16 +314,32 @@ function update_uzivatela_web($db,$Name,$username,$User_Role,$id,$passwd){
 			  }
 }
 
+function delete_uzivatela_web($db,$id){
+
+		//pg_get_result($db);
+		$deleted_value = 999; //Užívateľ s touto hodnotou sa považuje za zmazaného
+			$data = array('admin'=>$deleted_value);
+			  $condition = array('id' => $id);
+			  $res = pg_update($db, 'users', $data, $condition);
+			  if ($res) {
+				  //echo "Data is updated: $res\n";
+				  return True;
+			  } else {
+				  return False;
+			  }
+}
+
 function vypis_uzivatelov($db){
 	if ($db) {
-		$result = pg_query($db, 'SELECT * FROM "User" ORDER BY "last_sync" DESC');
+		$deleted_string = "'"."DELETED"."'";
+		$result = pg_query($db, 'SELECT * FROM "User" WHERE doplnok is null or doplnok != ' . $deleted_string . ' ORDER BY "last_sync" DESC');
 		if (!$result) {
 			echo "An error occurred.\n";
 			exit;
 		}
 
 		$array = pg_fetch_all($result);
-			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Rola</th><th scope='col'>Číslo užívateľa</th><th scope='col'>Naposledy upravené</th><th scope='col'>Upraviť</th></tr>";
+			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Rola</th><th scope='col'>Číslo užívateľa</th><th scope='col'>Naposledy upravené</th><th scope='col'>Upraviť</th><th scope='col'>QR kód</th></tr>";
 			foreach($array as $item) {
 				//získaj rolu
 			$code_string = "'".$item['code']."'";
@@ -329,6 +357,7 @@ function vypis_uzivatelov($db){
 			echo "<td>{$item['code']}</td>";
 			echo "<td>{$item['last_sync']}</td>";
 			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['code']}'>Uprav</button></td>";
+			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['code']}qr'>Zobraziť</button></td>";
 			
 			echo'<div class="modal fade" id="modal' . $item['code'] . '" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['code'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
 			
@@ -360,6 +389,19 @@ function vypis_uzivatelov($db){
       echo '</div><div class="modal-footer"><button type="button" class="btn-primary"data-bs-dismiss="modal">Zavrieť</button></div></div></div></div>';	
 			
 			
+			//qr code modal
+					echo'<div class="modal fade" id="modal' . $item['code'] . 'qr" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['Name']." ".$item['Last_name'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
+			
+			        //Obsah v okne
+		echo '				
+		<img src="qrcode.php?s=qr&d=' . $item['code'] . '&w=400&h=300">
+		';
+
+		
+		
+		
+      echo '</div><div class="modal-footer"><button type="button" class="btn-primary"data-bs-dismiss="modal">Zavrieť</button></div></div></div></div>';
+			
 			
 			
 			
@@ -384,14 +426,14 @@ function vypis_uzivatelov($db){
 
 function vypis_uzivatelov_web($db){
 	if ($db) {
-		$result = pg_query($db, 'SELECT * FROM "users"');
+		$result = pg_query($db, 'SELECT * FROM "users" where admin != 999');
 		if (!$result) {
 			echo "An error occurred.\n";
 			exit;
 		}
 
 		$array = pg_fetch_all($result);
-			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Prihlasovacie meno</th><th scope='col'>Admin</th><th scope='col'>Upraviť</th></tr>";
+			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Prihlasovacie meno</th><th scope='col'>Admin</th><th scope='col'>Upraviť</th><th scope='col'>Zmazať</th></tr>";
 			foreach($array as $item) {
 				//získaj rolu
 			
@@ -401,8 +443,9 @@ function vypis_uzivatelov_web($db){
 			echo "<td>{$item['username']}</td>";
 			echo "<td>{$item['admin']}</td>";
 			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['id']}'>Uprav</button></td>";
+			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['id']}delete'>Zmaž</button></td>";
 			
-			echo'<div class="modal fade" id="modal' . $item['id'] . '" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['id'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
+			echo'<div class="modal fade" id="modal' . $item['id'] . '" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['real_name'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
 			
 			        //Obsah v okne
 		echo '				
@@ -435,7 +478,25 @@ function vypis_uzivatelov_web($db){
       echo '</div><div class="modal-footer"><button type="button" class="btn-primary"data-bs-dismiss="modal">Zavrieť</button></div></div></div></div>';	
 			
 			
+			//Modal delete
+						echo'<div class="modal fade" id="modal' . $item['id'] . 'delete" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['real_name'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
 			
+			        //Obsah v okne
+		echo '				
+					<form action="" method="POST">
+				<h2>Naozaj chceš zmazať užívateľa ' . $item['real_name'] . ' ?</h2>
+
+			<input type="hidden"  name="delete23" value="' . $item['id'] . '" />
+			<input type="hidden"  name="meno32" value="' . $item['real_name'] . '" />
+			<br><br>
+				<input type="submit" value="Odstrániť" />
+			</form>
+		';
+
+		
+		
+		
+      echo '</div><div class="modal-footer"><button type="button" class="btn-primary"data-bs-dismiss="modal">Zavrieť</button></div></div></div></div>';	
 			
 			
 			
@@ -666,4 +727,75 @@ echo '			<br><br>
 	return false;
 }
 }
+
+//Logy-android
+function pocet_zaznamov_logy($db){
+	
+		$result = pg_query($db, 'SELECT * FROM "logy"');
+		$array = pg_fetch_all($result);
+		$number = pg_num_rows($result);
+		return $number;
+}
+
+
+function posuvanie_strany_logy($db,$aktualna_strana){
+		$number = pocet_zaznamov_logy($db);
+		$strana = 1;
+		echo '<nav aria-label="Page navigation example"><ul class="pagination">';
+		if($aktualna_strana >1){
+		echo  '<li class="page-item"><a class="page-link" href="?strana=' . $aktualna_strana-1 . '">Previous</a></li>';
+		}
+		for ($k = 0 ; $k < ceil($number / 20); $k++){ 
+				if($aktualna_strana == $strana){
+		echo  '<li class="page-item active"><a class="page-link" href="?strana=' . $strana . '">' . $strana . '</a></li>';
+		}
+		else {
+		echo '<li class="page-item"><a class="page-link" href="?strana=' . $strana . '">' . $strana . '</a></li>'; 
+		}
+		$strana++;
+		}
+		if($aktualna_strana <ceil($number / 20)){
+		echo '<li class="page-item"><a class="page-link" href="?strana=' . $aktualna_strana+1 . '">Next</a></li></ul></nav>';
+		}
+}
+
+
+function vypis_logy_android($db,$aktualna_strana,$uzivatel,$kod_chyby){
+	$ofset = $aktualna_strana -1;
+	$ofset = $ofset * 20;
+	$limiter = 20;
+	if ($db) {
+		$result = pg_query($db, 'SELECT * FROM "logy" WHERE android = 1 ORDER BY doplnok::timestamp DESC LIMIT ' . $limiter . ' OFFSET ' . $ofset . '');
+		if (!$result) {
+			echo "An error occurred.\n";
+			exit;
+		}
+
+		$array = pg_fetch_all($result);
+			echo "<table class='table'><tr><th scope='col'>Číslo užívateľa</th><th scope='col'>Kód záznamu</th><th scope='col'>Timestamp</th><th scope='col'>Záznam</th></tr>";
+			foreach($array as $item) {
+				$id_string = "'".$item['id']."'";
+			echo"<tr>";
+			echo "<td>{$item['uzivatel']}</td>";
+			echo "<td>{$item['kod_chyby']}</td>";
+			echo "<td>{$item['doplnok']}</td>";
+			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['id']}'>Zobraziť</button></td>";
+			
+			echo'<div class="modal fade" id="modal' . $item['id'] . '" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['kod_chyby'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
+			
+			        //Obsah v okne
+		echo $item['chyba'];			
+
+      echo '</div><div class="modal-footer"><button type="button" class="btn-primary"data-bs-dismiss="modal">Zavrieť</button></div></div></div></div>';	
+
+			
+			echo"</tr>";
+			}
+			echo "</table>";
+	
+	} else {
+	return false;
+}
+}
+
 ?>
