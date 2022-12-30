@@ -183,6 +183,9 @@ class MainApp(App):
 
         self.auditov = 0
         self.audit = None
+        self.shippment = None
+        self.shippmentStillages = set()
+        self.vozikyVOprave = {}
         self.sm.current = 'startScreen'
         #self.sm.current = 'Menu_screen'
         return self.sm
