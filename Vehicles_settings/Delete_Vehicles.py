@@ -24,6 +24,7 @@ class Delete_Vehicles (BoxLayout):
             # self.drop1.add_widget(btn)
             self.values.append(i)
         self.ids.spinner_delete_vehicle.values = self.values
+        self.ids.spinner_delete_vehicle.text = "Vyber vozidlo na vymazanie"
     def __init__(self,screenManager, **kwargs):
         super(Delete_Vehicles, self).__init__(**kwargs)
         self.screenManager = screenManager
@@ -37,6 +38,8 @@ class Delete_Vehicles (BoxLayout):
         # self.add_widget(self.btn2)
         # self.add_widget(self.notify)
     def select_id(self,tex):
+        if tex not in self.vehicle_list:
+            return
         self.on_delete_selected  = self.vehicle_list[tex]
     def call_Back (self):
         self.screenManager.current = 'Settings_Vehicles'

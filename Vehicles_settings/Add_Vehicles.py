@@ -39,5 +39,5 @@ class Add_Vehicles (BoxLayout):
 
     def clear_screen(self, *args):
         self.notify.text = ""
-        # self.text1.text = 'SPZ'
+        self.text1.text = ''
         self.synchronize_vehicles()

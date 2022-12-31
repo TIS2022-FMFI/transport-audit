@@ -40,8 +40,10 @@ class Edit_Vehicles (BoxLayout):
             # self.drop1.add_widget(btn)
             self.values.append(i)
         self.ids.spinner_edit_vehicle.values = self.values
-        # self.ids.spinner_edit_vehicle.text = 'Vyber SPZ na upravu'
+        self.ids.spinner_edit_vehicle.text = 'Vyber SPZ na upravu'
     def set_widgets(self,tex1):
+        if tex1 not in self.vehicle_list:
+            return
         self.text1.text = tex1
         self.select_id = self.vehicle_list[tex1]
     def call_Back (self):
@@ -60,5 +62,5 @@ class Edit_Vehicles (BoxLayout):
             self.call_Back()
     def clear_screen(self, *args):
         self.notify.text = ""
-        # self.text1.text = 'SPZ'
+        self.text1.text = ''
         self.synchronize_vehicles()
