@@ -24,6 +24,7 @@ class Delete_Customers (BoxLayout):
             # self.drop1.add_widget(btn)
             self.values.append(i)
         self.ids.spinner_delete_customer.values = self.values
+        self.ids.spinner_delete_customer.text = "Vyber pracovnika na vymazanie"
     def __init__(self, screenManager,**kwargs):
         super(Delete_Customers, self).__init__(**kwargs)
         self.screenManager = screenManager
@@ -37,6 +38,8 @@ class Delete_Customers (BoxLayout):
         # self.add_widget(self.btn2)
         # self.add_widget(self.notify)
     def select_code(self,tex):
+        if tex not in self.customer_list:
+            return
         self.on_delete_selected = self.customer_list[tex]
     def call_Back (self):
         self.screenManager.current = 'Settings_Customers'
