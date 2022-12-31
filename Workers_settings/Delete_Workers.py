@@ -35,14 +35,18 @@ class Delete_Workers (BoxLayout):
         self.workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']), str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         # self.drop1.clear_widgets()
         # self.drop1.select('Vyber pracovnika na vymazanie')
+        self.ids.spinner_delete_worker.values = []
         for i in self.workers_list:
             # btn = Button(text= i, size_hint_y=None, height=40, on_release=lambda btn: self.select_code(self.workers_list[btn.text]))
             # btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
             # self.drop1.add_widget(btn)
             self.values.append(i)
         self.ids.spinner_delete_worker.values = self.values
+        self.ids.spinner_delete_worker.text = 'Vyber pracovnika na vymazanie'
 
     def select_code(self,text):
+        if text not in self.workers_list:
+            return
         tex = self.workers_list[text]
         self.btn3.text = tex
         self.on_delete_selected = tex

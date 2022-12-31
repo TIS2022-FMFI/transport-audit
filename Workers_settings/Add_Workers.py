@@ -47,6 +47,8 @@ class Add_Workers (BoxLayout):
         self.ids.spinner_id.text = 'Vyber rolu'
 
     def set_selected(self,text):
+        if self.values.count(text) == 0:
+            return
         self.selected_role = text
     def call_Back (self):
         self.screenManager.current = 'Settings_Workers'

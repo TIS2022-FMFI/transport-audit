@@ -25,6 +25,7 @@ class Edit_Workers (BoxLayout):
         self.screenManager = screenManager
         self.text1 = self.ids.input_edit_worker_1
         self.text2 = self.ids.input_edit_worker_2
+        self.btn3 = self.ids.button_edit_worker
         # mainbutton = Button(text='Vyber rolu', size_hint=(.5, .25),pos=(60, 20))
         # mainbutton.bind(on_release=self.drop1.open)
         # mainbutton1 = Button(text='Vyber pracovnika na upravu', size_hint=(.5, .25), pos=(60, 20))
@@ -52,7 +53,7 @@ class Edit_Workers (BoxLayout):
             # self.drop2.add_widget(btn)
             self.values2.append(i)
         self.ids.spinner_edit_worker_1.values = self.values2
-        # self.ids.spinner_edit_worker_1.text = 'Vyber pracovnika na upravu'
+        self.ids.spinner_edit_worker_1.text = 'Vyber pracovnika na upravu'
     def synchronize_user_roles(self):
         self.select_code = None
         # self.drop1.clear_widgets()
@@ -67,9 +68,12 @@ class Edit_Workers (BoxLayout):
     def set_select(self,tex):
         self.select_role = tex
     def set_widgets(self,text):
+        if text not in self.workers_list:
+            return
         tex1 = self.workers_list[text]
         select_user = User().stiahni(int(tex1))
         self.text1.text = select_user.Name
+        print(select_user.Name)
         self.text2.text = select_user.Last_name
         selected_role = User_Role().stiahni(select_user.User_Role_id)
         self.select_code = tex1
