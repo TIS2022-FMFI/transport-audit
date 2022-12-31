@@ -35,6 +35,7 @@ class Delete_Patterns (BoxLayout):
         self.select_customer = None
         # self.drop2.clear_widgets()
         # self.drop2.select("Customer")
+        self.values = []
         self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         for i in self.customer_list:
             if self.customer_list[i] in self.pattern_list.values():
@@ -43,11 +44,14 @@ class Delete_Patterns (BoxLayout):
                 # self.drop2.add_widget(btn)
                 self.values.append(i)
         self.ids.spinner_delete_patter.values = self.values
+        self.ids.spinner_delete_patter.text = "Customer"
     def synchronize_patterns(self):
         self.select_pattern = None
         self.pattern_list = dict([(i['id'], i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     def set_customer_id(self,tex1):
         self.select_pattern = None
+        if tex1 not in self.customer_list:
+            return
         self.select_customer = self.customer_list[tex1]
         for i in Pattern().vrat_vsetky():
             if i['doplnok'] != 'DELETED' and i['Customer_id'] == self.select_customer:

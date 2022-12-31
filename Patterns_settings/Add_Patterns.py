@@ -38,6 +38,9 @@ class Add_Patterns (BoxLayout):
             # self.drop3.add_widget(btn)
             self.values3.append(str(i))
         self.ids.spinner_add_pattern_3.values = self.values3
+        self.ids.spinner_add_pattern_3.text = "Number"
+
+        self.drop4 = self.ids.spinner_add_pattern_4
         # mainbutton1 = Button(text='Vyber zakaznika', size_hint=(.5, .25), pos=(60, 20))
         # mainbutton1.bind(on_release=self.drop1.open)
         # mainbutton2 = Button(text='Stillage_type', size_hint=(.5, .25), pos=(60, 20))
@@ -73,6 +76,7 @@ class Add_Patterns (BoxLayout):
             # self.drop1.add_widget(btn)
             self.values1.append(i)
         self.ids.spinner_add_pattern_1.values = self.values1
+        self.ids.spinner_add_pattern_1.text = "Vyber zakaznika"
     def synchronize_stillage_types(self):
         self.select_stillage_type = None
         # self.drop2.clear_widgets()
@@ -85,11 +89,14 @@ class Add_Patterns (BoxLayout):
             # self.drop2.add_widget(btn)
             self.values2.append(i)
         self.ids.spinner_add_pattern_2.values = self.values2
+        self.ids.spinner_add_pattern_2.text = 'Stillage_type'
     def set_number(self,text):
         self.select_number = text
     def set_stillage_type(self,text):
         self.select_stillage_type = text
     def set_widgets(self,tex1):
+        if tex1 not in self.customer_list:
+            return
         self.select_customer_id = self.customer_list[tex1]
     def set_on_delete_type_stillage(self,tex):
         self.on_delete_type_stillage = tex
@@ -99,7 +106,7 @@ class Add_Patterns (BoxLayout):
         if self.on_delete_type_stillage is None:
             self.notify.text = "Please select item to delete"
         else:
-            # self.drop4.clear_widgets()
+            #self.drop4.clear_widgets()
             # self.drop4.select('Zoznam vybratych stillage_types')
             self.values4 = []
             self.pattern_item_list.pop(self.on_delete_type_stillage.split()[0])
@@ -111,6 +118,7 @@ class Add_Patterns (BoxLayout):
                 # self.drop4.add_widget(btn)
                 self.values4.append(i + " " + self.pattern_item_list[i])
             self.ids.spinner_add_pattern_4.values = self.values4
+            self.ids.spinner_add_pattern_4.text = 'Zoznam vybratych stillage_types'
             self.on_delete_type_stillage = None
     def check_added_pattern_item(self):
         if self.select_customer_id is None:
@@ -121,8 +129,10 @@ class Add_Patterns (BoxLayout):
             self.notify.text = "Please select number of stillage type you want add to pattern"
         else:
             self.pattern_item_list.update({self.select_stillage_type:self.select_number})
-            self.drop2.select('Stillage_type')
-            self.drop3.select('Number')
+            #self.drop2.select('Stillage_type')
+            #self.drop3.select('Number')
+            self.ids.spinner_add_pattern_2.text = 'Stillage_type'
+            self.ids.spinner_add_pattern_3.text = 'Number'
             self.select_number = None
             self.select_stillage_type = None
         # self.drop4.clear_widgets()
@@ -133,6 +143,7 @@ class Add_Patterns (BoxLayout):
             # self.drop4.add_widget(btn)
             self.values4.append(i + " " + self.pattern_item_list[i])
         self.ids.spinner_add_pattern_4.values = self.values4
+        self.ids.spinner_add_pattern_4.text = 'Zoznam vybratych stillage_types'
     def check (self):
         if self.select_customer_id is None:
             self.notify.text = "Please choose customer"
@@ -147,8 +158,11 @@ class Add_Patterns (BoxLayout):
         self.notify.text = ""
         self.select_number = None
         self.drop3.select('Number')
-        self.drop4.clear_widgets()
-        self.drop4.select("Zoznam vybratych stillage_types")
+        #self.drop4.clear_widgets()
+        #self.drop4.select("Zoznam vybratych stillage_types")
+        self.values4 = []
+        self.drop4.values = self.values4
+        self.drop4.text = "Zoznam vybratych stillage_types"
         self.pattern_item_list = dict()
         self.on_delete_type_stillage = None
         self.synchronize_customers()
