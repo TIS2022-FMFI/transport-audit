@@ -42,6 +42,7 @@ class Settings_Exports (BoxLayout):
     def clear_screen(self,*args):
         self.notify.text = ""
         # self.drop1.clear_widgets()
+        self.values = []
         id = General().vrat_vsetky()[-1]['Automatic_export']
         for i in ["Yes","No"]:
             # btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_selected(btn.text))
