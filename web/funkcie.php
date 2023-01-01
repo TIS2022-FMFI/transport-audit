@@ -1,6 +1,7 @@
 <?php
 date_default_timezone_set('Europe/Bratislava');
-error_reporting(E_ALL ^ E_NOTICE);  
+//error_reporting(E_ALL ^ E_NOTICE);  
+error_reporting(0);
 ?>
 
 
@@ -36,7 +37,7 @@ function over_pouzivatela($db, $username, $pass) {
 	}
 }
 
-function navigacia($stranka,$db = NULL){
+function navigacia($stranka,$db = NULL,$admin = 0){
 	echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> 
 ';
@@ -77,7 +78,7 @@ echo '<nav class="navbar navbar-expand-lg bg-light">
         </li>
 		
       </ul>
-				'.($stranka == "Užívatelia" ? '
+				'.($stranka == "Užívatelia" && $admin !=0 ? '
 					<!-- Button trigger modal -->
 					<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 					  Pridať užívateľa
@@ -329,7 +330,20 @@ function delete_uzivatela_web($db,$id){
 			  }
 }
 
-function vypis_uzivatelov($db){
+function vrat_uzivatela_web($db,$meno){
+		if ($db) {
+		$meno_str = "'".$meno."'";
+		$result = pg_query($db, 'SELECT * FROM "users" where username=' . $meno_str . '');
+		if (!$result) {
+			echo "An error occurred.\n";
+			exit;
+		}
+
+		return pg_fetch_row($result);
+		}
+}
+
+function vypis_uzivatelov($db,$admin=0){
 	if ($db) {
 		$deleted_string = "'"."DELETED"."'";
 		$result = pg_query($db, 'SELECT * FROM "User" WHERE doplnok is null or doplnok != ' . $deleted_string . ' ORDER BY "last_sync" DESC');
@@ -339,7 +353,12 @@ function vypis_uzivatelov($db){
 		}
 
 		$array = pg_fetch_all($result);
+			if($admin==1){
 			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Rola</th><th scope='col'>Číslo užívateľa</th><th scope='col'>Naposledy upravené</th><th scope='col'>Upraviť</th><th scope='col'>QR kód</th></tr>";
+			}
+			else{
+			echo "<table class='table'><tr><th scope='col'>Meno</th><th scope='col'>Rola</th><th scope='col'>Číslo užívateľa</th><th scope='col'>Naposledy upravené</th><th scope='col'>QR kód</th></tr>";
+			}
 			foreach($array as $item) {
 				//získaj rolu
 			$code_string = "'".$item['code']."'";
@@ -356,7 +375,9 @@ function vypis_uzivatelov($db){
 			echo "<td>{$row_user_role[0]}</td>";
 			echo "<td>{$item['code']}</td>";
 			echo "<td>{$item['last_sync']}</td>";
+			if($admin==1){
 			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['code']}'>Uprav</button></td>";
+			}
 			echo"<td><button type='button' style='border: none;background-color: #ffffff;' data-bs-toggle='modal' data-bs-target='#modal{$item['code']}qr'>Zobraziť</button></td>";
 			
 			echo'<div class="modal fade" id="modal' . $item['code'] . '" tabindex="-1" role="dialog" aria-labelledby="vockoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fcLabel">' . $item['code'] . '</h5><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
@@ -729,17 +750,17 @@ echo '			<br><br>
 }
 
 //Logy-android
-function pocet_zaznamov_logy($db){
+function pocet_zaznamov_logy($db,$android){
 	
-		$result = pg_query($db, 'SELECT * FROM "logy"');
+		$result = pg_query($db, 'SELECT * FROM "logy" where android = ' . $android .' ');
 		$array = pg_fetch_all($result);
 		$number = pg_num_rows($result);
 		return $number;
 }
 
 
-function posuvanie_strany_logy($db,$aktualna_strana){
-		$number = pocet_zaznamov_logy($db);
+function posuvanie_strany_logy($db,$aktualna_strana,$android){
+		$number = pocet_zaznamov_logy($db,$android);
 		$strana = 1;
 		echo '<nav aria-label="Page navigation example"><ul class="pagination">';
 		if($aktualna_strana >1){
@@ -759,13 +780,67 @@ function posuvanie_strany_logy($db,$aktualna_strana){
 		}
 }
 
+function vypis_logy_uzivatel_kod_chyby_option_as_str($db,$android_web,$prepinac) {
+	// do premennej $row treba priradiť jednotlivé položky objednávky $id 
+	if ($db) {
+		$vysledok = "<option value=''>---</option>";
+		$sql = 'SELECT * FROM "logy" where android=' . $android_web . ''; // definuj dopyt
+		$result = pg_query($db,$sql);
+		$array = pg_fetch_all($result);
+		$duplicita = array();
+			foreach($array as $item) {
+				if($prepinac ==1 && in_array( $item['uzivatel'] ,$duplicita )==false ){
+				$vysledok.= "<option value='{$item['uzivatel']}'>{$item['uzivatel']}</option>";
+				array_push($duplicita, $item['uzivatel']);
+				}
+				elseif($prepinac !=1 && in_array( $item['kod_chyby'] ,$duplicita )==false){
+					$vysledok.= "<option value='{$item['kod_chyby']}'>{$item['kod_chyby']}</option>";
+					array_push($duplicita, $item['kod_chyby']);
+				}
 
-function vypis_logy_android($db,$aktualna_strana,$uzivatel,$kod_chyby){
+			}
+			return $vysledok;
+		} else {
+			// dopyt sa NEpodarilo vykonať!
+			echo '<p class="chyba">NEpodarilo sa získať údaje z databázy</p>' . $mysqli->error ;
+		}
+	}
+
+
+function vloz_log($db,$code,$message,$user){
+
+		//pg_get_result($db);
+		$date = date('Y-m-d H:i:s');
+			  $data = array('kod_chyby'=>$code, 'chyba'=>$message, 'uzivatel'=>$user, 'android'=>0, 'doplnok'=>$date);
+			  $res = pg_insert($db, 'logy', $data);
+			  if ($res) {
+				  //echo "Data is updated: $res\n";
+				  return True;
+			  } else {
+				  return False;
+			  }
+}
+
+
+function vypis_logy_android($db,$aktualna_strana,$uzivatel,$kod_chyby,$android){
 	$ofset = $aktualna_strana -1;
 	$ofset = $ofset * 20;
 	$limiter = 20;
 	if ($db) {
-		$result = pg_query($db, 'SELECT * FROM "logy" WHERE android = 1 ORDER BY doplnok::timestamp DESC LIMIT ' . $limiter . ' OFFSET ' . $ofset . '');
+		if($uzivatel !="" && $kod_chyby!=-1){
+			$uzivatel_str = "'".$uzivatel."'";
+			$result = pg_query($db, 'SELECT * FROM "logy" WHERE android = ' . $android .' and uzivatel= ' . $uzivatel_str . ' and kod_chyby = ' . $kod_chyby . '  ORDER BY doplnok::timestamp DESC');
+		}
+		elseif($uzivatel !=""){
+			$uzivatel_str = "'".$uzivatel."'";
+			$result = pg_query($db, 'SELECT * FROM "logy" WHERE android = ' . $android .' and uzivatel= ' . $uzivatel_str . ' ORDER BY doplnok::timestamp DESC');
+		}
+		elseif($kod_chyby!=-1){
+			$result = pg_query($db, 'SELECT * FROM "logy" WHERE android = ' . $android .' and kod_chyby = ' . $kod_chyby . '  ORDER BY doplnok::timestamp DESC');
+		}
+		else{
+		$result = pg_query($db, 'SELECT * FROM "logy" WHERE android = ' . $android .' ORDER BY doplnok::timestamp DESC LIMIT ' . $limiter . ' OFFSET ' . $ofset . '');
+		}
 		if (!$result) {
 			echo "An error occurred.\n";
 			exit;

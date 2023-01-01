@@ -4,7 +4,12 @@ include('db.php');
 include('funkcie.php');
 require('fpdf/fpdf.php');
 $pdf = new FPDF();
-navigacia('Exporty');
+
+if( isset($_SESSION['prihlasovacie_meno'])&& vrat_uzivatela_web($db,$_SESSION['prihlasovacie_meno'])[4]==999 ){
+		echo "Účet expirovaný";
+		session_unset();
+		session_destroy();
+}
 ?>
 
 
@@ -19,6 +24,7 @@ else {
 }
 $chyby = array();
 if (isset($_POST['odhlas'])){
+		vloz_log($db,101,"Odhlásenie",$_SESSION['prihlasovacie_meno']);
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	session_unset();
 	session_destroy();
@@ -33,14 +39,15 @@ over_pouzivatela($db, $_POST["prihlasmeno"], $_POST["heslo"] )==false ){
 
 
 if (isset($_POST[ "prihlasmeno"] ) && isset($_POST["heslo"] ) &&
-over_pouzivatela($db, $_POST["prihlasmeno"], $_POST["heslo"] )==true ){
+over_pouzivatela($db, $_POST["prihlasmeno"], $_POST["heslo"] )==true && vrat_uzivatela_web($db,$_POST["prihlasmeno"])[4]!=999 ){
 	$pouzivatel = over_pouzivatela($db, $_POST["prihlasmeno"], $_POST["heslo"] );
 	//print_r($pouzivatel);
 	$_SESSION['prihlasovacie_meno'] = $pouzivatel[1] ;
-	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"prihlasenie");
+	vloz_log($db,100,"Prihlásenie",$_SESSION['prihlasovacie_meno']);
 }
 if (isset($_SESSION['prihlasovacie_meno'])){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"Návšteva indexu ako prihlásený");
+	navigacia('Exporty');
 	
 	
   

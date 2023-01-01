@@ -4,8 +4,21 @@ include('db.php');
 include('funkcie.php');
 require('fpdf/fpdf.php');
 $pdf = new FPDF();
+if(isset($_SESSION['prihlasovacie_meno'])==false){
+	    echo "<script> location.href='index.php'; </script>";
+        exit;
+}
+if( isset($_SESSION['prihlasovacie_meno'])&& vrat_uzivatela_web($db,$_SESSION['prihlasovacie_meno'])[4]==999 ){
+		echo "Účet expirovaný";
+		session_unset();
+		session_destroy();
+}
+if( isset($_SESSION['prihlasovacie_meno'])&& vrat_uzivatela_web($db,$_SESSION['prihlasovacie_meno'])[4]==1 ){
+	navigacia('Užívatelia',$db2,1);
+}
+else{
 navigacia('Užívatelia',$db2);
-
+}
 ?>
 
 
@@ -15,6 +28,7 @@ navigacia('Užívatelia',$db2);
 if (isset($_POST['meno_i']) && isset($_POST['priezvisko_i']) && isset($_POST['rola_i'])   ){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	if(pridaj_uzivatela_android($db2,$_POST['meno_i'],$_POST['priezvisko_i'],$_POST['rola_i'])){
+		vloz_log($db,105,"Pridanie užívateľa: ".$_POST['meno_i']." ".$_POST['priezvisko_i']." ",$_SESSION['prihlasovacie_meno']);
 	echo '<div class="modal fade" id="onload" tabindex="-1"">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -42,6 +56,7 @@ echo "<script type='text/javascript'>
 if (isset($_POST['meno']) && isset($_POST['priezvisko']) && isset($_POST['rola']) && isset($_POST['code'])  && isset($_POST['doplnok'])    ){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	if(update_uzivatela_android($db2,$_POST['meno'],$_POST['priezvisko'],$_POST['rola'],$_POST['code'],$_POST['doplnok']) ){
+		vloz_log($db,106,"Úprava užívateľa: ".$_POST['meno']." ".$_POST['priezvisko']." ".$_POST['code'],$_SESSION['prihlasovacie_meno']);
 	echo '<div class="modal fade" id="onload" tabindex="-1"">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -69,9 +84,11 @@ echo "<script type='text/javascript'>
 
 $chyby = array();
 if (isset($_POST['odhlas'])){
+	vloz_log($db,101,"Odhlásenie",$_SESSION['prihlasovacie_meno']);
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	session_unset();
 	session_destroy();
+	
 }
 
 if (isset($_POST[ "prihlasmeno"] ) && isset($_POST["heslo"] ) &&
@@ -103,7 +120,14 @@ if (isset($_SESSION['prihlasovacie_meno'])){
 
 <div class="row">
     <div class="col-4 d-flex">
-       <?php  vypis_uzivatelov($db2);?>
+       <?php  
+	   if( isset($_SESSION['prihlasovacie_meno'])&& vrat_uzivatela_web($db,$_SESSION['prihlasovacie_meno'])[4]==1 ){
+	vypis_uzivatelov($db2,1);
+}
+else{
+vypis_uzivatelov($db2);
+}
+?>
     </div>
 </div>
 		

@@ -4,6 +4,19 @@ include('db.php');
 include('funkcie.php');
 require('fpdf/fpdf.php');
 $pdf = new FPDF();
+if(isset($_SESSION['prihlasovacie_meno'])==false){
+	    echo "<script> location.href='index.php'; </script>";
+        exit;
+}
+if( isset($_SESSION['prihlasovacie_meno'])&& vrat_uzivatela_web($db,$_SESSION['prihlasovacie_meno'])[4]==999 ){
+		echo "Účet expirovaný";
+		session_unset();
+		session_destroy();
+}
+if(isset($_SESSION['prihlasovacie_meno']) && vrat_uzivatela_web($db,$_SESSION['prihlasovacie_meno'])[4]==0){
+	    echo "<script> location.href='index.php'; </script>";
+        exit;
+}
 navigacia('Užívatelia-web',$db2);
 
 ?>
@@ -15,6 +28,7 @@ navigacia('Užívatelia-web',$db2);
 if (isset($_POST['meno']) && isset($_POST['username']) && isset($_POST['heslo']) && isset($_POST['rola'])  && isset($_POST['ano'])    ){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	if(pridaj_uzivatela_web($db,$_POST['meno'],$_POST['username'],$_POST['rola'],$_POST['heslo']) ){
+		vloz_log($db,102,"Pridanie užívateľa: ".$_POST['meno']." ".$_POST['username']." ",$_SESSION['prihlasovacie_meno']);
 	echo '<div class="modal fade" id="onload" tabindex="-1"">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -42,6 +56,7 @@ echo "<script type='text/javascript'>
 if (isset($_POST['meno']) && isset($_POST['username']) && isset($_POST['heslo']) && isset($_POST['rola'])  && isset($_POST['id'])    ){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	if(update_uzivatela_web($db,$_POST['meno'],$_POST['username'],$_POST['rola'],$_POST['id'],$_POST['heslo']) ){
+		vloz_log($db,103,"Úprava užívateľa: ".$_POST['meno']." ".$_POST['username']." ",$_SESSION['prihlasovacie_meno']);
 	echo '<div class="modal fade" id="onload" tabindex="-1"">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -69,6 +84,7 @@ echo "<script type='text/javascript'>
 if (isset($_POST['delete23']) && isset($_POST['meno32'])  ){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	if(delete_uzivatela_web($db,$_POST['delete23']) ){
+		vloz_log($db,104,"Odstránenie užívateľa: ".$_POST['meno32'],$_SESSION['prihlasovacie_meno']);
 	echo '<div class="modal fade" id="onload" tabindex="-1"">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -95,9 +111,11 @@ echo "<script type='text/javascript'>
 
 $chyby = array();
 if (isset($_POST['odhlas'])){
+	vloz_log($db,101,"Odhlásenie",$_SESSION['prihlasovacie_meno']);
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"odhlasenie");
 	session_unset();
 	session_destroy();
+	
 }
 
 if (isset($_POST[ "prihlasmeno"] ) && isset($_POST["heslo"] ) &&
