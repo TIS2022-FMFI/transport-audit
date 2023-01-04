@@ -49,10 +49,10 @@ class StartScreen(Screen):
 
 
         pouzivatel = User().stiahni(self.aplikacia.kod[0])
-        if pouzivatel is None:
-            pouz = User().vrat_vsetky(True)
-            ind = randint(0, len(pouz)-1 )
-            pouzivatel = pouz[ind]
+        #if pouzivatel is None:
+        #    pouz = User().vrat_vsetky(True)
+        #    ind = randint(0, len(pouz)-1 )
+        #    pouzivatel = pouz[ind]
         if pouzivatel is not None and not pouzivatel.over_zmazanie():
 
             self.aplikacia.zamestnanec = pouzivatel

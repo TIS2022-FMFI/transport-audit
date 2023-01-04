@@ -7,14 +7,22 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from startScreen2 import StartScreen
 from UzavretyAudit import UzavretyKamion
 from priebehAuditu import PrebiehajuciAudit
-from skener import Scanner
+#from skener import Scanner
 from auditUvod import UvodAuditu
+from kivy.utils import platform
+if platform == "android": # Zarucuje, že iba na androide sa if spustí, teda android package sa nemusí (a ani nedá) inštalovať
+    from android.permissions import request_permissions, Permission
+    request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE,Permission.CAMERA])
 
 from sqlite import synchronize_db_server_client, Vehicle
 synchronize_db_server_client()
+from skener2 import Scanner as Scanner2
 
 class MainApp(App):
     def build(self):
+        if platform == "android":
+            request_permissions(
+                [Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE, Permission.CAMERA])
         Builder.load_file('design.kv')
         #Vehicle().stiahni('9a414a42-1edc-42dc-a562-e635de6db7d2').zmazat()
         self.sm = self.screenManager = ScreenManager()
@@ -155,7 +163,7 @@ class MainApp(App):
         self.zamestnanec = None
         self.kod = []
 
-        self.skenovanieScreen = Scanner(self.screenManager, self.kod, None, None,
+        self.skenovanieScreen = Scanner2(self.screenManager, self.kod, None, None,
                                         name='skener')
         self.screenManager.add_widget(self.skenovanieScreen)
         self.skenovanieScreen.prveSpustenie = False
