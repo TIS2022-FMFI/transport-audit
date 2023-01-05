@@ -72,22 +72,11 @@
                 id: MSbtn6
                 text: "Export Settings"
                 on_press: root.call_Exportss_settings()
-            MyButton:
-                id:MSbtn8
-                text: "Typy vozikov"
-                on_press: root.call_Stillage_types_settings()
-
-        MyButton:
-            id: MSbtn9
-            text: "Zacat audit"
-            size_hint:(1, 0.2)
-            on_press: root.zacatAudit()
-
         MyButton:
             id: MSbtn7
             text: "Odhlasit"
             size_hint:(1, 0.2)
-            on_press: root.odhlasit()
+            on_press: root.newclr(self)
 
 
 
@@ -474,9 +463,6 @@
                 text: "Pridaj"
                 on_press: root.call_add()
             MyButton:
-                text: "Uprav"
-                on_press: root.call_edit()
-            MyButton:
                 text: "Vymaz"
                 on_press: root.call_delete()
             MyButton:
@@ -638,7 +624,7 @@
                 hint_text: 'Meno zakaznika'
 
             MyButton:
-                text: "Pridaj"
+                text: "Uprav"
                 on_press: root.check()
             MyButton:
                 text: "Spat"
@@ -686,38 +672,30 @@
 
 <Add_Configs>
     BoxLayout:
-        padding: [0, '20sp', 0, '20sp']
+        padding: [0, '250sp', 0, 0]
         orientation: 'vertical'
         spacing:'30sp'
         canvas.before:
             Rectangle:
                 pos: self.pos
                 size: self.size
-                source: 'bg4.png'
+                source: 'bgwithLogo.png'
         MySpinner:
-            id: spinner_add_config_1
-            on_text: root.set_customer(spinner_add_config_1.text)
+            id: spinner_add_config1
+            on_text: root.set_customer(spinner_add_config1.text)
         MySpinner:
-            id: spinner_add_config_2
-            on_text: root.set_vehicle(spinner_add_config_2.text)
-        MySpinner:
-            id: spinner_add_config_3
-            on_text: root.set_advance_user(spinner_add_config_3.text)
-        MyButton:
-            text: "Pridaj Polozku"
-            on_press: root.check_adding_advanced_users()
-        MySpinner:
-            id: spinner_add_config_4
-            on_text: root.set_on_delete_advanced_user(spinner_add_config_4.text)
-        MyButton:
-            text: "Odstran polozku"
-            on_press: root.check_deleted_advanced_user()
-        MyButton:
-            text: "Uprav"
-            on_press: root.check()
-        MyButton:
-            text: "Spat"
-            on_press: root.call_Back()
-        MyButton:
-            id: notify
+            id: spinner_add_config2
+            on_text: root.set_vehicle(spinner_add_config2.text)
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Vymaz"
+                on_press: root.check()
+            MyButton:
+                text: "Späť"
+                on_press: root.call_Back()
+            MyButton:
+                id: notify
+
 
