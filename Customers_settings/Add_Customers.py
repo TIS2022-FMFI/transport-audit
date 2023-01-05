@@ -22,6 +22,7 @@ class Add_Customers (BoxLayout):
         # self.add_widget(btn1)
         # self.add_widget(btn2)
         # self.add_widget(self.notify)
+        self.notify = self.ids.notify
     def synchronize_customers(self):
         self.customer_list = [i['Name'] for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def call_Back (self):
@@ -36,5 +37,5 @@ class Add_Customers (BoxLayout):
             self.call_Back()
     def clear_screen(self, *args):
         self.notify.text = ""
-        self.text1.text = 'Meno zakaznika'
+        self.text1.text = ''
         self.synchronize_customers()

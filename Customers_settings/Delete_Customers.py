@@ -15,6 +15,7 @@ class Delete_Customers (BoxLayout):
     values=[]
     def synchronize_customers(self):
         self.on_delete_selected = None
+        self.values = []
         self.customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         # self.drop1.clear_widgets()
         # self.drop1.select("Vyber pracovnika na vymazanie")
@@ -36,6 +37,7 @@ class Delete_Customers (BoxLayout):
         # self.add_widget(mainbutton1)
         # self.add_widget(self.btn1)
         # self.add_widget(self.btn2)
+        self.notify = self.ids.notify
         # self.add_widget(self.notify)
     def select_code(self,tex):
         if tex not in self.customer_list:
