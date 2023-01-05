@@ -41,6 +41,7 @@ class Edit_Workers (BoxLayout):
         # self.add_widget(mainbutton)
         # self.add_widget(self.btn1)
         # self.add_widget(self.btn2)
+        self.notify = self.ids.notify
         # self.add_widget(self.notify)
     def synchronize_workers(self):
         self.select_code = None
@@ -107,8 +108,8 @@ class Edit_Workers (BoxLayout):
             updated_user.update()
             self.call_Back()
     def clear_screen(self,*args):
-        self.text1.text = "Meno"
-        self.text2.text = "Priezvisko"
+        self.text1.text = ""
+        self.text2.text = ""
         self.notify.text = ""
         self.btn3.text="Uzivatelsky kod"
         self.synchronize_user_roles()

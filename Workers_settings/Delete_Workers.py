@@ -29,9 +29,11 @@ class Delete_Workers (BoxLayout):
         # self.add_widget(self.btn1)
         # self.add_widget(self.btn2)
         # self.add_widget(self.notify)
+        self.notify = self.ids.notify
         self.btn3 = self.ids.button_delete_worker
     def synchronize_workers(self,*args):
         self.on_delete_selected = None
+        self.values = []
         self.workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']), str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         # self.drop1.clear_widgets()
         # self.drop1.select('Vyber pracovnika na vymazanie')

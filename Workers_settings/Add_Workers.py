@@ -33,6 +33,7 @@ class Add_Workers (BoxLayout):
         self.drop1 = self.ids.spinner_id
         self.text1 = self.ids.input
         self.text2 = self.ids.input1
+        self.notify = self.ids.notify
     def synchronize_user_roles(self):
         self.selected_role = None
         # self.drop1.clear_widgets()
@@ -67,8 +68,8 @@ class Add_Workers (BoxLayout):
             User().nahraj(self.text1.text, self.text2.text, self.selected_role)
             self.call_Back()
     def clear_screen(self,*args):
-        self.text1.text = "Meno"
-        self.text2.text = "Priezvisko"
+        self.text1.text = ""
+        self.text2.text = ""
         self.notify.text = ""
         self.synchronize_user_roles()
 
