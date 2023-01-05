@@ -10,14 +10,14 @@ class Settings_Configs (BoxLayout):
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         super(Settings_Configs, self).__init__(**kwargs)
-        super().__init__()
+        # super().__init__()
         self.screenManager = screenManager
-        self.btn1.bind(on_release = lambda btn: self.call_add())
-        self.btn3.bind(on_release=lambda btn: self.call_delete())
-        self.btn4.bind(on_release=lambda btn: self.call_back())
-        self.add_widget(self.btn1)
-        self.add_widget(self.btn3)
-        self.add_widget(self.btn4)
+        # self.btn1.bind(on_release = lambda btn: self.call_add())
+        # self.btn3.bind(on_release=lambda btn: self.call_delete())
+        # self.btn4.bind(on_release=lambda btn: self.call_back())
+        # self.add_widget(self.btn1)
+        # self.add_widget(self.btn3)
+        # self.add_widget(self.btn4)
     def call_add(self):
         self.screenManager.current = 'Add_Configs'
 

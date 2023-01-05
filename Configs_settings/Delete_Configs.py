@@ -21,53 +21,75 @@ class Delete_Configs(BoxLayout):
     vehicle_list = None
     list_of_config_vehicles = set()
     screenManager = None
+    values1 = []
+    values2 = []
     def __init__(self, screenManager,**kwargs):
         super(Delete_Configs, self).__init__(**kwargs)
         self.screenManager = screenManager
-        mainbutton1 = Button(text='Vyber zakaznika', size_hint=(.5, .25), pos=(60, 20))
-        mainbutton1.bind(on_release=self.drop1.open)
-        self.drop1.bind(on_select=lambda instance, x: setattr(mainbutton1, 'text', x))
-        mainbutton2 = Button(text='Vyber vozidlo', size_hint=(.5, .25), pos=(60, 20))
-        mainbutton2.bind(on_release=self.drop2.open)
-        self.drop2.bind(on_select=lambda instance, x: setattr(mainbutton2, 'text', x))
-        self.btn1.bind(on_release=lambda btn: self.check())
-        self.btn2.bind(on_release=lambda btn: self.call_Back())
-        self.add_widget(mainbutton1)
-        self.add_widget(mainbutton2)
-        self.add_widget(self.btn1)
-        self.add_widget(self.btn2)
-        self.add_widget(self.notify)
+        # mainbutton1 = Button(text='Vyber zakaznika', size_hint=(.5, .25), pos=(60, 20))
+        # mainbutton1.bind(on_release=self.drop1.open)
+        # self.drop1.bind(on_select=lambda instance, x: setattr(mainbutton1, 'text', x))
+        # mainbutton2 = Button(text='Vyber vozidlo', size_hint=(.5, .25), pos=(60, 20))
+        # mainbutton2.bind(on_release=self.drop2.open)
+        # self.drop2.bind(on_select=lambda instance, x: setattr(mainbutton2, 'text', x))
+        # self.btn1.bind(on_release=lambda btn: self.check())
+        # self.btn2.bind(on_release=lambda btn: self.call_Back())
+        # self.add_widget(mainbutton1)
+        # self.add_widget(mainbutton2)
+        # self.add_widget(self.btn1)
+        # self.add_widget(self.btn2)
+        # self.add_widget(self.notify)
+        self.notify = self.ids.notify
 
     def synchronize_customers(self):
         self.select_customer_id = None
         self.edit_config_list = Config().edit_configs()
         self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         self.list_of_config_customers = set(i[0] for i in self.edit_config_list)
-        self.drop1.clear_widgets()
-        self.drop1.select("Vyber zakaznika")
+        # self.drop1.clear_widgets()
+        # self.drop1.select("Vyber zakaznika")
+        self.values1 = []
+        self.ids.spinner_delete_config1.values = self.values1
         for i in self.list_of_config_customers:
-            btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
-            btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
-            self.drop1.add_widget(btn)
+            # btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_customer(self.customer_list[btn.text]))
+            # btn.bind(on_release=lambda btn: self.drop1.select(btn.text))
+            # self.drop1.add_widget(btn)
+            self.values1.append(i)
+        self.ids.spinner_delete_config1.values = self.values1
+        self.ids.spinner_delete_config1.text = "Vyber zakaznika"
     def synchronize_vehicles(self):
         self.select_vehicle = None
         self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
-        self.drop2.clear_widgets()
-        self.drop2.select("Vyber vozidlo")
+        # self.drop2.clear_widgets()
+        # self.drop2.select("Vyber vozidlo")
+        self.values2 = []
+        self.ids.spinner_delete_config2.values = self.values2
+        self.ids.spinner_delete_config2.text = "Vyber vozidlo"
     #     pripadne config vehicle list vycistit ale nemalo by vadit
     def synchronize_configs(self):
         self.select_config_id = None
-    def set_customer(self, text):
+    def set_customer(self, text1):
+        if text1 not in self.customer_list:
+            return
+        text = self.customer_list[text1]
         self.select_customer_id = text
         self.select_vehicle = None
-        self.drop2.clear_widgets()
-        self.drop2.select('Vyber vozidlo')
+        # self.drop2.clear_widgets()
+        # self.drop2.select('Vyber vozidlo')
+        self.values2 = []
+        self.ids.spinner_delete_config2.values = self.values2
         self.list_of_config_vehicles = set(i[11] for i in self.edit_config_list if text == i[1])
         for i in self.list_of_config_vehicles:
-            btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_vehicle(self.vehicle_list[btn.text]))
-            btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
-            self.drop2.add_widget(btn)
-    def set_vehicle(self, text):
+            # btn = Button(text=i, size_hint_y=None, height=40,on_release=lambda btn: self.set_vehicle(self.vehicle_list[btn.text]))
+            # btn.bind(on_release=lambda btn: self.drop2.select(btn.text))
+            # self.drop2.add_widget(btn)
+            self.values2.append(i)
+        self.ids.spinner_delete_config2.values = self.values2
+        self.ids.spinner_delete_config2.text = "Vyber vozidlo"
+    def set_vehicle(self, text1):
+        if text1 not in self.vehicle_list:
+            return
+        text = self.vehicle_list[text1]
         self.select_vehicle = text
         for i in self.edit_config_list:
             if self.select_vehicle == i[7] and self.select_customer_id == i[1]:
