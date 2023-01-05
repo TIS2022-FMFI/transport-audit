@@ -82,6 +82,7 @@ class Edit_Workers (BoxLayout):
         if (selected_role is not None):
             self.drop1.select(selected_role.name)
             self.select_role = selected_role.name
+            self.ids.spinner_edit_worker_2.text = self.select_role
     def call_Back (self):
         self.screenManager.current = 'Settings_Workers'
     def check (self):
