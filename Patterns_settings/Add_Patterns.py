@@ -64,6 +64,7 @@ class Add_Patterns (BoxLayout):
         # self.add_widget(self.btn1)
         # self.add_widget(self.btn2)
         # self.add_widget(self.notify)
+        self.notify = self.ids.notify
     def synchronize_customers(self):
         self.select_customer_id = None
         # self.drop1.clear_widgets()
