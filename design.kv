@@ -72,22 +72,11 @@
                 id: MSbtn6
                 text: "Export Settings"
                 on_press: root.call_Exportss_settings()
-            MyButton:
-                id:MSbtn8
-                text: "Typy vozikov"
-                on_press: root.call_Stillage_types_settings()
-
-        MyButton:
-            id: MSbtn9
-            text: "Zacat audit"
-            size_hint:(1, 0.2)
-            on_press: root.zacatAudit()
-
         MyButton:
             id: MSbtn7
             text: "Odhlasit"
             size_hint:(1, 0.2)
-            on_press: root.odhlasit()
+            on_press: root.newclr(self)
 
 
 
@@ -155,6 +144,9 @@
             MyButton:
                 text: "Spat"
                 on_press: root.call_Back()
+            MyButton:
+                id: notify
+
 
 
 
@@ -184,6 +176,8 @@
             MyButton:
                 text: "Späť"
                 on_press: root.call_Back()
+            MyButton:
+                id: notify
 
 <Edit_Workers>
     BoxLayout:
@@ -216,6 +210,8 @@
         MyButton:
             text: "Spat"
             on_press: root.call_Back()
+        MyButton:
+            id: notify
 
 <Settings_Vehicles>
     BoxLayout:
@@ -269,6 +265,8 @@
             MyButton:
                 text: "Spat"
                 on_press: root.call_Back()
+            MyButton:
+                id: notify
 
 <Delete_Vehicles>
     BoxLayout:
@@ -292,6 +290,8 @@
             MyButton:
                 text: "Späť"
                 on_press: root.call_Back()
+            MyButton:
+                id: notify
 
 <Edit_Vehicles>
     BoxLayout:
@@ -315,6 +315,8 @@
         MyButton:
             text: "Spat"
             on_press: root.call_Back()
+        MyButton:
+            id: notify
 
 <Settings_Patterns>
     BoxLayout:
@@ -365,6 +367,8 @@
             MyButton:
                 text: "Späť"
                 on_press: root.call_Back()
+            MyButton:
+                id: notify
 
 <Settings_Customers>
     BoxLayout:
@@ -415,6 +419,8 @@
             MyButton:
                 text: "Späť"
                 on_press: root.call_Back()
+            MyButton:
+                id: notify
 
 <Settings_Exports>
     BoxLayout:
@@ -491,6 +497,8 @@
             MyButton:
                 text: "Späť"
                 on_press: root.call_Back()
+            MyButton:
+                id: notify
 
 <Add_Patterns>
     BoxLayout:
@@ -526,6 +534,8 @@
         MyButton:
             text: "Spat"
             on_press: root.call_Back()
+        MyButton:
+            id: notify
 
 <Edit_Patterns>
     BoxLayout:
@@ -554,32 +564,149 @@
             on_text: root.set_on_delete_type_stillage(spinner_edit_pattern_4.text)
         MyButton:
             text: "Odstran polozku"
-            on_press: root.check_deleted_pattern_tem()
+            on_press: root.check_deleted_pattern_item()
         MyButton:
-            text: "Pridaj"
+            text: "Uprav"
             on_press: root.check()
         MyButton:
             text: "Spat"
             on_press: root.call_Back()
+        MyButton:
+            id: notify
+
+
 
 
 <Add_Customers>
     BoxLayout:
-        padding: [0, 0, 0, 0]
+        padding: [0, '250sp', 0, 0]
         orientation: 'vertical'
-        spacing:'80sp'
+        spacing:'30sp'
         canvas.before:
             Rectangle:
                 pos: self.pos
                 size: self.size
                 source: 'bgwithLogo.png'
-        MyTextInput:
-            id: input_add_customer
-            hint_text: 'Meno zakaznika'
 
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MyTextInput:
+                id: input_add_customer
+                hint_text: 'Meno zakaznika'
+
+            MyButton:
+                text: "Pridaj"
+                on_press: root.check()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_Back()
+            MyButton:
+                id: notify
+
+
+<Edit_Customers>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MySpinner:
+                id: spinner_edit_customer
+                on_text: root.set_widgets(spinner_edit_customer.text)
+            MyTextInput:
+                id: text_customer
+                hint_text: 'Meno zakaznika'
+
+            MyButton:
+                text: "Pridaj"
+                on_press: root.check()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_Back()
+            MyButton:
+                id: notify
+
+
+<Edit_Configs>
+    BoxLayout:
+        padding: [0, '20sp', 0, '20sp']
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bg4.png'
+        MySpinner:
+            id: spinner_edit_config_1
+            on_text: root.set_customer(spinner_edit_config_1.text)
+        MySpinner:
+            id: spinner_edit_config_2
+            on_text: root.set_vehicle(spinner_edit_config_2.text)
+        MySpinner:
+            id: spinner_edit_config_3
+            on_text: root.set_advance_user(spinner_edit_config_3.text)
         MyButton:
-            text: "Pridaj"
+            text: "Pridaj Polozku"
+            on_press: root.check_adding_advanced_users()
+        MySpinner:
+            id: spinner_edit_config_4
+            on_text: root.set_on_delete_advanced_user(spinner_edit_config_4.text)
+        MyButton:
+            text: "Odstran polozku"
+            on_press: root.check_deleted_advanced_user()
+        MyButton:
+            text: "Uprav"
             on_press: root.check()
         MyButton:
             text: "Spat"
             on_press: root.call_Back()
+        MyButton:
+            id: notify
+
+<Add_Configs>
+    BoxLayout:
+        padding: [0, '20sp', 0, '20sp']
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bg4.png'
+        MySpinner:
+            id: spinner_add_config_1
+            on_text: root.set_customer(spinner_add_config_1.text)
+        MySpinner:
+            id: spinner_add_config_2
+            on_text: root.set_vehicle(spinner_add_config_2.text)
+        MySpinner:
+            id: spinner_add_config_3
+            on_text: root.set_advance_user(spinner_add_config_3.text)
+        MyButton:
+            text: "Pridaj Polozku"
+            on_press: root.check_adding_advanced_users()
+        MySpinner:
+            id: spinner_add_config_4
+            on_text: root.set_on_delete_advanced_user(spinner_add_config_4.text)
+        MyButton:
+            text: "Odstran polozku"
+            on_press: root.check_deleted_advanced_user()
+        MyButton:
+            text: "Uprav"
+            on_press: root.check()
+        MyButton:
+            text: "Spat"
+            on_press: root.call_Back()
+        MyButton:
+            id: notify
+
