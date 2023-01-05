@@ -15,6 +15,7 @@ class Delete_Vehicles (BoxLayout):
     values=[]
     def synchronize_vehicles(self):
         self.on_delete_selected = None
+        self.values = []
         self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         # self.drop1.clear_widgets()
         # self.drop1.select('Vyber vozidlo na vymazanie')
@@ -37,6 +38,7 @@ class Delete_Vehicles (BoxLayout):
         # self.add_widget(self.btn1)
         # self.add_widget(self.btn2)
         # self.add_widget(self.notify)
+        self.notify = self.ids.notify
     def select_id(self,tex):
         if tex not in self.vehicle_list:
             return

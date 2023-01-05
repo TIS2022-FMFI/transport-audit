@@ -24,6 +24,7 @@ class Add_Vehicles (BoxLayout):
         # self.add_widget(self.btn1)
         # self.add_widget(self.btn2)
         # self.add_widget(self.notify)
+        self.notify = self.ids.notify
     def call_Back (self):
         self.screenManager.current = 'Settings_Vehicles'
     def check (self):

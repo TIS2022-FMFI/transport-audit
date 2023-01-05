@@ -28,6 +28,7 @@ class Edit_Vehicles (BoxLayout):
         # self.add_widget(self.btn1)
         # self.add_widget(self.btn2)
         # self.add_widget(self.notify)
+        self.notify = self.ids.notify
         self.text1 = self.ids.input_edit_vehicle
     def synchronize_vehicles(self):
         self.select_id = None
