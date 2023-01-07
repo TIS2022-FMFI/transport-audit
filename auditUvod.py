@@ -157,10 +157,12 @@ class UvodAuditu(Screen):
 
 
     def povodnyStav(self, *args):
+        self.scrollZakaznici.naVyber = [x for x in Customer().vrat_vsetky(True) if
+                                        not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None]
+        self.scrollAuta.naVyber = [x for x in Vehicle().vrat_vsetky(True) if not x.over_zmazanie()]
         if self.prvyVstup:
             self.prvyVstup = False
             return
-
         self.scrollZakaznici.vynuluj()
         self.scrollAuta.vynuluj()
 

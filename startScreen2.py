@@ -5,7 +5,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 
 from skener import Scanner
-from sqlite import User
+from sqlite import User, User_Role
 from random import randint
 class StartScreen(Screen):
     def __init__(self, povodna, dalsia, aplikacia, **kwargs):
@@ -53,7 +53,7 @@ class StartScreen(Screen):
         #    pouz = User().vrat_vsetky(True)
         #    ind = randint(0, len(pouz)-1 )
         #    pouzivatel = pouz[ind]
-        if pouzivatel is not None and not pouzivatel.over_zmazanie():
+        if pouzivatel is not None and not pouzivatel.over_zmazanie() and User_Role().stiahni(pouzivatel.User_Role_id) is not None:
 
             self.aplikacia.zamestnanec = pouzivatel
             print("bol najdeny zamestnanec", self.aplikacia.zamestnanec, pouzivatel)
