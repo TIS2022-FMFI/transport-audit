@@ -81,6 +81,7 @@ class PrebiehajuciAudit(Screen):
         self.prebiehaAudit = False
         self.aplikacia.shippmentStillages = set()
         self.aplikacia.kod.clear()
+        self.pattern = None
         #prebiehaAuditself.aplikacia.screenManager.remove_widget(self)
         #self.aplikacia.screenManager.remove_widget(self.aplikacia.skenovanieScreen)
         #self.aplikacia.screenManager.remove_widget(self.uzavretyScreen)
@@ -246,7 +247,7 @@ class PrebiehajuciAudit(Screen):
     def vyhovujeTlsRange(self, kod):
         if len(kod) != 9 and not "-" in kod:
             return False
-        v = kod.split("-")
+        v = [x.strip() for x in kod.split("-")]
         if len(v) != 2:
             return False
         prve, druhe = v
@@ -316,7 +317,7 @@ class PrebiehajuciAudit(Screen):
         self.stillage.JLR_Header_NO = casti['JLRHeaderNo']
         self.stillage.Carriage_L_JLR_H = casti['carriageLabel'] + "/" + casti['JLRHeaderStillageNo']
     def ulozRange(self):
-        self.stillage.TLS_range_start, self.stillage.TLS_range_stop = self.kodVybraty.split("-")
+        self.stillage.TLS_range_start, self.stillage.TLS_range_stop = [x.strip() for x in self.kodVybraty.split("-")]
 
     def ulozPrvyKod(self):
         self.stillage.First_scan_product = self.kodVybraty
@@ -334,6 +335,37 @@ class PrebiehajuciAudit(Screen):
         print("audit v priebehu ", self.prebiehaAudit)
         if self.prebiehaAudit:
             return
+
+        if self.zakaznik is None:
+            self.spat()
+            return
+        self.pattern = Pattern().patternZakaznika(self.zakaznik.id)
+
+        if self.pattern is None:
+            print("pattern je none")
+            #self.spat()
+            self.spat()
+            return
+
+        self.polozkyPatternu = Pattern_Item().vrat_vsetkyPattern(self.pattern.id)
+        pouzStillage = set()
+        self.poctyPoloziekPatternu = {}
+        self.maxDielikov = 0
+        for p in self.polozkyPatternu:
+            if p.Stillage_type_id not in pouzStillage:
+                pouzStillage.add(p.Stillage_type_id)
+                stillageTupe = Stillage_type().stiahni(p.Stillage_type_id)
+                if stillageTupe is None:
+                    continue
+                self.maxDielikov += p.Number
+                self.poctyPoloziekPatternu[stillageTupe.Name] = p.Number
+        print(self.poctyPoloziekPatternu)
+        if self.maxDielikov == 0:
+            print("same nuly")
+            self.spat()
+            return
+
+
         self.report = citaj_report_dict()
         self.clear_widgets()
 
@@ -398,41 +430,18 @@ class PrebiehajuciAudit(Screen):
         self.add_widget(self.bPrvy)
         self.lPrvy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
         self.add_widget(self.lPrvy)
-        self.bDruhy = Button(text='Naskenujte druhy produkt', background_color="#0003a8",
+        self.bDruhy = Button(text='Naskenujte posledny produkt', background_color="#0003a8",
                              background_normal="", pos_hint={'center_x': 0.3, "top": 0.35}, size_hint=(0.3, 0.08))
         self.bDruhy.bind(on_press=self.skenDruhy)
         self.add_widget(self.bDruhy)
         self.lDruhy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.35}, size_hint=(0.5, 0.08))
         self.add_widget(self.lDruhy)
 
-        if self.zakaznik is None:
-            return
-        self.pattern = Pattern().patternZakaznika(self.zakaznik.id)
 
-        if self.pattern is None:
-            print("pattern je none")
-            #self.spat()
-            return
-        self.polozkyPatternu = Pattern_Item().vrat_vsetkyPattern(self.pattern.id)
-        pouzStillage = set()
-        self.poctyPoloziekPatternu = {}
-        from random import randint
-        self.maxDielikov = 0
-        for p in self.polozkyPatternu:
-            if p.Stillage_type_id not in pouzStillage:
-                pouzStillage.add(p.Stillage_type_id)
-                if p.Number == 0:
-                    p.Number = randint(1, 5)
 
-                stillageTupe = Stillage_type().stiahni(p.Stillage_type_id)
-                if stillageTupe is None:
-                    continue
-                self.maxDielikov += p.Number
-                self.poctyPoloziekPatternu[stillageTupe.Name] = p.Number
-        print(self.poctyPoloziekPatternu)
 
         #print(Stillage_type().vrat_vsetky())
-        self.sirka = 800
+        self.sirka = self.size[0]
 
         self.sirkaDielika = self.sirka / self.maxDielikov
         self.dielikov = 0
@@ -507,7 +516,7 @@ class PrebiehajuciAudit(Screen):
             zamestnanec = User().stiahni(self.aplikacia.kod[0])
             if zamestnanec is not None and not zamestnanec.over_zmazanie():
                 rola = User_Role().stiahni(zamestnanec.User_Role_id)
-                if rola is not None and not rola.over_zmazanie() and rola.name == 'Operátor':
+                if rola is not None and not rola.over_zmazanie() and (rola.name == 'Operátor' or rola.name == 'Administrátor'):
                     self.remove_widget(self.bPotvrditVozik)
                     self.nahrajVozikZasielky(True)
                     self.aplikacia.kod.clear()
