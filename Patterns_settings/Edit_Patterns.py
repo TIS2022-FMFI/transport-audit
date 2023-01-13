@@ -72,7 +72,6 @@ class Edit_Patterns (BoxLayout):
         self.values1 = []
         # self.drop5.clear_widgets()
         # self.drop5.select('Customer')
-        self.ids.spinner_edit_pattern_1.text = "Customer"
         self.customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         for i in self.customer_list:
             if self.customer_list[i] in self.pattern_list.values():
@@ -80,6 +79,7 @@ class Edit_Patterns (BoxLayout):
                 # btn.bind(on_release=lambda btn: self.drop5.select(btn.text))
                 # self.drop5.add_widget(btn)
                 self.values1.append(i)
+        self.ids.spinner_edit_pattern_1.text = "Customer"
         self.ids.spinner_edit_pattern_1.values = self.values1
     def synchronize_stillage_types(self):
         self.select_stillage_type = None
@@ -107,6 +107,8 @@ class Edit_Patterns (BoxLayout):
         self.on_delete_type_stillage = None
         self.pattern_item_list = dict()
     def set_customer_id(self,tex1):
+        if tex1 not in self.customer_list.keys():
+            return
         # cistenie
         self.clear_choosed_items()
         self.select_pattern = None
@@ -118,12 +120,19 @@ class Edit_Patterns (BoxLayout):
                 break
         self.set_widgets(self.select_pattern)
     def set_number(self,text):
-        self.select_number = text
+        if text == "Number":
+            self.select_number = None
+        else:
+            self.select_number = text
     def set_stillage_type(self,text):
-        self.select_stillage_type = text
+        if text == 'Stillage type':
+            self.select_stillage_type = None
+        else:
+            self.select_stillage_type = text
     def set_widgets(self,tex1):
         self.clear_choosed_items()
         self.select_pattern = tex1
+        self.values4 = []
         for i in self.Edit_data:
             if  i[1] == self.select_customer and tex1 == i[5]:
                 self.pattern_item_list.update({i[17]:str(i[10])})
@@ -134,8 +143,11 @@ class Edit_Patterns (BoxLayout):
                 self.values4.append(i[17] + " " + str(i[10]))
         self.ids.spinner_edit_pattern_4.values = self.values4
     def set_on_delete_type_stillage(self,tex):
-        if tex != 'Zoznam vybratych stillage_types':
+        if tex == 'Zoznam vybratych stillage_types':
+            self.on_delete_type_stillage = None
+        else:
             self.on_delete_type_stillage = tex
+        print(self.on_delete_type_stillage)
     def call_Back (self):
         self.screenManager.current = 'Settings_Patterns'
     def check_deleted_pattern_item(self):
@@ -145,8 +157,8 @@ class Edit_Patterns (BoxLayout):
             self.values4 = []
             # self.drop4.clear_widgets()
             # self.drop4.select('Zoznam vybratych stillage_types')
-            self.ids.spinner_edit_pattern_4.text = 'Zoznam vybratych stillage_types'
             self.pattern_item_list.pop(self.on_delete_type_stillage.split()[0])
+            self.ids.spinner_edit_pattern_4.text = 'Zoznam vybratych stillage_types'
             # self.drop4.bind(on_select=lambda instance, x: setattr(self.mainbutton4, 'text', x))
             for i in self.pattern_item_list:
                 # btn = Button(text=i + " " + self.pattern_item_list[i], size_hint_y=None, height=40,
@@ -160,7 +172,7 @@ class Edit_Patterns (BoxLayout):
         if self.select_stillage_type is None:
             self.notify.text = "Please select stillage type you want add to pattern"
         elif self.select_number is None:
-            self.notify.text = "Please select number of stillage type you want add to pattern"
+            self.notify.text = "Please select number of stillage type"
         else:
             self.pattern_item_list.update({self.select_stillage_type:self.select_number})
             # self.drop2.select('Stillage_type')
