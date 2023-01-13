@@ -60,12 +60,15 @@ class Add_Configs (BoxLayout):
             # self.drop2.add_widget(btn)
             self.values2.append(i)
         self.ids.spinner_add_config2.values = self.values2
+        self.ids.spinner_add_config2.text = "Vyber SPZ"
     def synchronize_configs(self):
         self.config_list = [(i["Customer_id"], i["Vehicle_id"]) for i in Config().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def set_customer(self,text):
-        self.select_customer_id=text
+        if text != "Vyber zakaznika":
+            self.select_customer_id = self.customer_list[text]
     def set_vehicle(self,text):
-        self.select_vehicle = text
+        if text != "Vyber SPZ":
+            self.select_vehicle = self.vehicle_list[text]
 
     def call_Back (self):
         self.screenManager.current = 'Settings_Configs'
@@ -80,6 +83,7 @@ class Add_Configs (BoxLayout):
         elif (self.select_customer_id,self.select_vehicle) in self.config_list:
             self.notify.text = "This config with these SPZ and customer already exists"
         else:
+            print(self.select_customer_id, self.select_vehicle)
             Config().nahraj(self.select_customer_id,self.select_vehicle)
             self.call_Back()
     def clear_screen(self, *args):
