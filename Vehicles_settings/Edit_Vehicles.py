@@ -44,15 +44,19 @@ class Edit_Vehicles (BoxLayout):
         self.ids.spinner_edit_vehicle.text = 'Vyber SPZ na upravu'
     def set_widgets(self,tex1):
         if tex1 not in self.vehicle_list:
+            self.text1.text = ""
             return
         self.text1.text = tex1
         self.select_id = self.vehicle_list[tex1]
     def call_Back (self):
         self.screenManager.current = 'Settings_Vehicles'
     def check (self):
+        print(self.text1)
         if (self.select_id is None):
             self.notify.text = "Please choose SPZ by id you want edit."
         elif len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')) or (ord(x) == ' ') or (ord(x) >= ord('0') and ord(x) <= ord('9')))]) != len(self.text1.text) or self.text1.text == "SPZ":
+            self.notify.text = "Please enter a valid SPZ"
+        elif self.text1.text == "":
             self.notify.text = "Please enter a valid SPZ"
         elif self.text1.text in self.vehicle_list.keys() and self.vehicle_list[self.text1.text]!= self.select_id:
             self.notify.text = "This SPZ already exists"
