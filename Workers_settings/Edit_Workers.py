@@ -96,6 +96,8 @@ class Edit_Workers (BoxLayout):
                   ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) > ord('A') and ord(x) < ord('Z')))]) != len(
                 self.text2.text) or self.text2.text == "Priezvisko":
             self.notify.text = "Please enter a valid last name."
+        elif self.text1.text == "" or self.text2.text == "":
+            self.notify.text = "Please choose names fields"
         elif self.select_role is None:
             self.notify.text = "Please choose user_role"
         else:

@@ -33,7 +33,7 @@
 
 <Menu_screen>
     BoxLayout:
-        padding: [0, '250sp', 0, 0]
+        padding: [0, '230sp', 0, 0]
         orientation: 'vertical'
         spacing:'30sp'
         canvas.before:
@@ -41,10 +41,6 @@
                 pos: self.pos
                 size: self.size
                 source: 'bgwithLogo.png'
-
-
-
-
         BoxLayout:
             spacing:'12sp'
             orientation: 'vertical'
@@ -72,11 +68,18 @@
                 id: MSbtn6
                 text: "Export Settings"
                 on_press: root.call_Exportss_settings()
-        MyButton:
-            id: MSbtn7
-            text: "Odhlasit"
-            size_hint:(1, 0.2)
-            on_press: root.newclr(self)
+            MyButton:
+                id: MSbtn8
+                text: "Tipy vozikov"
+                on_press: root.call_Stillage_types_settings()
+            MyButton:
+                id: MSbtn7
+                text: "Odhlasit"
+                on_press: root.odhlasit()
+            MyButton:
+                id: MSbtn9
+                text: "Audit"
+                on_press: root.zacatAudit()
 
 
 
@@ -546,7 +549,7 @@
                 source: 'bg4.png'
         MySpinner:
             id: spinner_edit_pattern_1
-            on_text: root.set_widgets(spinner_edit_pattern_1.text)
+            on_text: root.set_customer_id(spinner_edit_pattern_1.text)
         MySpinner:
             id: spinner_edit_pattern_2
             on_text: root.set_stillage_type(spinner_edit_pattern_2.text)
@@ -690,7 +693,7 @@
             spacing:'12sp'
             orientation: 'vertical'
             MyButton:
-                text: "Vymaz"
+                text: "Pridaj"
                 on_press: root.check()
             MyButton:
                 text: "Späť"
@@ -698,4 +701,162 @@
             MyButton:
                 id: notify
 
+<StartScreen>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        MyButton:
+            id: btnSC
+            text: "Naskenujte svoj kod"
+        MyButton:
+            text: "Vyber jazyka"
 
+<Scanner>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        ZBarCam:
+            id: img
+        MyButton:
+            id: btnNove
+            text: ""
+        MyButton:
+            id: btnPouzit
+            text: ""
+        MyButton:
+            text: "Späť"
+
+
+<UvodAuditu>
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [0, '250sp', 0, 0]
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+
+<Settings_Stillage_types>
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [0, '250sp', 0, 0]
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.call_add()
+            MyButton:
+                text: "Uprav"
+                on_press: root.call_edit()
+            MyButton:
+                text: "Vymaz"
+                on_press: root.call_delete()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_back()
+
+<Edit_Stillage_type>
+    BoxLayout:
+        padding: [0, '250sp', 0, 0]
+        orientation: 'vertical'
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MySpinner:
+                id: spinner_edit_st
+                on_text: root.set_widgets(spinner_edit_st.text)
+            MyTextInput:
+                id: input_edit_st
+                hint_text: 'Meno typu vozika'
+        BoxLayout:
+            spacing:'12sp'
+            orientation: 'vertical'
+            MyButton:
+                text: "Uprav"
+                on_press: root.check()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_Back()
+            MyButton:
+                id: notify
+
+<Delete_Stillage_type>
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [0, '250sp', 0, 0]
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MySpinner:
+                id: spinner_delete_st
+                on_text: root.select_code(spinner_delete_st.text)
+            MyButton:
+                text: "Vymaz"
+                on_press: root.check()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_Back()
+            MyButton:
+                id: notify
+
+<Add_Stillage_type>
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [0, '250sp', 0, 0]
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bgwithLogo.png'
+
+        BoxLayout:
+            spacing:'24sp'
+            orientation: 'vertical'
+            MyTextInput:
+                id: input_add_st
+                hint_text: 'Meno typu vozika'
+            MyButton:
+                text: "Pridaj"
+                on_press: root.check()
+            MyButton:
+                text: "Spat"
+                on_press: root.call_Back()
+            MyButton:
+                id: notify

@@ -127,7 +127,7 @@ class Add_Patterns (BoxLayout):
         elif self.select_stillage_type is None:
             self.notify.text = "Please select stillage type you want add to pattern"
         elif self.select_number is None:
-            self.notify.text = "Please select number of stillage type you want add to pattern"
+            self.notify.text = "Please select number of stillage type"
         else:
             self.pattern_item_list.update({self.select_stillage_type:self.select_number})
             #self.drop2.select('Stillage_type')
