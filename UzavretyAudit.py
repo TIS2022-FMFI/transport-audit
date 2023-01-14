@@ -49,7 +49,7 @@ class UzavretyKamion(Screen):
             self.potvrdenie = False
 
             rola = User_Role().stiahni(zamestnanec.User_Role_id)
-            if rola is not None and not rola.over_zmazanie() and rola.name == 'Operátor':
+            if rola is not None and not rola.over_zmazanie() and (rola.name == 'Operátor' or rola.name == 'Administrátor'):
                 self.potvrdenie = True
                 self.aplikacia.kod.clear()
                 return
