@@ -130,5 +130,5 @@ class Scanner(Screen):
             #self.butNove = Button(text=f'skenovat dalej', size_hint_y=None, height='48dp', on_press=self.pokracovat,
             #                      pos_hint={'center_y': 0.25})
             #self.add_widget(self.butNove)
-        else: #pre testovanie na pocitaci
-            self.pouzitKod(input("zadaj naskenovany kod: "))
+        #else: #pre testovanie na pocitaci
+        #    self.pouzitKod(input("zadaj naskenovany kod: "))
