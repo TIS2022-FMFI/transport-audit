@@ -1,5 +1,4 @@
-import sqlite3
-import time
+
 
 from kivy.graphics import Rectangle, Color
 from kivy.uix.boxlayout import BoxLayout
@@ -9,11 +8,8 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
 from kivy.utils import rgba
 
-from skener import Scanner
-from UzavretyAudit import UzavretyKamion
 from sqlite import Shipment, Pattern, Pattern_Item, Stillage_type, Stillage, User, User_Role
 
-from random import randint
 from enum import Enum
 from datetime import datetime
 from dateutil.parser import parse
@@ -123,8 +119,8 @@ class PrebiehajuciAudit(Screen):
 
         if self.stillageTypMenoZKodu(self.stillage.kod) in self.poradoveCisloNasledujucehoVozikaPodlaType:
             if poradoveCislo != self.poradoveCisloNasledujucehoVozikaPodlaType[self.stillageTypMenoZKodu(self.stillage.kod)]:
-                popup = Popup(title='Najdena chyba',
-                              content=Label(text=f'Nespravne poradie vozikov typu {self.stillageTypMenoZKodu(self.stillage.kod)}'), size_hint=(0.5, 0.5))
+                popup = Popup(title='Nájdená chyba',
+                              content=Label(text=f'Nesprávne poradie vozíkov typu {self.stillageTypMenoZKodu(self.stillage.kod)}'), size_hint=(0.5, 0.5))
                 popup.open()
                 najdenaChyba = True
 
@@ -136,47 +132,47 @@ class PrebiehajuciAudit(Screen):
         if dataReport is not None and dataReport:
             if TLS:
                 if dataReport[0]['TLS']!= self.stillage.First_scan_product:
-                    popup = Popup(title='Najdena chyba',
+                    popup = Popup(title='Nájdená chyba',
                                   content=Label(
-                                      text=f'Kod prveho produktu sa nezhoduje s reportom'),
+                                      text=f'Kód prvého produktu sa nezhoduje s reportom'),
                                   size_hint=(0.5, 0.5))
                     popup.open()
                     najdenaChyba = True
                 if dataReport[-1]['TLS']!= self.stillage.Last_scan_product:
-                    popup = Popup(title='Najdena chyba',
+                    popup = Popup(title='Nájdená chyba',
                                   content=Label(
-                                      text=f'Kod posledneho produktu sa nezhoduje s reportom'),
+                                      text=f'Kód posledného produktu sa nezhoduje s reportom'),
                                   size_hint=(0.5, 0.5))
                     popup.open()
                     najdenaChyba = True
             else:
                 if dataReport[0]['vehicleid']!= self.stillage.First_scan_product:
-                    popup = Popup(title='Najdena chyba',
+                    popup = Popup(title='Nájdená chyba',
                                   content=Label(
-                                      text=f'Kod prveho produktu sa nezhoduje s reportom'),
+                                      text=f'Kód prvého produktu sa nezhoduje s reportom'),
                                   size_hint=(0.5, 0.5))
                     popup.open()
                     najdenaChyba = True
                 if dataReport[-1]['vehicleid']!= self.stillage.Last_scan_product:
-                    popup = Popup(title='Najdena chyba',
+                    popup = Popup(title='Nájdená chyba',
                                   content=Label(
-                                      text=f'Kod posledneho produktu sa nezhoduje s reportom'),
+                                      text=f'Kód poslédneho produktu sa nezhoduje s reportom'),
                                   size_hint=(0.5, 0.5))
                     popup.open()
                     najdenaChyba = True
         else:
             if TLS:
                 if self.stillage.TLS_range_start != self.stillage.First_scan_product:
-                    popup = Popup(title='Najdena chyba',
+                    popup = Popup(title='Nájdená chyba',
                                   content=Label(
-                                      text=f'Kod prveho produktu sa nezhoduje s JLR headerom'),
+                                      text=f'Kód prvého produktu sa nezhoduje s JLR headerom'),
                                   size_hint=(0.5, 0.5))
                     popup.open()
                     najdenaChyba = True
                 if self.stillage.TLS_range_stop != self.stillage.Last_scan_product:
-                    popup = Popup(title='Najdena chyba',
+                    popup = Popup(title='Nájdená chyba',
                                   content=Label(
-                                      text=f'Kod posledneho produktu sa nezhoduje s JLR headerom'),
+                                      text=f'Kód posledného produktu sa nezhoduje s JLR headerom'),
                                   size_hint=(0.5, 0.5))
                     popup.open()
                     najdenaChyba = True
@@ -216,7 +212,7 @@ class PrebiehajuciAudit(Screen):
         self.aplikacia.shippmentStillages.add(self.stillage)
 
         popup = Popup(title='Kontrola',
-                      content=Label(text='Kontrola vozika prebehla uspesne'), size_hint=(0.5, 0.5))
+                      content=Label(text='Kontrola vozíka prebehla úspešne'), size_hint=(0.5, 0.5))
         popup.open()
         self.vynulovatVozik()
 
@@ -248,14 +244,6 @@ class PrebiehajuciAudit(Screen):
         #self.styllageTypeOpravaChyby.discard(self.stillage.Stillage_Type_id)
         self.nahrajVozikZasielky(False)
         self.vynulovatVozik()
-
-
-    def kontrolaVozik(self):
-        return randint(0, 10) > 5
-    def kontrolaPrveho(self):
-        return randint(0, 10) > 5
-    def kontrolaDruheho(self):
-        return randint(0, 10) > 5
 
     def vyhovujeKodVozika(self, kod):
         return len(kod) > 4
@@ -388,17 +376,17 @@ class PrebiehajuciAudit(Screen):
         self.report = citaj_report_dict()
         # self.clear_widgets()
 
-        self.bPotvrditVozik = Button(text='Potvrdit vozik kontrolorom', background_color="#ff0000",
+        self.bPotvrditVozik = Button(text='Potvrdiť vozík kontrolórom', background_color="#ff0000",
                                      background_normal="", pos_hint={'center_x': 0.5, "top": 0.4},
                                      size_hint=(0.5, 0.08))
         self.bPotvrditVozik.bind(on_press=self.skenKontrolor)
 
-        self.bOdlozitOpravu = Button(text='Odlozit opravu', background_color="#ff0000",
+        self.bOdlozitOpravu = Button(text='Odložiť opravu', background_color="#ff0000",
                                      background_normal="", pos_hint={'center_x': 0.25, "top": 0.4},
                                      size_hint=(0.4, 0.08))
         self.bOdlozitOpravu.bind(on_press=self.odlozitOpravu)
 
-        self.bPotvrditChybu = Button(text='Potvrdit chybu', background_color="#ff0000",
+        self.bPotvrditChybu = Button(text='Potvrdiť chybu', background_color="#ff0000",
                                      background_normal="", pos_hint={'center_x': 0.75, "top": 0.4},
                                      size_hint=(0.4, 0.08))
         self.bPotvrditChybu.bind(on_press=self.potvrditChybu)
@@ -406,22 +394,22 @@ class PrebiehajuciAudit(Screen):
 
         ##########################################
 
-        bSpat = Button(text='Spat', background_color=rgba('#021D49'),
+        bSpat = Button(text='Späť', background_color=rgba('#021D49'),
                        background_normal="", pos_hint={'center_x': 0.5, "top":0.3}, size_hint=(1, 0.08))
         bSpat.bind(on_press=self.spat)
         self.add_widget(bSpat)
-        bUzavriet = Button(text='Uzavriet kamion', pos_hint={'center_x': 0.5, "top":0.2},
+        bUzavriet = Button(text='Uzavrieť kamión', pos_hint={'center_x': 0.5, "top":0.2},
                            background_color=rgba('#021D49'),
                            background_normal="", size_hint=(1, 0.08))
         bUzavriet.bind(on_press=self.uzavriet)
         self.add_widget(bUzavriet)
-        self.bVymazatVozik = Button(text='Zrusit vozik', pos_hint={'center_x': 0.5, "top":0.1},
+        self.bVymazatVozik = Button(text='Zrusiť vozík', pos_hint={'center_x': 0.5, "top":0.1},
                                     background_color=rgba('#021D49'),
                                     background_normal="", size_hint=(1, 0.08))
         self.bVymazatVozik.bind(on_press=self.vynulovatVozik)
         self.add_widget(self.bVymazatVozik)
 
-        self.bVozik = Button(text='Vozik', background_color=rgba('#021D49'),
+        self.bVozik = Button(text='Vozík', background_color=rgba('#021D49'),
                              background_normal="", pos_hint={'center_x': 0.3, "top": 0.9}, size_hint=(0.5, 0.08))
         self.bVozik.bind(on_press=self.skenVozik)
         self.add_widget(self.bVozik)
@@ -443,13 +431,13 @@ class PrebiehajuciAudit(Screen):
         self.lRange = Label(text='', pos_hint={'center_x': 0.8, "top": 0.7}, size_hint=(0.5, 0.08), color=[0, 0, 0])
         self.add_widget(self.lRange)
 
-        self.bPrvy = Button(text='Prvy produkt', background_color=rgba('#021D49'),
+        self.bPrvy = Button(text='Prvý produkt', background_color=rgba('#021D49'),
                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.6}, size_hint=(0.5, 0.08))
         self.bPrvy.bind(on_press=self.skenPrvy)
         self.add_widget(self.bPrvy)
         self.lPrvy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.6}, size_hint=(0.5, 0.08), color=[0, 0, 0])
         self.add_widget(self.lPrvy)
-        self.bDruhy = Button(text='Posledny produkt', background_color=rgba('#021D49'),
+        self.bDruhy = Button(text='Posledný produkt', background_color=rgba('#021D49'),
                              background_normal="", pos_hint={'center_x': 0.3, "top": 0.5}, size_hint=(0.5, 0.08))
         self.bDruhy.bind(on_press=self.skenDruhy)
         self.add_widget(self.bDruhy)
@@ -546,9 +534,9 @@ class PrebiehajuciAudit(Screen):
                     self.nahrajVozikZasielky(True)
                     self.aplikacia.kod.clear()
                     return
-            popup = Popup(title='Autentifikacia neprebehla',
+            popup = Popup(title='Autentifikácia neprebehla',
                           content=Label(
-                              text='Nebol najdeny zamestanec s naskenovanym kodom alebo nemal potrebne opravnenie'),
+                              text='Nebol nájdený zamestanec s naskenovaným kódom alebo nemal potrebné oprávnenie'),
                           size_hint=(0.5, 0.5))
             popup.open()
 

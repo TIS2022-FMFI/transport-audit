@@ -115,20 +115,3 @@ class Scanner(Screen):
 
         if self.zbarcam.symbols: # when something is detected
             self.pouzitKod(str(self.zbarcam.symbols[0].data, 'UTF-8'))
-            #Clock.unschedule(self.read_qr_text, 1)
-            #self.zbarcam.stop() # stop zbarcam
-            #sposobuje crash na androide #self.zbarcam.ids['xcamera']._camera._device.release() # release camera
-            #self.remove_widget(self.zbarcam)
-            #Zobrazenie vysledku - v produkcii sa odstráni
-            #vysledok = Label(text=str(self.qr_text))
-            #self.add_widget(vysledok)
-            #self.skenovat = False
-
-            #self.butPouzit = Button(text=f'{self.najdene}', size_hint_y=None, height='48dp', on_press=self.koniec,
-            #                        pos_hint={'center_y': 0.15})
-            #self.add_widget(self.butPouzit)
-            #self.butNove = Button(text=f'skenovat dalej', size_hint_y=None, height='48dp', on_press=self.pokracovat,
-            #                      pos_hint={'center_y': 0.25})
-            #self.add_widget(self.butNove)
-        #else: #pre testovanie na pocitaci
-        #    self.pouzitKod(input("zadaj naskenovany kod: "))

@@ -7,7 +7,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from startScreen2 import StartScreen
 from UzavretyAudit import UzavretyKamion
 from priebehAuditu import PrebiehajuciAudit
-#from skener import Scanner
+
 from auditUvod import UvodAuditu
 from kivy.utils import platform
 if platform == "android": # Zarucuje, že iba na androide sa if spustí, teda android package sa nemusí (a ani nedá) inštalovať

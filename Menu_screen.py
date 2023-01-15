@@ -6,8 +6,6 @@ from Stillage_types_settings.Settings_Stillage_types import *
 from Export_setting.Settings_export import *
 from Patterns_settings.Settings_Patterns import *
 
-from sqlite import User_Role, User
-from random import randint
 class Menu_screen (BoxLayout):
     btn1 = Button(text="Zamestnanci")
     btn2 = Button(text="Zákaznici")

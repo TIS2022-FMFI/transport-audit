@@ -5,9 +5,8 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.utils import rgba
 
-from skener import Scanner
 from sqlite import User, User_Role
-from random import randint
+
 class StartScreen(Screen):
     def __init__(self, povodna, dalsia, aplikacia, **kwargs):
         super().__init__(**kwargs)
@@ -60,6 +59,6 @@ class StartScreen(Screen):
             self.aplikacia.screenManager.current = self.dalsia
         else:
             self.aplikacia.kod.clear()
-            popup = Popup(title='Prihlasenie neprebehlo', content=Label(text='Nepodarilo sa najst zamestnanca s naskenovanym kodom'),size_hint=(0.5, 0.5))
+            popup = Popup(title='Prihlásenie neprebehlo', content=Label(text='Nepodarilo sa nájsť zamestnanca s naskenovaným kódom'),size_hint=(0.5, 0.5))
             popup.open()
 

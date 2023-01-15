@@ -117,7 +117,6 @@ class ScrollbarVyber:
 
     def vynuluj(self):
         if self.polozkyZobrazene:
-            #print(self.naVyber[0].Name)
             self.uvodnaPonuka(None, False)
             return
         if self.vybrate is None:
@@ -128,7 +127,6 @@ class ScrollbarVyber:
 
 
 
-from priebehAuditu import PrebiehajuciAudit
 class UvodAuditu(Screen):
 
     def __init__(self, aplikacia, povodna, dalsia, **kwargs):
@@ -137,17 +135,17 @@ class UvodAuditu(Screen):
         self.povodna = povodna
         self.dalsia = dalsia
 
-        bPokracovat = Button(text='Pokracovat', background_color=rgba('#021D49'),
+        bPokracovat = Button(text='Pokračovať', background_color=rgba('#021D49'),
                                     background_normal="", pos_hint = {'center_x': 0.5, "top":0.2}, size_hint =(1, 0.08), color=(1, 1, 1, 1))
         bPokracovat.bind(on_press=self.pokracovat)
         self.add_widget(bPokracovat)
-        bOdhlasenie = Button(text='Odhlasit', pos_hint={"top":0.1, 'center_x': 0.5}, background_color=rgba('#021D49'),
+        bOdhlasenie = Button(text='Odhlásiť', pos_hint={"top":0.1, 'center_x': 0.5}, background_color=rgba('#021D49'),
                                     background_normal="",size_hint =(1, 0.08), color=(1, 1, 1, 1))
         bOdhlasenie.bind(on_press=self.odhlasit)
         self.add_widget(bOdhlasenie)
 
-        self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None], 'Zakaznici', self, 0.8)
-        self.scrollAuta =  ScrollbarVyber([x for x in Vehicle().vrat_vsetky(True) if not x.over_zmazanie()], 'SPZ', self, 0.5)
+        self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None], 'Zákazníci', self, 0.8)
+        self.scrollAuta =  ScrollbarVyber([x for x in Vehicle().vrat_vsetky(True) if not x.over_zmazanie()], 'ŠPZ', self, 0.5)
         self.scrollAuta.druhyScrollbar = self.scrollZakaznici
         self.scrollZakaznici.druhyScrollbar = self.scrollAuta
         self.prvyVstup = True
@@ -165,24 +163,21 @@ class UvodAuditu(Screen):
         self.scrollAuta.vynuluj()
 
     def odhlasit(self, *args):
-        #self.aplikacia.screenManager.current = self.povodna
         print("odhladujem")
         self.aplikacia.zamestnanec = None
         self.aplikacia.kod.clear()
         self.aplikacia.screenManager.current = self.povodna.name
 
     def pokracovat(self, *args):
-        #self.scrollZakaznici.vynuluj()
-        #self.scrollAuta.vynuluj()
         if self.scrollZakaznici.vybrate is None:
-            popup = Popup(title='Nie je mozne pokracovat v audite',
-                          content=Label(text='Nie je vybraty zakaznik'),
+            popup = Popup(title='Nie je možné pokračovať v audite',
+                          content=Label(text='Nie je vybratý zákazník'),
                           size_hint=(0.5, 0.5))
             popup.open()
             return
         elif self.scrollAuta.vybrate is None:
-            popup = Popup(title='Nie je mozne pokracovat v audite',
-                          content=Label(text='Nie je vybrane vozidlo'),
+            popup = Popup(title='Nie je možné pokračovať v audite',
+                          content=Label(text='Nie je vybraté vozidlo'),
                           size_hint=(0.5, 0.5))
             popup.open()
             return

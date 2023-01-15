@@ -1,6 +1,3 @@
-import time
-import sqlite3
-
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.label import Label
@@ -12,8 +9,6 @@ from dateutil.parser import parse
 from datetime import datetime
 
 from kivy.uix.textinput import TextInput
-
-from skener import Scanner
 
 from sqlite import User, User_Role
 
@@ -58,8 +53,8 @@ class UzavretyKamion(Screen):
                 self.aplikacia.kod.clear()
                 #self.remove_widget(self.bsken)
                 return
-        popup = Popup(title='Autentifikacia neprebehla',
-                      content=Label(text='Nebol najdeny zamestanec s naskenovanym kodom alebo nemal potrebne opravnenie'),
+        popup = Popup(title='Autentifikácia neprebehla',
+                      content=Label(text='Nebol nájdený zamestanec s naskenovaným kódom alebo nemal potrebné oprávnenie'),
                       size_hint=(0.5, 0.5))
         popup.open()
         self.aplikacia.kod.clear()
@@ -81,30 +76,30 @@ class UzavretyKamion(Screen):
         # logo.pos_hint = {'center_x': 0.5, 'top': 1.3}
         # self.add_widget(logo)
 
-        self.lUzavrete = Label(text='Vozidlo je uzavrete', pos_hint={'center_x': 0.5, "top": 0.5},
+        self.lUzavrete = Label(text='Vozidlo je uzavreté', pos_hint={'center_x': 0.5, "top": 0.5},
                                size_hint=(1, 0.12), font_size='30sp', color=[0, 0, 0])
         # self.lUzavrete = Text(text='Vozidlo je uzavrete', pos_hint={'center_x': 0.5, "top": 0.5},
         #                        size_hint=(1, 0.12), font_size='30sp', background_color=[1, 1, 1])
         self.add_widget(self.lUzavrete)
 
         from kivy.utils import rgba
-        bOtvorit = Button(text='Otvorit vozidlo', background_color=rgba('#021D49'),
+        bOtvorit = Button(text='Otvoriť vozidlo', background_color=rgba('#021D49'),
                           background_normal="", pos_hint={'center_x': 0.5, "top": 0.2}, size_hint=(1, 0.08))
         bOtvorit.bind(on_press=self.otvorit)
         self.add_widget(bOtvorit)
 
-        bNovyAudit = Button(text='Dalsi audit', background_color=rgba('#021D49'),
+        bNovyAudit = Button(text='Ďalší audit', background_color=rgba('#021D49'),
                             background_normal="", pos_hint={'center_x': 0.5, "top": 0.1}, size_hint=(1, 0.08))
         bNovyAudit.bind(on_press=self.novyAudit)
         self.add_widget(bNovyAudit)
-        self.bsken = Button(text='Potvrdit porusenie patternu', background_color=rgba('#021D49'),
+        self.bsken = Button(text='Potvrdiť porušenie patternu', background_color=rgba('#021D49'),
                             background_normal="", pos_hint={'center_x': 0.5, "top": 0.3}, size_hint=(1, 0.08))
         self.bsken.bind(on_press=self.skenovanie)
     def novyAudit(self, *args):
 
         if not self.potvrdenie:
-            popup = Popup(title='Porusenie patternu',
-                          content=Label(text='Pre uzavretie auditu musite potrvdit porusenie patternu'), size_hint=(0.5, 0.5))
+            popup = Popup(title='Porušenie patternu',
+                          content=Label(text='Pre uzavretie auditu musíte potrvdiť porušenie patternu'), size_hint=(0.5, 0.5))
             popup.open()
             return
 
