@@ -76,7 +76,9 @@ class Scanner(Screen):
         self.remove_widget(self.zbarcam)
         self.skenovat = False
         self.precButtonyKody()
-        self.kody.append(self.zadanyKod.text)
+        kod = self.zadanyKod.text.strip()
+        if kod:
+            self.kody.append(kod)
         self.screenManager.current = self.povodnaScreen
 
     def koniec(self, *args):
