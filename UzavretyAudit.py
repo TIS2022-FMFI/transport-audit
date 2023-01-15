@@ -38,12 +38,14 @@ class UzavretyKamion(Screen):
         self.screen()
         if not self.aplikacia.kod:
             splneniePatternu = self.povodna.kontrolaSplneniaPatternu()
+            print(("pattern ", splneniePatternu))
             if splneniePatternu != 0:
                 #self.bsken.parent = None
                 self.add_widget(self.bsken)
                 self.potvrdenie = False
             else:
-                #self.remove_widget(self.bsken)
+
+                self.remove_widget(self.bsken)
                 self.potvrdenie = True
             return
         zamestnanec = User().stiahni(self.aplikacia.kod[0])
@@ -54,6 +56,7 @@ class UzavretyKamion(Screen):
             if rola is not None and not rola.over_zmazanie() and (rola.name == 'Operátor' or rola.name == 'Administrátor'):
                 self.potvrdenie = True
                 self.aplikacia.kod.clear()
+                self.remove_widget(self.bsken)
                 return
         popup = Popup(title='Autentifikacia neprebehla',
                       content=Label(text='Nebol najdeny zamestanec s naskenovanym kodom alebo nemal potrebne opravnenie'),
