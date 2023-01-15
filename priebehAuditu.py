@@ -47,7 +47,6 @@ class PrebiehajuciAudit(Screen):
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
         self.report = citaj_report_dict()
         self.prebiehaAudit = False
-        self.BL = None
 
 
 
@@ -68,15 +67,27 @@ class PrebiehajuciAudit(Screen):
 
 
 
-    # def nakresliObdznik(self):
-    #     if self.dielikov > self.maxDielikov:
-    #         with self.canvas:
-    #             Color(1, 0, 0)
-    #             Rectangle(pos=(0, 500), size=(self.sirka, 70))
-    #         return
-    #     with self.canvas:
-    #         Color(0, 1, 0)
-    #         Rectangle(size=(self.dielikov* self.sirkaDielika, 70), pos_hint={'center_x': 0.5, "top": 0.95})
+    def nakresliObdznik(self):
+        # if self.dielikov > self.maxDielikov:
+        #     with self.canvas:
+        #         Color(1, 0, 0)
+        #         Rectangle(pos=(0, 500), size=(self.sirka, 70))
+        #     return
+        # with self.canvas:
+        #     Color(0, 1, 0)
+        #     Rectangle(size=(self.dielikov* self.sirkaDielika, 70), pos_hint={'center_x': 0.5, "top": 0.95})
+        self.remove_widget(self.BL)
+        self.BL = BoxLayout(pos_hint={'center_x': 0.5, "top": 0.95}, size_hint=(1, 0.08), orientation='horizontal')
+
+        if self.dielikov < self.maxDielikov:
+            for i in range(self.dielikov):
+                self.BL.add_widget(Button(id=i, size_hint=(1 / self.maxDielikov, 1), background=[0, 1, 0]))
+            for i in range(self.maxDielikov - self.dielikov):
+                self.BL.add_widget(Button(id=i, size_hint=(1 / self.maxDielikov, 1)))
+        self.add_widget(self.BL)
+        # for i in range(12):
+        #     self.BL.add_widget(Button(id=i, size_hint=(1 / 12, 1)))
+        # self.add_widget(self.BL)
 
     def spat(self, *args):
         print("navrat na uvod auditu")
@@ -405,39 +416,39 @@ class PrebiehajuciAudit(Screen):
         self.bVymazatVozik.bind(on_press=self.vynulovatVozik)
         self.add_widget(self.bVymazatVozik)
 
-        self.bVozik = Button(text='Naskenujte vozik', background_color=rgba('#021D49'),
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.85}, size_hint=(0.3, 0.08))
+        self.bVozik = Button(text='Vozik', background_color=rgba('#021D49'),
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.85}, size_hint=(0.5, 0.08))
         self.bVozik.bind(on_press=self.skenVozik)
         self.add_widget(self.bVozik)
 
-        self.lVozik = Label(text='', pos_hint={'center_x': 0.8, "top": 0.75}, size_hint=(0.5, 0.08))
+        self.lVozik = Label(text='', pos_hint={'center_x': 0.8, "top": 0.85}, size_hint=(0.5, 0.08))
         self.add_widget(self.lVozik)
 
-        self.bStillage = Button(text='Naskenujte stillage number', background_color=rgba('#021D49'),
-                                background_normal="", pos_hint={'center_x': 0.3, "top": 0.75}, size_hint=(0.3, 0.08))
+        self.bStillage = Button(text='Stillage number', background_color=rgba('#021D49'),
+                                background_normal="", pos_hint={'center_x': 0.3, "top": 0.75}, size_hint=(0.5, 0.08))
         self.bStillage.bind(on_press=self.skenStillage)
         self.add_widget(self.bStillage)
-        self.lStillage = Label(text='', pos_hint={'center_x': 0.8, "top": 0.65}, size_hint=(0.5, 0.08))
+        self.lStillage = Label(text='', pos_hint={'center_x': 0.8, "top": 0.75}, size_hint=(0.5, 0.08))
         self.add_widget(self.lStillage)
 
-        self.bRange = Button(text='Naskenujte TLS range', background_color=rgba('#021D49'),
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.65}, size_hint=(0.3, 0.08))
+        self.bRange = Button(text='TLS range', background_color=rgba('#021D49'),
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.65}, size_hint=(0.5, 0.08))
         self.bRange.bind(on_press=self.skenRange)
         self.add_widget(self.bRange)
-        self.lRange = Label(text='', pos_hint={'center_x': 0.8, "top": 0.55}, size_hint=(0.5, 0.08))
+        self.lRange = Label(text='', pos_hint={'center_x': 0.8, "top": 0.65}, size_hint=(0.5, 0.08))
         self.add_widget(self.lRange)
 
-        self.bPrvy = Button(text='Naskenujte prvy produkt', background_color=rgba('#021D49'),
-                            background_normal="", pos_hint={'center_x': 0.3, "top": 0.55}, size_hint=(0.3, 0.08))
+        self.bPrvy = Button(text='Prvy produkt', background_color=rgba('#021D49'),
+                            background_normal="", pos_hint={'center_x': 0.3, "top": 0.55}, size_hint=(0.5, 0.08))
         self.bPrvy.bind(on_press=self.skenPrvy)
         self.add_widget(self.bPrvy)
-        self.lPrvy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
+        self.lPrvy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.55}, size_hint=(0.5, 0.08))
         self.add_widget(self.lPrvy)
-        self.bDruhy = Button(text='Naskenujte posledny produkt', background_color=rgba('#021D49'),
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.45}, size_hint=(0.3, 0.08))
+        self.bDruhy = Button(text='Posledny produkt', background_color=rgba('#021D49'),
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.45}, size_hint=(0.5, 0.08))
         self.bDruhy.bind(on_press=self.skenDruhy)
         self.add_widget(self.bDruhy)
-        self.lDruhy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.35}, size_hint=(0.5, 0.08))
+        self.lDruhy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
         self.add_widget(self.lDruhy)
 
 
@@ -456,8 +467,8 @@ class PrebiehajuciAudit(Screen):
 
         self.BL = BoxLayout(pos_hint={'center_x': 0.5, "top": 0.95}, size_hint=(1, 0.08), orientation='horizontal')
 
-        for i in range(12):
-            self.BL.add_widget(Button(size_hint=(1/12, 1)))
+        for i in range(self.maxDielikov):
+            self.BL.add_widget(Button(size_hint=(1/self.maxDielikov, 1)))
         self.add_widget(self.BL)
 
 
