@@ -20,10 +20,10 @@ class Add_Stillage_type (BoxLayout):
         # dorob
         self.screenManager.current = 'Settings_Stillage_types'
     def check (self):
-        if  self.text1.text=="" or self.text1.text == 'Meno typu vozika':
-            self.notify.text = "Please enter a valid name."
+        if  self.text1.text=="" or self.text1.text == 'Meno typu vozíka':
+            self.notify.text = "Zadaj názov"
         elif self.text1.text in self.stillage_type_list:
-            self.notify.text = "Name already exists"
+            self.notify.text = "Takýto typ vozíka už existuje"
         else:
             Stillage_type().nahraj(self.text1.text)
             self.call_Back()

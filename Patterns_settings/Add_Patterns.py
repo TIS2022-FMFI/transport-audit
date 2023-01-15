@@ -15,12 +15,12 @@ class Add_Patterns (BoxLayout):
     drop2 = DropDown()
     drop3 = DropDown()
     drop4 = DropDown()
-    mainbutton4 = Button(text='Zoznam vybratych stillage_types', size_hint=(.5, .25), pos=(60, 20))
+    mainbutton4 = Button(text='Zoznam vybratých typov vozíkov', size_hint=(.5, .25), pos=(60, 20))
     mainbutton4.bind(on_release=drop4.open)
     btn1 = Button(text="Pridaj")
     btn2 = Button(text="Späť")
-    btn3 = Button(text="Pridaj polozku")
-    btn4 = Button(text="Odstran polozku")
+    btn3 = Button(text="Pridaj položku")
+    btn4 = Button(text="Odstráň položku")
     customer_list = None
     stillage_type_list = None
     pattern_item_list = dict()
@@ -35,7 +35,7 @@ class Add_Patterns (BoxLayout):
         for i in range (1,100):
             self.values3.append(str(i))
         self.ids.spinner_add_pattern_3.values = self.values3
-        self.ids.spinner_add_pattern_3.text = "Number"
+        self.ids.spinner_add_pattern_3.text = "Počet"
         self.drop4 = self.ids.spinner_add_pattern_4
         self.notify = self.ids.notify
     def synchronize_customers(self):
@@ -45,7 +45,7 @@ class Add_Patterns (BoxLayout):
         for i in self.customer_list:
             self.values1.append(i)
         self.ids.spinner_add_pattern_1.values = self.values1
-        self.ids.spinner_add_pattern_1.text = "Vyber zakaznika"
+        self.ids.spinner_add_pattern_1.text = "Vyber zákazníka"
     def synchronize_stillage_types(self):
         self.select_stillage_type = None
         # self.drop2.clear_widgets()
@@ -54,7 +54,7 @@ class Add_Patterns (BoxLayout):
         for i in self.stillage_type_list:
             self.values2.append(i)
         self.ids.spinner_add_pattern_2.values = self.values2
-        self.ids.spinner_add_pattern_2.text = 'Stillage_type'
+        self.ids.spinner_add_pattern_2.text = 'Typ vozíka'
     def set_number(self,text):
         self.select_number = text
     def set_stillage_type(self,text):
@@ -69,39 +69,38 @@ class Add_Patterns (BoxLayout):
         self.screenManager.current = 'Settings_Patterns'
     def check_deleted_pattern_tem(self):
         if self.on_delete_type_stillage is None:
-            self.notify.text = "Please select item to delete"
+            self.notify.text = "Vyber typ vozíka na mazanie"
         else:
             self.values4 = []
             self.pattern_item_list.pop(self.on_delete_type_stillage.split()[0])
             for i in self.pattern_item_list:
                 self.values4.append(i + " " + self.pattern_item_list[i])
             self.ids.spinner_add_pattern_4.values = self.values4
-            self.ids.spinner_add_pattern_4.text = 'Zoznam vybratych stillage_types'
+            self.ids.spinner_add_pattern_4.text = 'Zoznam vybratych typov vozíkov'
             self.on_delete_type_stillage = None
     def check_added_pattern_item(self):
         if self.select_customer_id is None:
-            self.notify.text = "Please select customer you want create pattern"
+            self.notify.text = "Vyber zákazníka"
         elif self.select_stillage_type is None:
-            self.notify.text = "Please select stillage type you want add to pattern"
+            self.notify.text = "Vyber typ vozíka"
         elif self.select_number is None:
-            self.notify.text = "Please select number of stillage type"
+            self.notify.text = "Vyber počet vozíkov daného typu"
         else:
             self.pattern_item_list.update({self.select_stillage_type:self.select_number})
-            self.ids.spinner_add_pattern_2.text = 'Stillage_type'
-            self.ids.spinner_add_pattern_3.text = 'Number'
+            self.ids.spinner_add_pattern_2.text = 'Typ vozíka'
+            self.ids.spinner_add_pattern_3.text = 'Počet'
             self.select_number = None
             self.select_stillage_type = None
-        # self.drop4.clear_widgets()
         self.values4 = []
         for i in self.pattern_item_list:
             self.values4.append(i + " " + self.pattern_item_list[i])
         self.ids.spinner_add_pattern_4.values = self.values4
-        self.ids.spinner_add_pattern_4.text = 'Zoznam vybratych stillage_types'
+        self.ids.spinner_add_pattern_4.text = 'Zoznam vybratých typov vozíkov'
     def check (self):
         if self.select_customer_id is None:
-            self.notify.text = "Please choose customer"
+            self.notify.text = "Vyber zákazníka"
         elif len(self.pattern_item_list) ==0:
-            self.notify.text = "Add stillage_type"
+            self.notify.text = "Pridaj typ vozíka"
         else:
             Updated_Pattern_id = Pattern().nahraj(self.select_customer_id).id
             for i in self.pattern_item_list:
@@ -113,7 +112,7 @@ class Add_Patterns (BoxLayout):
         self.drop3.select('Number')
         self.values4 = []
         self.drop4.values = self.values4
-        self.drop4.text = "Zoznam vybratych stillage_types"
+        self.drop4.text = "Zoznam vybratých typov vozíkov"
         self.pattern_item_list = dict()
         self.on_delete_type_stillage = None
         self.synchronize_customers()

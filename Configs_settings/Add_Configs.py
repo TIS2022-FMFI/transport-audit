@@ -27,7 +27,7 @@ class Add_Configs (BoxLayout):
         for i in self.customer_list:
             self.values1.append(i)
         self.ids.spinner_add_config1.values = self.values1
-        self.ids.spinner_add_config1.text = "Vyber zakaznika"
+        self.ids.spinner_add_config1.text = "Vyber zákazníka"
     def synchronize_vehicles(self):
         self.select_vehicle = None
         self.advanced_user_list = set()
@@ -37,14 +37,14 @@ class Add_Configs (BoxLayout):
         for i in self.vehicle_list:
             self.values2.append(i)
         self.ids.spinner_add_config2.values = self.values2
-        self.ids.spinner_add_config2.text = "Vyber SPZ"
+        self.ids.spinner_add_config2.text = "Vyber ŠPZ"
     def synchronize_configs(self):
         self.config_list = [(i["Customer_id"], i["Vehicle_id"]) for i in Config().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def set_customer(self,text):
-        if text != "Vyber zakaznika":
+        if text != "Vyber zákazníka":
             self.select_customer_id = self.customer_list[text]
     def set_vehicle(self,text):
-        if text != "Vyber SPZ":
+        if text != "Vyber ŠPZ":
             self.select_vehicle = self.vehicle_list[text]
 
     def call_Back (self):
@@ -54,11 +54,11 @@ class Add_Configs (BoxLayout):
         self.on_delete_advanced_user = text
     def check (self):
         if self.select_customer_id is None:
-            self.notify.text = "Please select customer"
+            self.notify.text = "Vyber zákazníka"
         elif self.select_vehicle is None:
-            self.notify.text = "Please select SPZ"
+            self.notify.text = "Vyber vozidlo"
         elif (self.select_customer_id,self.select_vehicle) in self.config_list:
-            self.notify.text = "This config with these SPZ and customer already exists"
+            self.notify.text = "Takýto config už existuje"
         else:
             print(self.select_customer_id, self.select_vehicle)
             Config().nahraj(self.select_customer_id,self.select_vehicle)

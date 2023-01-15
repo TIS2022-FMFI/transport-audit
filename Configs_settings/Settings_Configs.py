@@ -5,8 +5,8 @@ from kivy.uix.button import Button
 from kivy.app import App
 class Settings_Configs (BoxLayout):
     btn1 = Button(text="Pridaj")
-    btn3 = Button(text="Vymaz")
-    btn4 = Button(text="Spat")
+    btn3 = Button(text="Vymaž")
+    btn4 = Button(text="Späť")
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         super(Settings_Configs, self).__init__(**kwargs)

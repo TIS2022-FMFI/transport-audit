@@ -13,7 +13,7 @@ class Delete_Configs(BoxLayout):
     notify = Button(text='')
     drop1 = DropDown()
     drop2 = DropDown()
-    btn1 = Button(text="Vymaz")
+    btn1 = Button(text="Vymaž")
     btn2 = Button(text="Späť")
     edit_config_list = None
     customer_list = None
@@ -38,7 +38,7 @@ class Delete_Configs(BoxLayout):
         for i in self.list_of_config_customers:
             self.values1.append(i)
         self.ids.spinner_delete_config1.values = self.values1
-        self.ids.spinner_delete_config1.text = "Vyber zakaznika"
+        self.ids.spinner_delete_config1.text = "Vyber zákazníka"
     def synchronize_vehicles(self):
         self.select_vehicle = None
         self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -73,9 +73,9 @@ class Delete_Configs(BoxLayout):
         self.screenManager.current = 'Settings_Configs'
     def check(self):
         if self.select_customer_id is None:
-            self.notify.text = "Please select customer"
+            self.notify.text = "Vyber zákazníka"
         elif self.select_vehicle is None:
-            self.notify.text = "Please select SPZ"
+            self.notify.text = "Vyber ŠPZ"
         else:
             on_delete = Config().stiahni(self.select_config_id)
             on_delete.zmazat()

@@ -7,8 +7,8 @@ from kivy.app import App
 class Settings_Patterns (BoxLayout):
     btn1 = Button(text="Pridaj")
     btn2 = Button(text="Uprav")
-    btn3 = Button(text="Vymaz")
-    btn4 = Button(text="Spat")
+    btn3 = Button(text="Vymaž")
+    btn4 = Button(text="Späť")
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         self.screenManager = screenManager

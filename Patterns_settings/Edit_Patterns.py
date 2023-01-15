@@ -16,12 +16,12 @@ class Edit_Patterns (BoxLayout):
     drop3 = DropDown()
     drop4 = DropDown()
     drop5 = DropDown()
-    mainbutton4 = Button(text='Zoznam vybratych stillage_types', size_hint=(.5, .25), pos=(60, 20))
+    mainbutton4 = Button(text='Zoznam vybratých typov vozíkov', size_hint=(.5, .25), pos=(60, 20))
     mainbutton4.bind(on_release=drop4.open)
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
-    btn3 = Button(text="Pridaj polozku")
-    btn4 = Button(text="Odstran polozku")
+    btn3 = Button(text="Pridaj položku")
+    btn4 = Button(text="Odstráň položku")
     customer_list = None
     stillage_type_list = None
     pattern_item_list = dict()
@@ -48,12 +48,12 @@ class Edit_Patterns (BoxLayout):
         for i in self.customer_list:
             if self.customer_list[i] in self.pattern_list.values():
                 self.values1.append(i)
-        self.ids.spinner_edit_pattern_1.text = "Customer"
+        self.ids.spinner_edit_pattern_1.text = "Zákazník"
         self.ids.spinner_edit_pattern_1.values = self.values1
     def synchronize_stillage_types(self):
         self.select_stillage_type = None
         self.values2 = []
-        self.ids.spinner_edit_pattern_2.text = "Stillage type"
+        self.ids.spinner_edit_pattern_2.text = "Typ vozíka"
         self.stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         for i in self.stillage_type_list:
             self.values2.append(i)
@@ -64,14 +64,13 @@ class Edit_Patterns (BoxLayout):
         self.Edit_data = Pattern().Data_on_editing()
     def clear_choosed_items(self):
         self.values4 = []
-        self.ids.spinner_edit_pattern_4.text = "Zoznam vybratych stillage_types"
+        self.ids.spinner_edit_pattern_4.text = "Zoznam vybratých typov vozíkov"
         self.ids.spinner_edit_pattern_4.values = []
         self.on_delete_type_stillage = None
         self.pattern_item_list = dict()
     def set_customer_id(self,tex1):
         if tex1 not in self.customer_list.keys():
             return
-        # cistenie
         self.clear_choosed_items()
         self.select_pattern = None
 
@@ -82,12 +81,12 @@ class Edit_Patterns (BoxLayout):
                 break
         self.set_widgets(self.select_pattern)
     def set_number(self,text):
-        if text == "Number":
+        if text == "Počet":
             self.select_number = None
         else:
             self.select_number = text
     def set_stillage_type(self,text):
-        if text == 'Stillage type':
+        if text == 'Typ vozíka':
             self.select_stillage_type = None
         else:
             self.select_stillage_type = text
@@ -102,7 +101,7 @@ class Edit_Patterns (BoxLayout):
                 self.values4.append(i[17] + " " + str(i[10]))
         self.ids.spinner_edit_pattern_4.values = self.values4
     def set_on_delete_type_stillage(self,tex):
-        if tex == 'Zoznam vybratych stillage_types':
+        if tex == 'Zoznam vybratých typov vozíkov':
             self.on_delete_type_stillage = None
         else:
             self.on_delete_type_stillage = tex
@@ -111,40 +110,38 @@ class Edit_Patterns (BoxLayout):
         self.screenManager.current = 'Settings_Patterns'
     def check_deleted_pattern_item(self):
         if self.on_delete_type_stillage is None:
-            self.notify.text = "Please select item to delete"
+            self.notify.text = "Vyber typ vozíka na mazanie"
         else:
             self.values4 = []
             self.pattern_item_list.pop(self.on_delete_type_stillage.split()[0])
-            self.ids.spinner_edit_pattern_4.text = 'Zoznam vybratych stillage_types'
+            self.ids.spinner_edit_pattern_4.text = 'Zoznam vybratých typov vozíkov'
             for i in self.pattern_item_list:
                 self.values4.append(i + " " + self.pattern_item_list[i])
             self.ids.spinner_edit_pattern_4.values = self.values4
             self.on_delete_type_stillage = None
     def check_added_pattern_item(self):
         if self.select_stillage_type is None:
-            self.notify.text = "Please select stillage type you want add to pattern"
+            self.notify.text = "Vyber typ vozíka"
         elif self.select_number is None:
-            self.notify.text = "Please select number of stillage type"
+            self.notify.text = "Vyber počet vozíkov daného typu"
         else:
             self.pattern_item_list.update({self.select_stillage_type:self.select_number})
-            self.ids.spinner_edit_pattern_2.text = "Stillage_type"
-            self.ids.spinner_edit_pattern_3.text = "Number"
+            self.ids.spinner_edit_pattern_2.text = "Typ vozíka"
+            self.ids.spinner_edit_pattern_3.text = "Počet"
             self.select_number = None
             self.select_stillage_type = None
-        # self.drop4.clear_widgets()
-        # self.drop4.select('Zoznam vybratych stillage_types')
         self.values4 = []
         self.ids.spinner_edit_pattern_4.values = []
-        self.ids.spinner_edit_pattern_4.text = "Zoznam vybratych stillage_types"
+        self.ids.spinner_edit_pattern_4.text = "Zoznam vybratých typov vozíkov"
         self.on_delete_type_stillage = None
         for i in self.pattern_item_list:
             self.values4.append(i + " " + self.pattern_item_list[i])
         self.ids.spinner_edit_pattern_4.values = self.values4
     def check (self):
         if self.select_customer is None:
-            self.notify.text = "Please choose customer"
+            self.notify.text = "Vyberte zákazníka"
         elif len(self.pattern_item_list) ==0:
-            self.notify.text = "Add stillage_type"
+            self.notify.text = "Vyberte typ vozíka"
         else:
             for i in self.Edit_data:
                 if i[5] == self.select_pattern:
@@ -165,6 +162,6 @@ class Edit_Patterns (BoxLayout):
         self.synchronize_customers()
         self.synchronize_stillage_types()
         self.select_number = None
-        self.ids.spinner_edit_pattern_3.text = "Number"
+        self.ids.spinner_edit_pattern_3.text = "Počet"
         self.clear_choosed_items()
         self.old_pattern_item_list = dict()

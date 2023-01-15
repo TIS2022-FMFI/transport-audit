@@ -18,7 +18,7 @@ class Settings_Exports (BoxLayout):
         self.screenManager = screenManager
     def set_selected(self,text):
         self.selected_answer = 0
-        if text == "Yes":
+        if text == "Áno":
             self.selected_answer = 1
     def call_Back (self):
         self.screenManager.current = 'Menu_screen'
@@ -35,13 +35,13 @@ class Settings_Exports (BoxLayout):
         # self.drop1.clear_widgets()
         self.values = []
         id = General().vrat_vsetky()[-1]['Automatic_export']
-        for i in ["Yes","No"]:
+        for i in ["Áno","Nie"]:
             self.values.append(i)
         self.ids.spinner_export.values = self.values
         self.selected_answer = None
         if id == 0:
-            self.ids.spinner_export.text = "No"
+            self.ids.spinner_export.text = "Nie"
             self.selected_answer = 1
         if id == 1:
-            self.ids.spinner_export.text= "Yes"
+            self.ids.spinner_export.text= "Áno"
             self.selected_answer = 0

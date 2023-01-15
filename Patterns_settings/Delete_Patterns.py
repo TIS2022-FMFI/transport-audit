@@ -10,7 +10,7 @@ class Delete_Patterns (BoxLayout):
     select_pattern  = None
     notify = Button(text = '')
     drop2 = DropDown()
-    btn1 = Button(text="Vymaz")
+    btn1 = Button(text="Vymaž")
     btn2 = Button(text="Späť")
     customer_list = None
     pattern_list = None
@@ -49,7 +49,7 @@ class Delete_Patterns (BoxLayout):
         self.screenManager.current = 'Settings_Patterns'
     def check (self):
         if self.select_customer is None:
-            self.notify.text = "Please choose customer"
+            self.notify.text = "Vyber zákazníka"
         else:
             on_delete = Pattern().stiahni(self.select_pattern)
             on_delete.zmazat()

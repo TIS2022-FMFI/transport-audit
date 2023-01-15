@@ -22,7 +22,7 @@ class Edit_Customers (BoxLayout):
         for i in self.customer_list:
             self.values.append(i)
         self.ids.spinner_edit_customer.values = self.values
-        self.ids.spinner_edit_customer.text = "Vyber zakaznika na upravu"
+        self.ids.spinner_edit_customer.text = "Vyber zakaznika na úpravu"
     def __init__(self,screenManager, **kwargs):
         super(Edit_Customers, self).__init__(**kwargs)        
         self.screenManager = screenManager
@@ -37,11 +37,11 @@ class Edit_Customers (BoxLayout):
         self.screenManager.current = 'Settings_Customers'
     def check (self):
         if (self.select_id is None):
-                self.notify.text = "Please choose customer by code you want edit."
+                self.notify.text = "Vyber zákazníka"
         elif self.text1.text in self.customer_list.keys() and self.customer_list[self.text1.text] != self.select_id:
-            self.notify.text = "This customer already exists"
-        elif len([x for x in self.text1.text if((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) == 0 or self.text1.text == "Vyber zakaznika na upravu":
-            self.notify.text = "Please enter a valid first name."
+            self.notify.text = "Zákazník už existuje"
+        elif len([x for x in self.text1.text if((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) == 0 or self.text1.text == "Vyber zákazníka na úpravu":
+            self.notify.text = "Zadaj názov"
         else:
             updated_customer = Customer().stiahni(self.select_id)
             updated_customer.Name = self.text1.text

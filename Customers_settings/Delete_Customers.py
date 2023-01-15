@@ -8,7 +8,7 @@ class Delete_Customers (BoxLayout):
     notify = Button(text = '')
     on_delete_selected = None
     drop1 = DropDown()
-    btn1 = Button(text="Vymaz")
+    btn1 = Button(text="Vymaž")
     btn2 = Button(text="Späť")
     customer_list = None
     screenManager = None
@@ -20,7 +20,7 @@ class Delete_Customers (BoxLayout):
         for i in self.customer_list:
             self.values.append(i)
         self.ids.spinner_delete_customer.values = self.values
-        self.ids.spinner_delete_customer.text = "Vyber pracovnika na vymazanie"
+        self.ids.spinner_delete_customer.text = "Vyber pracovníka na vymazanie"
     def __init__(self, screenManager,**kwargs):
         super(Delete_Customers, self).__init__(**kwargs)
         self.screenManager = screenManager
@@ -33,7 +33,7 @@ class Delete_Customers (BoxLayout):
         self.screenManager.current = 'Settings_Customers'
     def check (self):
         if (self.on_delete_selected is None):
-                self.notify.text = "Please choose Customer by code you want delete."
+                self.notify.text = "Vyber zákazníka"
         else:
             on_delete_customer = Customer().stiahni(self.on_delete_selected)
             on_delete_customer.zmazat()

@@ -7,7 +7,7 @@ class Delete_Stillage_type (BoxLayout):
     notify = Button(text = '')
     on_delete_selected = None
     drop1 = DropDown()
-    btn1 = Button(text="Vymaz")
+    btn1 = Button(text="Vymaž")
     btn2 = Button(text="Späť")
     stillage_type_list = None
     screenManager = None
@@ -19,7 +19,7 @@ class Delete_Stillage_type (BoxLayout):
         for i in self.stillage_type_list:
             self.values.append(i)
         self.ids.spinner_delete_st.values = self.values
-        self.ids.spinner_delete_st.text = "Vyber stillage type na vymazanie"
+        self.ids.spinner_delete_st.text = "Typ vozíka"
     def __init__(self, screenManager,**kwargs):
         super(Delete_Stillage_type, self).__init__(**kwargs)
         self.screenManager = screenManager
@@ -32,7 +32,7 @@ class Delete_Stillage_type (BoxLayout):
         self.screenManager.current = 'Settings_Stillage_types'
     def check (self):
         if (self.on_delete_selected is None):
-                self.notify.text = "Please choose Stillage type by name you want delete."
+                self.notify.text = "Vyber typ vozíka."
         else:
             on_delete_stillage_type = Stillage_type().stiahni(self.on_delete_selected)
             on_delete_stillage_type.zmazat()

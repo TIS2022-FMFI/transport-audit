@@ -6,9 +6,9 @@ from kivy.uix.button import Button
 from kivy.app import App
 class Settings_Stillage_types (BoxLayout):
     btn1 = Button(text="Pridaj")
-    btn2 = Button(text="Edituj")
-    btn3 = Button(text="Vymaz")
-    btn4 = Button(text="Spat")
+    btn2 = Button(text="Uprav")
+    btn3 = Button(text="Vymaž")
+    btn4 = Button(text="Späť")
     screenManager = None
     def __init__(self,screenManager, **kwargs):
         super(Settings_Stillage_types, self).__init__(**kwargs)

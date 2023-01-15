@@ -7,7 +7,7 @@ from kivy.app import App
 from sqlite import Customer
 class Add_Customers (BoxLayout):
     notify = Button(text = '')
-    text1 = TextInput(text='Meno zakaznika')
+    text1 = TextInput(text='Meno zákazníka')
     screenManager = None
     customer_list = None
     def __init__(self,screenManager, **kwargs):
@@ -20,10 +20,10 @@ class Add_Customers (BoxLayout):
     def call_Back (self):
         self.screenManager.current = 'Settings_Customers'
     def check (self):
-        if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) == 0 or self.text1.text == "Meno zakaznika":
-            self.notify.text = "Please enter a valid name."
+        if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) == 0 or self.text1.text == "Meno zákazníka":
+            self.notify.text = "Zadaj názov"
         elif self.text1.text in self.customer_list:
-            self.notify.text = "Name already exists"
+            self.notify.text = "Zákaznik už existuje"
         else:
             Customer().nahraj(self.text1.text)
             self.call_Back()
