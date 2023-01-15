@@ -11,6 +11,8 @@ from dateutil.parser import parse
 
 from datetime import datetime
 
+from kivy.uix.textinput import TextInput
+
 from skener import Scanner
 
 from sqlite import User, User_Role
@@ -69,26 +71,29 @@ class UzavretyKamion(Screen):
     def screen(self):
         self.aplikacia.skenovanieScreen.povodnaScreen = self.name
         self.aplikacia.skenovanieScreen.dalsiaScreen = self.name
-        self.clear_widgets()
-        logo = Image(source='logo.webp')
-        logo.size_hint_x = 0.2
-        logo.pos_hint = {'center_x': 0.5, 'top': 1.3}
-        self.add_widget(logo)
+        # self.clear_widgets()
+        # logo = Image(source='logo.webp')
+        # logo.size_hint_x = 0.2
+        # logo.pos_hint = {'center_x': 0.5, 'top': 1.3}
+        # self.add_widget(logo)
 
         self.lUzavrete = Label(text='Vozidlo je uzavrete', pos_hint={'center_x': 0.5, "top": 0.5},
-                               size_hint=(0.6, 0.12), font_size='40sp')
+                               size_hint=(1, 0.12), font_size='30sp', color=[0, 0, 0])
+        # self.lUzavrete = Text(text='Vozidlo je uzavrete', pos_hint={'center_x': 0.5, "top": 0.5},
+        #                        size_hint=(1, 0.12), font_size='30sp', background_color=[1, 1, 1])
         self.add_widget(self.lUzavrete)
 
-        bOtvorit = Button(text='Otvorit vozidlo', background_color="#0003a8",
+        from kivy.utils import rgba
+        bOtvorit = Button(text='Otvorit vozidlo', background_color=rgba('#021D49'),
                           background_normal="", pos_hint={'center_x': 0.5, "top": 0.2}, size_hint=(1, 0.08))
         bOtvorit.bind(on_press=self.otvorit)
         self.add_widget(bOtvorit)
 
-        bNovyAudit = Button(text='Dalsi audit', background_color="#0003a8",
+        bNovyAudit = Button(text='Dalsi audit', background_color=rgba('#021D49'),
                             background_normal="", pos_hint={'center_x': 0.5, "top": 0.1}, size_hint=(1, 0.08))
         bNovyAudit.bind(on_press=self.novyAudit)
         self.add_widget(bNovyAudit)
-        self.bsken = Button(text='Potvrdit porusenie patternu', background_color="#0003a8",
+        self.bsken = Button(text='Potvrdit porusenie patternu', background_color=rgba('#021D49'),
                             background_normal="", pos_hint={'center_x': 0.5, "top": 0.3}, size_hint=(1, 0.08))
         self.bsken.bind(on_press=self.skenovanie)
     def novyAudit(self, *args):

@@ -715,6 +715,7 @@
             id: btnSC
             text: "Naskenujte svoj kod"
         MyButton:
+            id: btnJ
             text: "Vyber jazyka"
 
 <Scanner>
@@ -731,12 +732,16 @@
             id: img
         MyButton:
             id: btnNove
+            on_press: root.pokracovat()
             text: ""
         MyButton:
             id: btnPouzit
+            on_press: root.koniec()
             text: ""
         MyButton:
+            id: btnBack
             text: "Späť"
+            on_press: root.spat()
 
 
 <UvodAuditu>
@@ -748,8 +753,29 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
+                source: 'bg4.png'
+
+<UzavretyKamion>
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [0, '250sp', 0, 0]
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
                 source: 'bgwithLogo.png'
 
+<PrebiehajuciAudit>
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [0, '250sp', 0, 0]
+        spacing:'30sp'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'bg4.png'
 
 <Settings_Stillage_types>
     BoxLayout:

@@ -2,10 +2,12 @@ import sqlite3
 import time
 
 from kivy.graphics import Rectangle, Color
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
+from kivy.utils import rgba
 
 from skener import Scanner
 from UzavretyAudit import UzavretyKamion
@@ -45,6 +47,7 @@ class PrebiehajuciAudit(Screen):
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
         self.report = citaj_report_dict()
         self.prebiehaAudit = False
+        self.BL = None
 
 
 
@@ -65,15 +68,15 @@ class PrebiehajuciAudit(Screen):
 
 
 
-    def nakresliObdznik(self):
-        if self.dielikov > self.maxDielikov:
-            with self.canvas:
-                Color(1, 0, 0)
-                Rectangle(pos=(0, 500), size=(self.sirka, 70))
-            return
-        with self.canvas:
-            Color(0, 1, 0)
-            Rectangle(pos=(0, 500), size=(self.dielikov* self.sirkaDielika, 70))
+    # def nakresliObdznik(self):
+    #     if self.dielikov > self.maxDielikov:
+    #         with self.canvas:
+    #             Color(1, 0, 0)
+    #             Rectangle(pos=(0, 500), size=(self.sirka, 70))
+    #         return
+    #     with self.canvas:
+    #         Color(0, 1, 0)
+    #         Rectangle(size=(self.dielikov* self.sirkaDielika, 70), pos_hint={'center_x': 0.5, "top": 0.95})
 
     def spat(self, *args):
         print("navrat na uvod auditu")
@@ -367,7 +370,7 @@ class PrebiehajuciAudit(Screen):
 
 
         self.report = citaj_report_dict()
-        self.clear_widgets()
+        # self.clear_widgets()
 
         self.bPotvrditVozik = Button(text='Potvrdit vozik kontrolorom', background_color="#ff0000",
                                      background_normal="", pos_hint={'center_x': 0.5, "top": 0.2},
@@ -387,51 +390,51 @@ class PrebiehajuciAudit(Screen):
 
         ##########################################
 
-        bSpat = Button(text='Spat', background_color="#0003a8",
-                       background_normal="", pos_hint={'center_x': 5 * 1 / 6, "top": 0.1}, size_hint=(0.3, 0.08))
+        bSpat = Button(text='Spat', background_color=rgba('#021D49'),
+                       background_normal="", pos_hint={'center_x': 0.5, "top":0.3}, size_hint=(1, 0.08))
         bSpat.bind(on_press=self.spat)
         self.add_widget(bSpat)
-        bUzavriet = Button(text='Uzavriet kamion', pos_hint={"top": 0.1, 'center_x': 3 * 1 / 6},
-                           background_color="#0003a8",
-                           background_normal="", size_hint=(0.3, 0.08))
+        bUzavriet = Button(text='Uzavriet kamion', pos_hint={'center_x': 0.5, "top":0.2},
+                           background_color=rgba('#021D49'),
+                           background_normal="", size_hint=(1, 0.08))
         bUzavriet.bind(on_press=self.uzavriet)
         self.add_widget(bUzavriet)
-        self.bVymazatVozik = Button(text='Zrusit vozik', pos_hint={"top": 0.1, 'center_x': 1 / 6},
-                                    background_color="#0003a8",
-                                    background_normal="", size_hint=(0.3, 0.08))
+        self.bVymazatVozik = Button(text='Zrusit vozik', pos_hint={'center_x': 0.5, "top":0.1},
+                                    background_color=rgba('#021D49'),
+                                    background_normal="", size_hint=(1, 0.08))
         self.bVymazatVozik.bind(on_press=self.vynulovatVozik)
         self.add_widget(self.bVymazatVozik)
 
-        self.bVozik = Button(text='Naskenujte vozik', background_color="#0003a8",
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.75}, size_hint=(0.3, 0.08))
+        self.bVozik = Button(text='Naskenujte vozik', background_color=rgba('#021D49'),
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.85}, size_hint=(0.3, 0.08))
         self.bVozik.bind(on_press=self.skenVozik)
         self.add_widget(self.bVozik)
 
         self.lVozik = Label(text='', pos_hint={'center_x': 0.8, "top": 0.75}, size_hint=(0.5, 0.08))
         self.add_widget(self.lVozik)
 
-        self.bStillage = Button(text='Naskenujte stillage number', background_color="#0003a8",
-                                background_normal="", pos_hint={'center_x': 0.3, "top": 0.65}, size_hint=(0.3, 0.08))
+        self.bStillage = Button(text='Naskenujte stillage number', background_color=rgba('#021D49'),
+                                background_normal="", pos_hint={'center_x': 0.3, "top": 0.75}, size_hint=(0.3, 0.08))
         self.bStillage.bind(on_press=self.skenStillage)
         self.add_widget(self.bStillage)
         self.lStillage = Label(text='', pos_hint={'center_x': 0.8, "top": 0.65}, size_hint=(0.5, 0.08))
         self.add_widget(self.lStillage)
 
-        self.bRange = Button(text='Naskenujte TLS range', background_color="#0003a8",
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.55}, size_hint=(0.3, 0.08))
+        self.bRange = Button(text='Naskenujte TLS range', background_color=rgba('#021D49'),
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.65}, size_hint=(0.3, 0.08))
         self.bRange.bind(on_press=self.skenRange)
         self.add_widget(self.bRange)
         self.lRange = Label(text='', pos_hint={'center_x': 0.8, "top": 0.55}, size_hint=(0.5, 0.08))
         self.add_widget(self.lRange)
 
-        self.bPrvy = Button(text='Naskenujte prvy produkt', background_color="#0003a8",
-                            background_normal="", pos_hint={'center_x': 0.3, "top": 0.45}, size_hint=(0.3, 0.08))
+        self.bPrvy = Button(text='Naskenujte prvy produkt', background_color=rgba('#021D49'),
+                            background_normal="", pos_hint={'center_x': 0.3, "top": 0.55}, size_hint=(0.3, 0.08))
         self.bPrvy.bind(on_press=self.skenPrvy)
         self.add_widget(self.bPrvy)
         self.lPrvy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.45}, size_hint=(0.5, 0.08))
         self.add_widget(self.lPrvy)
-        self.bDruhy = Button(text='Naskenujte posledny produkt', background_color="#0003a8",
-                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.35}, size_hint=(0.3, 0.08))
+        self.bDruhy = Button(text='Naskenujte posledny produkt', background_color=rgba('#021D49'),
+                             background_normal="", pos_hint={'center_x': 0.3, "top": 0.45}, size_hint=(0.3, 0.08))
         self.bDruhy.bind(on_press=self.skenDruhy)
         self.add_widget(self.bDruhy)
         self.lDruhy = Label(text='', pos_hint={'center_x': 0.8, "top": 0.35}, size_hint=(0.5, 0.08))
@@ -446,10 +449,16 @@ class PrebiehajuciAudit(Screen):
         self.sirkaDielika = self.sirka / self.maxDielikov
         self.dielikov = 0
 
-        with self.canvas:
-            Color(0.4, 0.4, 0.4)
-            Rectangle(pos=(0, 500), size=(self.sirka, 70))
-        self.nakresliObdznik()
+        # with self.canvas:
+        #     Color(0.4, 0.4, 0.4)
+        #     Rectangle(pos=(0, 500), size=(self.sirka, 70), pos_hint={'center_x': 0.8, "top": 0.35})
+        # self.nakresliObdznik()
+
+        self.BL = BoxLayout(pos_hint={'center_x': 0.5, "top": 0.95}, size_hint=(1, 0.08), orientation='horizontal')
+
+        for i in range(12):
+            self.BL.add_widget(Button(size_hint=(1/12, 1)))
+        self.add_widget(self.BL)
 
 
         self.aplikacia.shippment = Shipment()

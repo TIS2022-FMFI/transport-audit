@@ -21,17 +21,24 @@ class Scanner(Screen):
         self.dalsiaScreen = dalsiaScreen
         self.orientation = 'vertical'  # vertical placing of widgets
 
-        self.zbarcam = ZBarCam(size_hint_y = 0.6, size_hint_x = 1, pos_hint = {'center_y': 0.65})
+        # self.zbarcam = ZBarCam(size_hint_y = 0.6, size_hint_x = 1, pos_hint = {'center_y': 0.65})
+        self.zbarcam = self.ids.img
         self.zbarcam.stop()
 
         self.skenovat = False
         self.bind(on_enter=self.zapnutieKamery)
 
-        self.butSpat = Button(text='Späť', size_hint_y=None, height='48dp', on_press=self.spat,
-                              pos_hint={'center_y': 0.05})
-        self.add_widget(self.butSpat)
-        self.butNove = None
-        self.butPouzit = None
+        # self.butSpat = Button(text='Späť', size_hint_y=None, height='48dp', on_press=self.spat,
+        #                       pos_hint={'center_y': 0.05})
+        # self.add_widget(self.butSpat)
+
+
+        self.butNove = self.ids.btnNove
+        self.butPouzit = self.ids.btnPouzit
+        self.butNove.disabled = True
+        self.butPouzit.disabled = True
+
+
         Clock.schedule_interval(self.read_text, 1)
 
     def zapnutieKamery(self, *args):
@@ -39,7 +46,7 @@ class Scanner(Screen):
             self.prveSpustenie = False
             self.skenovat = False
             return
-        self.add_widget(self.zbarcam)
+        # self.add_widget(self.zbarcam)
         self.skenovat = True
         self.zbarcam.start()
 
@@ -52,10 +59,12 @@ class Scanner(Screen):
     def precButtonyKody(self):
         if self.butNove is None:
             return
-        self.remove_widget(self.butNove)
-        self.remove_widget(self.butPouzit)
-        self.butNove = None
-        self.butPouzit = None
+        # self.remove_widget(self.butNove)
+        # self.remove_widget(self.butPouzit)
+        # self.butNove = None
+        # self.butPouzit = None
+        self.butNove.disabled = True
+        self.butPouzit.disabled = True
 
     def spat(self, *args):
         self.zbarcam.stop()
@@ -79,12 +88,17 @@ class Scanner(Screen):
         self.skenovat = False
         self.najdene = kod
 
-        self.butPouzit = Button(text=f'{kod}', size_hint_y=None, height='48dp', on_press=self.koniec,
-                                pos_hint={'center_y': 0.15})
-        self.add_widget(self.butPouzit)
-        self.butNove = Button(text=f'skenovat dalej', size_hint_y=None, height='48dp', on_press=self.pokracovat,
-                              pos_hint={'center_y': 0.25})
-        self.add_widget(self.butNove)
+        # self.butPouzit = Button(text=f'{kod}', size_hint_y=None, height='48dp', on_press=self.koniec,
+        #                         pos_hint={'center_y': 0.15})
+        # self.add_widget(self.butPouzit)
+        # self.butNove = Button(text=f'skenovat dalej', size_hint_y=None, height='48dp', on_press=self.pokracovat,
+        #                       pos_hint={'center_y': 0.25})
+        # self.add_widget(self.butNove)
+
+        self.butNove.disabled = False
+        self.butPouzit.disabled = False
+        self.butNove.text = f'skenovat dalej'
+        self.butPouzit.text = f'{kod}'
 
 
 
