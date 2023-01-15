@@ -14,14 +14,6 @@ class Add_Customers (BoxLayout):
         super(Add_Customers, self).__init__(**kwargs)
         self.screenManager = screenManager
         self.text1 = self.ids.input_add_customer
-        # btn1 = Button(text="Pridaj")
-        # btn1.bind(on_release = lambda btn:self.check())
-        # btn2 = Button(text="Späť")
-        # btn2.bind(on_release=lambda btn: self.call_Back())
-        # self.add_widget(self.text1)
-        # self.add_widget(btn1)
-        # self.add_widget(btn2)
-        # self.add_widget(self.notify)
         self.notify = self.ids.notify
     def synchronize_customers(self):
         self.customer_list = [i['Name'] for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED']

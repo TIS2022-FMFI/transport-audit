@@ -12,15 +12,6 @@ class Add_Stillage_type (BoxLayout):
     def __init__(self,screenManager, **kwargs):
         super(Add_Stillage_type, self).__init__(**kwargs)
         self.screenManager = screenManager
-        # self.text1 = TextInput(text = 'Meno typu vozika')
-        # btn1 = Button(text="Pridaj")
-        # btn1.bind(on_release = lambda btn:self.check())
-        # btn2 = Button(text="Späť")
-        # btn2.bind(on_release=lambda btn: self.call_Back())
-        # self.add_widget(self.text1)
-        # self.add_widget(btn1)
-        # self.add_widget(btn2)
-        # self.add_widget(self.notify)
         self.text1 = self.ids.input_add_st
         self.notify = self.ids.notify
     def synchronize_stillage_types(self):

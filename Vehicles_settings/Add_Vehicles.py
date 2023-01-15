@@ -18,12 +18,6 @@ class Add_Vehicles (BoxLayout):
         super(Add_Vehicles, self).__init__(**kwargs)
         self.screenManager = screenManager
         self.text1 = self.ids.input_vehicle
-        # self.btn1.bind(on_release = lambda btn:self.check())
-        # self.btn2.bind(on_release=lambda btn: self.call_Back())
-        # self.add_widget(self.text1)
-        # self.add_widget(self.btn1)
-        # self.add_widget(self.btn2)
-        # self.add_widget(self.notify)
         self.notify = self.ids.notify
     def call_Back (self):
         self.screenManager.current = 'Settings_Vehicles'
