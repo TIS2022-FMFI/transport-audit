@@ -38,10 +38,10 @@ class Scanner(Screen):
         self.butPouzit = self.ids.btnPouzit
         self.butNove.disabled = True
         self.butPouzit.disabled = True
-        self.zadanyKod = TextInput(text='', size_hint_y=None, height='48dp',
-                              pos_hint={'center_y': 0.25})
-        self.add_widget(self.zadanyKod)
-
+        # self.zadanyKod = TextInput(text='', size_hint_y=None, height='48dp',
+        #                       pos_hint={'center_y': 0.25})
+        # self.add_widget(self.zadanyKod)
+        self.zadanyKod = self.ids.input
 
         Clock.schedule_interval(self.read_text, 1)
 
