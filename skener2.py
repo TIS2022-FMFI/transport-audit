@@ -6,6 +6,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.clock import Clock
 from kivy_garden.zbarcam import ZBarCam
+from kivy.uix.textinput import TextInput
 
 
 class Scanner(Screen):
@@ -37,6 +38,9 @@ class Scanner(Screen):
         self.butPouzit = self.ids.btnPouzit
         self.butNove.disabled = True
         self.butPouzit.disabled = True
+        self.zadanyKod = TextInput(text='', size_hint_y=None, height='48dp',
+                              pos_hint={'center_y': 0.25})
+        self.add_widget(self.zadanyKod)
 
 
         Clock.schedule_interval(self.read_text, 1)
@@ -47,13 +51,14 @@ class Scanner(Screen):
             self.skenovat = False
             return
         # self.add_widget(self.zbarcam)
+        self.zadanyKod.text = ''
         self.skenovat = True
         self.zbarcam.start()
 
     def pokracovat(self, *args):
         self.skenovat = True
         #self.i = (self.i+1)%2
-        self.zbarcam.start()
+        #self.zbarcam.start()
         self.precButtonyKody()
 
     def precButtonyKody(self):
@@ -71,7 +76,7 @@ class Scanner(Screen):
         self.remove_widget(self.zbarcam)
         self.skenovat = False
         self.precButtonyKody()
-    
+        self.kody.append(self.zadanyKod.text)
         self.screenManager.current = self.povodnaScreen
 
     def koniec(self, *args):
@@ -84,7 +89,7 @@ class Scanner(Screen):
         self.screenManager.current = self.dalsiaScreen
 
     def pouzitKod(self, kod):
-        self.zbarcam.stop()
+        #self.zbarcam.stop()
         self.skenovat = False
         self.najdene = kod
 
