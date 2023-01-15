@@ -17,6 +17,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
+from kivy.utils import rgba
 
 from sqlite import Customer, Vehicle, Pattern, Config
 
@@ -69,7 +70,7 @@ class ScrollbarVyber:
 
             self.root = ScrollView(size_hint=(0.8, 0.3), pos_hint={'center_y': self.y, 'center_x': 0.5},
                                    do_scroll_x=False,
-                                   do_scroll_y=True, bar_color=(1, 0, 0, 1), bar_width=50)
+                                   do_scroll_y=True, bar_color=rgba('#021D49'), bar_width=50)
             self.slider = Slider(min=0, max=9, value=5, orientation="vertical", step=0.01, size_hint=(0.1, 0.3),
                                  pos_hint={'center_y': self.y, 'center_x': 0.95})
             self.root.bind(scroll_y=partial(self.slider_change, self.slider))
@@ -78,7 +79,7 @@ class ScrollbarVyber:
 
         self.buttonyVyber = []
         for polozka in self.naVyber:
-            btn = Button(text=polozka.Name, size_hint_y=None, height=40, background_color="#0003a8",
+            btn = Button(text=polozka.Name, size_hint_y=None, height=40, background_color=rgba('#021D49'),
                          background_normal="")
             btn.bind(on_press=partial(self.uvodnaPonuka, polozka))
             self.buttonyVyber.append(btn)
@@ -104,7 +105,7 @@ class ScrollbarVyber:
                 #print([[x.SPZ, x.id] for x in self.druhyScrollbar.naVyber])
 
 
-        self.buttonHlavny = Button(text=text, pos_hint={"center_y": self.y}, background_color="#dddddd",
+        self.buttonHlavny = Button(text=text, pos_hint={"center_y": self.y}, background_color=rgba('#BDD6E6'),
                                    background_normal="", color="#1c1b1d", size_hint=(1, 0.08))
         self.buttonHlavny.bind(on_press=lambda x: self.vyberPoloziek())
         self.screen.add_widget(self.buttonHlavny)
@@ -139,17 +140,17 @@ class UvodAuditu(Screen):
         self.povodna = povodna
         self.dalsia = dalsia
 
-        bPokracovat = Button(text='Pokracovat', background_color="#0003a8",
-                                    background_normal="", pos_hint = {'center_x': 0.5, "top":0.2}, size_hint =(1, 0.08))
+        bPokracovat = Button(text='Pokracovat', background_color=rgba('#021D49'),
+                                    background_normal="", pos_hint = {'center_x': 0.5, "top":0.2}, size_hint =(1, 0.08), color=(1, 1, 1, 1))
         bPokracovat.bind(on_press=self.pokracovat)
         self.add_widget(bPokracovat)
-        bOdhlasenie = Button(text='Odhlasit', pos_hint={"top":0.1, 'center_x': 0.5}, background_color="#0003a8",
-                                    background_normal="",size_hint =(1, 0.08))
+        bOdhlasenie = Button(text='Odhlasit', pos_hint={"top":0.1, 'center_x': 0.5}, background_color=rgba('#021D49'),
+                                    background_normal="",size_hint =(1, 0.08), color=(1, 1, 1, 1))
         bOdhlasenie.bind(on_press=self.odhlasit)
         self.add_widget(bOdhlasenie)
 
-        self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None], 'Zakaznici', self, 0.75)
-        self.scrollAuta =  ScrollbarVyber([x for x in Vehicle().vrat_vsetky(True) if not x.over_zmazanie()], 'SPZ', self, 0.40)
+        self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None], 'Zakaznici', self, 0.8)
+        self.scrollAuta =  ScrollbarVyber([x for x in Vehicle().vrat_vsetky(True) if not x.over_zmazanie()], 'SPZ', self, 0.5)
         self.scrollAuta.druhyScrollbar = self.scrollZakaznici
         self.scrollZakaznici.druhyScrollbar = self.scrollAuta
         self.prvyVstup = True
