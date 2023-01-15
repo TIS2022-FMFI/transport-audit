@@ -40,13 +40,13 @@ class Add_Workers (BoxLayout):
     def check (self):
         print(self.selected_role)
         if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) != len(self.text1.text) or self.text1.text == "Meno":
-            self.notify.text = "Please enter a valid first name."
+            self.notify.text = "Meno je v zlom formáte."
         elif  len([x for x in self.text2.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) > ord('A') and ord(x) < ord('Z')))]) != len(self.text2.text) or self.text2.text == "Priezvisko":
-            self.notify.text = "Please enter a valid last name."
+            self.notify.text = "Priezvisko je v zlom formáte."
         elif self.text1.text == "" or self.text2.text == "":
-            self.notify.text = "Please choose names fields"
+            self.notify.text = "Prázdne meno alebo priezvisko."
         elif self.selected_role is None:
-            self.notify.text = "Please choose user_role"
+            self.notify.text = "Nie je vybratá rola."
         else:
             for i in (User_Role().vrat_vsetky()):
                 if self.selected_role == i["name"]:

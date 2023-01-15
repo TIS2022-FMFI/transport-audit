@@ -15,7 +15,7 @@ class Edit_Workers (BoxLayout):
     drop2 = DropDown()
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
-    btn3 = Button(text="Uzivatelsky kod")
+    btn3 = Button(text="Užívateľský kód")
     workers_list = None
     screenManager = None
     values1=[]
@@ -33,7 +33,7 @@ class Edit_Workers (BoxLayout):
         for i in self.workers_list:
             self.values2.append(i)
         self.ids.spinner_edit_worker_1.values = self.values2
-        self.ids.spinner_edit_worker_1.text = 'Vyber pracovnika na upravu'
+        self.ids.spinner_edit_worker_1.text = 'Vyber pracovníka na úpravu'
     def synchronize_user_roles(self):
         self.select_code = None
         for i in User_Role().vrat_vsetky():
@@ -66,15 +66,15 @@ class Edit_Workers (BoxLayout):
         elif len([x for x in self.text1.text if
                 ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) != len(
                 self.text1.text) or self.text1.text == "Meno":
-            self.notify.text = "Please enter a valid first name."
+            self.notify.text = "Meno je v zlom formáte."
         elif len([x for x in self.text2.text if
                   ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) > ord('A') and ord(x) < ord('Z')))]) != len(
                 self.text2.text) or self.text2.text == "Priezvisko":
-            self.notify.text = "Please enter a valid last name."
+            self.notify.text = "Priezvisko je v zlom formáte."
         elif self.text1.text == "" or self.text2.text == "":
-            self.notify.text = "Please choose names fields"
+            self.notify.text = "Prázdne meno alebo priezvisko."
         elif self.select_role is None:
-            self.notify.text = "Please choose user_role"
+            self.notify.text = "Nie je vybratá rola."
         else:
             updated_user = User().stiahni(self.select_code)
             updated_user.Name = self.text1.text
@@ -89,6 +89,6 @@ class Edit_Workers (BoxLayout):
         self.text1.text = ""
         self.text2.text = ""
         self.notify.text = ""
-        self.btn3.text="Uzivatelsky kod"
+        self.btn3.text="Užívateľský kód"
         self.synchronize_user_roles()
         self.synchronize_workers()

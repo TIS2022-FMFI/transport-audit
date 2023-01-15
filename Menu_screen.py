@@ -10,14 +10,14 @@ from sqlite import User_Role, User
 from random import randint
 class Menu_screen (BoxLayout):
     btn1 = Button(text="Zamestnanci")
-    btn2 = Button(text="Zakaznici")
-    btn3 = Button(text="Vozidla")
+    btn2 = Button(text="Zákaznici")
+    btn3 = Button(text="Vozidlá")
     btn4 = Button(text="Configy")
     btn5 = Button(text="Patterny")
-    btn6 = Button(text="Export settings")
-    btn7 = Button(text = "Typy vozikov")
-    btnOdhlasenie = Button(text="Odhlasit")
-    btnAudit = Button(text="Zacat audit")
+    btn6 = Button(text="Nastavenia exportov")
+    btn7 = Button(text = "Typy vozíkov")
+    btnOdhlasenie = Button(text="Odhlásiť")
+    btnAudit = Button(text="Začať audit")
     screenManager = None
     def __init__(self,aplikacia, povodna, auditScreen, **kwargs):
         super(Menu_screen, self).__init__(**kwargs)

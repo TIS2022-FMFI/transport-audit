@@ -8,7 +8,7 @@ class Delete_Vehicles (BoxLayout):
     notify = Button(text = '')
     on_delete_selected = None
     drop1 = DropDown()
-    btn1 = Button(text="Vymaz")
+    btn1 = Button(text="Vymaž")
     btn2 = Button(text="Späť")
     vehicle_list = None
     screenManager = None
@@ -33,7 +33,7 @@ class Delete_Vehicles (BoxLayout):
         self.screenManager.current = 'Settings_Vehicles'
     def check (self):
         if (self.on_delete_selected is None):
-                self.notify.text = "Please choose Vehicle by id you want delete."
+                self.notify.text = "Nie je vybraté vozidlo."
         else:
             on_delete_Vehicle = Vehicle().stiahni(self.on_delete_selected)
             on_delete_Vehicle.zmazat()

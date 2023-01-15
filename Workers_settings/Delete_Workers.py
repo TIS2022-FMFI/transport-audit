@@ -9,9 +9,9 @@ class Delete_Workers (BoxLayout):
     notify = Button(text = '')
     on_delete_selected = None
     drop1 = DropDown()
-    btn1 = Button(text="Vymaz")
+    btn1 = Button(text="Vymaž")
     btn2 = Button(text="Späť")
-    btn3 = Button(text = "Uzivatelsky kod")
+    btn3 = Button(text = "Užívateľský kód")
     screenManager = None
     workers_list = None
     values=[]
@@ -28,7 +28,7 @@ class Delete_Workers (BoxLayout):
         for i in self.workers_list:
             self.values.append(i)
         self.ids.spinner_delete_worker.values = self.values
-        self.ids.spinner_delete_worker.text = 'Vyber pracovnika na vymazanie'
+        self.ids.spinner_delete_worker.text = 'Vyber pracovníka na vymazanie'
 
     def select_code(self,text):
         if text not in self.workers_list:
@@ -40,7 +40,7 @@ class Delete_Workers (BoxLayout):
         self.screenManager.current = 'Settings_Workers'
     def check (self):
         if (self.on_delete_selected is None):
-                self.notify.text = "Please choose user by code you want delete."
+                self.notify.text = "Prosím vyberte zamestnanca."
         else:
             on_delete_user = User().stiahni(int(self.on_delete_selected))
             on_delete_user.zmazat()
@@ -48,5 +48,5 @@ class Delete_Workers (BoxLayout):
 
     def clear_screen(self, *args):
         self.notify.text = ""
-        self.btn3.text = "Uzivatelsky kod"
+        self.btn3.text = "Užívateľský kód"
         self.synchronize_workers()

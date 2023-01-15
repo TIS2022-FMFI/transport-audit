@@ -8,7 +8,7 @@ from sqlite import Vehicle
 class Edit_Vehicles (BoxLayout):
     select_id  = None
     notify = Button(text = '')
-    text1 = TextInput(text='SPZ')
+    text1 = TextInput(text='ŠPZ')
     drop1 = DropDown()
     btn1 = Button(text="Uprav")
     btn2 = Button(text="Späť")
@@ -26,7 +26,7 @@ class Edit_Vehicles (BoxLayout):
         for i in self.vehicle_list:
             self.values.append(i)
         self.ids.spinner_edit_vehicle.values = self.values
-        self.ids.spinner_edit_vehicle.text = 'Vyber SPZ na upravu'
+        self.ids.spinner_edit_vehicle.text = 'Vyber ŠPZ na úpravu'
     def set_widgets(self,tex1):
         if tex1 not in self.vehicle_list:
             self.text1.text = ""
@@ -38,13 +38,13 @@ class Edit_Vehicles (BoxLayout):
     def check (self):
         print(self.text1)
         if (self.select_id is None):
-            self.notify.text = "Please choose SPZ by id you want edit."
-        elif len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')) or (ord(x) == ' ') or (ord(x) >= ord('0') and ord(x) <= ord('9')))]) != len(self.text1.text) or self.text1.text == "SPZ":
-            self.notify.text = "Please enter a valid SPZ"
+            self.notify.text = "Nie je vybratá ŠPZ."
+        elif len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')) or (ord(x) == ' ') or (ord(x) >= ord('0') and ord(x) <= ord('9')))]) != len(self.text1.text) or self.text1.text == "ŠPZ":
+            self.notify.text = "ŠPZ je v zlom formáte."
         elif self.text1.text == "":
-            self.notify.text = "Please enter a valid SPZ"
+            self.notify.text = "ŠPZ je v zlom formáte."
         elif self.text1.text in self.vehicle_list.keys() and self.vehicle_list[self.text1.text]!= self.select_id:
-            self.notify.text = "This SPZ already exists"
+            self.notify.text = "ŠPZ už existuje."
         else:
             updated_vehicle = Vehicle().stiahni(self.select_id)
             updated_vehicle.SPZ = self.text1.text

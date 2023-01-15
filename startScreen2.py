@@ -45,18 +45,13 @@ class StartScreen(Screen):
     def kontrolaPrihlasenia(self, *args):
         self.aplikacia.skenovanieScreen.povodnaScreen = self.name
         self.aplikacia.skenovanieScreen.dalsiaScreen = self.name
-        #self.scrollZakaznici.vynuluj()
-        #self.scrollAuta.vynuluj()
+
         print(self.aplikacia.kod, self.aplikacia.zamestnanec)
         if not self.aplikacia.kod:
             return
 
 
         pouzivatel = User().stiahni(self.aplikacia.kod[0])
-        #if pouzivatel is None:
-        #    pouz = User().vrat_vsetky(True)
-        #    ind = randint(0, len(pouz)-1 )
-        #    pouzivatel = pouz[ind]
         if pouzivatel is not None and not pouzivatel.over_zmazanie() and User_Role().stiahni(pouzivatel.User_Role_id) is not None:
 
             self.aplikacia.zamestnanec = pouzivatel
@@ -67,5 +62,4 @@ class StartScreen(Screen):
             self.aplikacia.kod.clear()
             popup = Popup(title='Prihlasenie neprebehlo', content=Label(text='Nepodarilo sa najst zamestnanca s naskenovanym kodom'),size_hint=(0.5, 0.5))
             popup.open()
-            #self.aplikacia.screenManager.current = self.dalsia
-            #self.aplikacia.screenManager.current = self.aplikacia.auditUvodScreen.name
+

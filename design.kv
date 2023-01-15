@@ -56,35 +56,35 @@
                 on_press: root.call_Workers_settings()
             MyButton:
                 id: MSbtn2
-                text: "Zakaznici"
+                text: "Zákazníci"
                 on_press: root.call_Customers_settings()
             MyButton:
                 id: MSbtn3
-                text: "Vozidla"
+                text: "Vozidlá"
                 on_press: root.call_Vehicles_settings()
             MyButton:
                 id: MSbtn4
-                text: "Pattern"
+                text: "Patterny"
                 on_press: root.call_Patterns_settings()
             MyButton:
                 id: MSbtn5
-                text: "Config"
+                text: "Configy"
                 on_press: root.call_Configs_settings()
             MyButton:
                 id: MSbtn6
-                text: "Export Settings"
+                text: "Nastavenia exportov"
                 on_press: root.call_Exportss_settings()
             MyButton:
                 id: MSbtn8
-                text: "Tipy vozikov"
+                text: "Typy vozíkov"
                 on_press: root.call_Stillage_types_settings()
             MyButton:
                 id: MSbtn7
-                text: "Odhlasit"
+                text: "Odhlásiť"
                 on_press: root.odhlasit()
             MyButton:
                 id: MSbtn9
-                text: "Audit"
+                text: "Začať audit"
                 on_press: root.zacatAudit()
 
 
@@ -111,13 +111,13 @@
                 text: "Uprav"
                 on_press: root.call_edit()
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.call_delete()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_back()
             MyLabel:
-                text: "Setting Worker"
+                text: "Zamestnanci - nastavenia"
 
 
 
@@ -154,12 +154,12 @@
                 text: "Pridaj"
                 on_press: root.check()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_Back()
             MyButton:
                 id: notify
             MyLabel:
-                text: "Add Worker"
+                text: "Zamestnanci - pridávanie"
 
 
 
@@ -183,9 +183,9 @@
             orientation: 'vertical'
             MyButton:
                 id: button_delete_worker
-                text: "Uzivatelsky kod"
+                text: "Užívateľský kód"
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.check()
             MyButton:
                 text: "Späť"
@@ -193,7 +193,7 @@
             MyButton:
                 id: notify
             MyLabel:
-                text: "Delete Worker"
+                text: "Zamestnanci - mazanie"
 
 <Edit_Workers>
     BoxLayout:
@@ -210,7 +210,7 @@
             on_text: root.set_widgets(spinner_edit_worker_1.text)
         MyButton:
             id: button_edit_worker
-            text: "Uzivatelsky kod"
+            text: "Užívateľský kód"
         MyTextInput:
             id: input_edit_worker_1
             hint_text: 'Meno'
@@ -224,12 +224,12 @@
             text: "Uprav"
             on_press: root.check()
         MyButton:
-            text: "Spat"
+            text: "Späť"
             on_press: root.call_Back()
         MyButton:
             id: notify
         MyLabel:
-            text: "Edit Worker"
+            text: "Zamestnanci - úprava"
 
 <Settings_Vehicles>
     BoxLayout:
@@ -252,13 +252,13 @@
                 text: "Uprav"
                 on_press: root.call_edit()
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.call_delete()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_back()
             MyLabel:
-                text: "Setting Vehicles"
+                text: "Vozidlá - nastavenia"
 
 <Add_Vehicles>
     BoxLayout:
@@ -275,7 +275,7 @@
             orientation: 'vertical'
             MyTextInput:
                 id: input_vehicle
-                hint_text: 'SPZ'
+                hint_text: 'ŠPZ'
         BoxLayout:
             spacing:'12sp'
             orientation: 'vertical'
@@ -283,12 +283,12 @@
                 text: "Pridaj"
                 on_press: root.check()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_Back()
             MyButton:
                 id: notify
             MyLabel:
-                text: "Add Vehicles"
+                text: "Vozidlá - pridávanie"
 
 <Delete_Vehicles>
     BoxLayout:
@@ -307,7 +307,7 @@
             spacing:'12sp'
             orientation: 'vertical'
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.check()
             MyButton:
                 text: "Späť"
@@ -315,7 +315,7 @@
             MyButton:
                 id: notify
             MyLabel:
-                text: "Delete Vehicles"
+                text: "Vozidlá - mazanie"
 
 <Edit_Vehicles>
     BoxLayout:
@@ -332,17 +332,17 @@
             on_text: root.set_widgets(spinner_edit_vehicle.text)
         MyTextInput:
             id: input_edit_vehicle
-            hint_text: 'SPZ'
+            hint_text: 'ŠPZ'
         MyButton:
             text: "Uprav"
             on_press: root.check()
         MyButton:
-            text: "Spat"
+            text: "Späť"
             on_press: root.call_Back()
         MyButton:
             id: notify
         MyLabel:
-            text: "Edit Vehicles"
+            text: "Vozidlá - úprava"
 
 <Settings_Patterns>
     BoxLayout:
@@ -365,13 +365,13 @@
                 text: "Uprav"
                 on_press: root.call_edit()
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.call_delete()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_back()
             MyLabel:
-                text: "Settings Patterns"
+                text: "Patterny - nastavenia"
 
 <Delete_Patterns>
     BoxLayout:
@@ -390,7 +390,7 @@
             spacing:'12sp'
             orientation: 'vertical'
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.check()
             MyButton:
                 text: "Späť"
@@ -398,7 +398,7 @@
             MyButton:
                 id: notify
             MyLabel:
-                text: "Delete Patterns"
+                text: "Patterny - mazanie"
 
 <Settings_Customers>
     BoxLayout:
@@ -421,13 +421,13 @@
                 text: "Uprav"
                 on_press: root.call_edit()
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.call_delete()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_back()
             MyLabel:
-                text: "Settings Customers"
+                text: "Zákazníci - nastavenia"
 
 <Delete_Customers>
     BoxLayout:
@@ -446,7 +446,7 @@
             spacing:'12sp'
             orientation: 'vertical'
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.check()
             MyButton:
                 text: "Späť"
@@ -454,7 +454,7 @@
             MyButton:
                 id: notify
             MyLabel:
-                text: "Delete Customers"
+                text: "Zákazníci - mazanie"
 
 <Settings_Exports>
     BoxLayout:
@@ -479,7 +479,7 @@
                 text: "Späť"
                 on_press: root.call_Back()
             MyLabel:
-                text: "Setting Customers"
+                text: "Nastavenia exportov"
 
 <Settings_Configs>
     BoxLayout:
@@ -499,13 +499,13 @@
                 text: "Pridaj"
                 on_press: root.call_add()
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.call_delete()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_back()
             MyLabel:
-                text: "Settings Configs"
+                text: "Configy - nastavenia"
 
 <Delete_Configs>
     BoxLayout:
@@ -527,7 +527,7 @@
             spacing:'12sp'
             orientation: 'vertical'
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.check()
             MyButton:
                 text: "Späť"
@@ -535,7 +535,7 @@
             MyButton:
                 id: notify
             MyLabel:
-                text: "Delete Configs"
+                text: "Configy - mazanie"
 
 <Add_Patterns>
     BoxLayout:
@@ -557,24 +557,24 @@
             id: spinner_add_pattern_3
             on_text: root.set_number(spinner_add_pattern_3.text)
         MyButton:
-            text: "Pridaj Polozku"
+            text: "Pridaj položku"
             on_press: root.check_added_pattern_item()
         MySpinner:
             id: spinner_add_pattern_4
             on_text: root.set_on_delete_type_stillage(spinner_add_pattern_4.text)
         MyButton:
-            text: "Odstran polozku"
+            text: "Odstráň položku"
             on_press: root.check_deleted_pattern_tem()
         MyButton:
             text: "Pridaj"
             on_press: root.check()
         MyButton:
-            text: "Spat"
+            text: "Späť"
             on_press: root.call_Back()
         MyButton:
             id: notify
         MyLabel:
-            text: "Add Patterns"
+            text: "Patterny - pridávanie"
 
 <Edit_Patterns>
     BoxLayout:
@@ -596,24 +596,24 @@
             id: spinner_edit_pattern_3
             on_text: root.set_number(spinner_edit_pattern_3.text)
         MyButton:
-            text: "Pridaj Polozku"
+            text: "Pridaj položku"
             on_press: root.check_added_pattern_item()
         MySpinner:
             id: spinner_edit_pattern_4
             on_text: root.set_on_delete_type_stillage(spinner_edit_pattern_4.text)
         MyButton:
-            text: "Odstran polozku"
+            text: "Odstráň položku"
             on_press: root.check_deleted_pattern_item()
         MyButton:
             text: "Uprav"
             on_press: root.check()
         MyButton:
-            text: "Spat"
+            text: "Späť"
             on_press: root.call_Back()
         MyButton:
             id: notify
         MyLabel:
-            text: "Edit Patterns"
+            text: "Patterny - úprava"
 
 
 
@@ -634,18 +634,18 @@
             orientation: 'vertical'
             MyTextInput:
                 id: input_add_customer
-                hint_text: 'Meno zakaznika'
+                hint_text: 'Meno zákazníka'
 
             MyButton:
                 text: "Pridaj"
                 on_press: root.check()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_Back()
             MyButton:
                 id: notify
             MyLabel:
-                text: "Add Customers"
+                text: "Zákazníci pridávanie"
 
 
 <Edit_Customers>
@@ -667,18 +667,18 @@
                 on_text: root.set_widgets(spinner_edit_customer.text)
             MyTextInput:
                 id: text_customer
-                hint_text: 'Meno zakaznika'
+                hint_text: 'Meno zákazníka'
 
             MyButton:
                 text: "Uprav"
                 on_press: root.check()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_Back()
             MyButton:
                 id: notify
             MyLabel:
-                text: "Edit Customers"
+                text: "Zákazníci - úprava"
 
 
 <Edit_Configs>
@@ -701,24 +701,24 @@
             id: spinner_edit_config_3
             on_text: root.set_advance_user(spinner_edit_config_3.text)
         MyButton:
-            text: "Pridaj Polozku"
+            text: "Pridaj položku"
             on_press: root.check_adding_advanced_users()
         MySpinner:
             id: spinner_edit_config_4
             on_text: root.set_on_delete_advanced_user(spinner_edit_config_4.text)
         MyButton:
-            text: "Odstran polozku"
+            text: "Odstráň položku"
             on_press: root.check_deleted_advanced_user()
         MyButton:
             text: "Uprav"
             on_press: root.check()
         MyButton:
-            text: "Spat"
+            text: "Späť"
             on_press: root.call_Back()
         MyButton:
             id: notify
         MyLabel:
-            text: "Edit Configs"
+            text: "Configy - úprava"
 
 <Add_Configs>
     BoxLayout:
@@ -748,7 +748,7 @@
             MyButton:
                 id: notify
             MyLabel:
-                text: "Add Configs"
+                text: "Configy - pridávanie"
 
 <StartScreen>
     BoxLayout:
@@ -762,10 +762,10 @@
                 source: 'bgwithLogo.png'
         MyButton:
             id: btnSC
-            text: "Naskenujte svoj kod"
+            text: "Naskenujte svoj kód"
         MyButton:
             id: btnJ
-            text: "Vyber jazyka"
+            text: "Výber jazyka"
 
 <Scanner>
     BoxLayout:
@@ -853,13 +853,13 @@
                 text: "Uprav"
                 on_press: root.call_edit()
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.call_delete()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_back()
             MyLabel:
-                text: "Settings Stillage Types"
+                text: "Typy vozíkov - nastavenia"
 
 <Edit_Stillage_type>
     BoxLayout:
@@ -879,7 +879,7 @@
                 on_text: root.set_widgets(spinner_edit_st.text)
             MyTextInput:
                 id: input_edit_st
-                hint_text: 'Meno typu vozika'
+                hint_text: 'Meno typu vozíka'
         BoxLayout:
             spacing:'12sp'
             orientation: 'vertical'
@@ -887,12 +887,12 @@
                 text: "Uprav"
                 on_press: root.check()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_Back()
             MyButton:
                 id: notify
             MyLabel:
-                text: "Edit Stillage Types"
+                text: "Typy vozíkov - úprava"
 
 <Delete_Stillage_type>
     BoxLayout:
@@ -912,15 +912,15 @@
                 id: spinner_delete_st
                 on_text: root.select_code(spinner_delete_st.text)
             MyButton:
-                text: "Vymaz"
+                text: "Vymaž"
                 on_press: root.check()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_Back()
             MyButton:
                 id: notify
             MyLabel:
-                text: "Delete Stillage Types"
+                text: "Typy vozíkov - mazanie"
 
 <Add_Stillage_type>
     BoxLayout:
@@ -938,14 +938,14 @@
             orientation: 'vertical'
             MyTextInput:
                 id: input_add_st
-                hint_text: 'Meno typu vozika'
+                hint_text: 'Meno typu vozíka'
             MyButton:
                 text: "Pridaj"
                 on_press: root.check()
             MyButton:
-                text: "Spat"
+                text: "Späť"
                 on_press: root.call_Back()
             MyButton:
                 id: notify
             MyLabel:
-                text: "Add Stillage Types"
+                text: "Typy vozíkov - pridávanie"

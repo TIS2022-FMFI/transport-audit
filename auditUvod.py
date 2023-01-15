@@ -97,12 +97,9 @@ class ScrollbarVyber:
             text = vybrate.Name
             if self.naVyber and isinstance(self.naVyber[0], Customer):
                 idAutZakaznika = set([x.Vehicle_id for x in Config().configyZakaznika(self.vybrate.id)])
-                #print(idAutZakaznika, "configy", self.vybrate.id)
                 if self.druhyScrollbar.vybrate is None:
                     self.druhyScrollbar.vynuluj()
-                #print([[x.SPZ, x.id] for x in self.druhyScrollbar.naVyber])
                 self.druhyScrollbar.naVyber.sort(key = lambda x : x.id in idAutZakaznika, reverse=True)
-                #print([[x.SPZ, x.id] for x in self.druhyScrollbar.naVyber])
 
 
         self.buttonHlavny = Button(text=text, pos_hint={"center_y": self.y}, background_color=rgba('#BDD6E6'),

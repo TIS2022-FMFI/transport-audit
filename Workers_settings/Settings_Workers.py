@@ -11,7 +11,6 @@ class Settings_Workers (BoxLayout):
         super(Settings_Workers, self).__init__(**kwargs)
         self.screenManager = screenManager
     def call_add(self):
-        self.screenManager.current
         self.screenManager.current = 'Add_Workers'
     def call_edit(self):
         self.screenManager.current = 'Edit_Workers'

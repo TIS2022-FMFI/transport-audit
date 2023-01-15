@@ -7,7 +7,7 @@ from kivy.app import App
 from sqlite import Vehicle
 class Add_Vehicles (BoxLayout):    
     notify = Button(text = '')
-    text1 = TextInput(text='SPZ')
+    text1 = TextInput(text='ŠPZ')
     btn1 = Button(text="Pridaj")
     btn2 = Button(text="Späť")
     screenManager = None
@@ -22,14 +22,14 @@ class Add_Vehicles (BoxLayout):
     def call_Back (self):
         self.screenManager.current = 'Settings_Vehicles'
     def check (self):
-        if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')) or (ord(x) == ' ') or (ord(x)>=ord('0') and ord(x)<= ord('9')))]) != len(self.text1.text) or self.text1.text == "SPZ":
-            self.notify.text = "Please enter a valid SPZ"
+        if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')) or (ord(x) == ' ') or (ord(x)>=ord('0') and ord(x)<= ord('9')))]) != len(self.text1.text) or self.text1.text == "ŠPZ":
+            self.notify.text = "ŠPZ je v zlom formáte."
         elif self.text1.text == "":
-            self.notify.text = "Please enter valid SPZ"
+            self.notify.text = "Nie je zadaná ŠPZ."
         elif self.text1.text in self.vehicle_list:
-            self.notify.text = "SPZ already exists"
+            self.notify.text = "ŠPZ už existuje."
         elif self.text1.text in [i['SPZ'] for i in Vehicle().vrat_vsetky()]:
-            self.notify.text = "SPZ already exists"
+            self.notify.text = "ŠPZ už existuje."
         else:
             Vehicle().nahraj(self.text1.text)
             self.call_Back()
