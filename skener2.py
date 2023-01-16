@@ -59,6 +59,7 @@ class Scanner(Screen):
         self.skenovat = True
         #self.i = (self.i+1)%2
         #self.zbarcam.start()
+
         self.precButtonyKody()
 
     def precButtonyKody(self):
@@ -78,6 +79,7 @@ class Scanner(Screen):
         self.precButtonyKody()
         kod = self.zadanyKod.text.strip()
         if kod:
+
             self.kody.append(kod)
         self.screenManager.current = self.povodnaScreen
 

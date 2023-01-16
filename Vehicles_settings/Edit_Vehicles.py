@@ -22,6 +22,7 @@ class Edit_Vehicles (BoxLayout):
         self.text1 = self.ids.input_edit_vehicle
     def synchronize_vehicles(self):
         self.select_id = None
+        self.values = []
         self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         for i in self.vehicle_list:
             self.values.append(i)

@@ -29,6 +29,7 @@ class Edit_Workers (BoxLayout):
         self.notify = self.ids.notify
     def synchronize_workers(self):
         self.select_code = None
+        self.values2 = []
         self.workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']), str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         for i in self.workers_list:
             self.values2.append(i)
@@ -36,6 +37,7 @@ class Edit_Workers (BoxLayout):
         self.ids.spinner_edit_worker_1.text = 'Vyber pracovníka na úpravu'
     def synchronize_user_roles(self):
         self.select_code = None
+        self.values1 = []
         for i in User_Role().vrat_vsetky():
             self.values1.append(i["name"])
         self.ids.spinner_edit_worker_2.values = self.values1
@@ -62,7 +64,7 @@ class Edit_Workers (BoxLayout):
         self.screenManager.current = 'Settings_Workers'
     def check (self):
         if (self.select_code is None):
-                self.notify.text = "Please choose user by code you want edit."
+                self.notify.text = "Vyber zamestnanca."
         elif len([x for x in self.text1.text if
                 ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) != len(
                 self.text1.text) or self.text1.text == "Meno":

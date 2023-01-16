@@ -15,7 +15,11 @@ if platform == "android": # Zarucuje, že iba na androide sa if spustí, teda an
     request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE,Permission.CAMERA])
 
 from sqlite import synchronize_db_server_client, Vehicle
-synchronize_db_server_client()
+try:
+    synchronize_db_server_client()
+except:
+    print("neda sa pripojit")
+    pass
 from skener2 import Scanner as Scanner2
 
 class MainApp(App):

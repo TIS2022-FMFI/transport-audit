@@ -25,6 +25,7 @@ class Add_Workers (BoxLayout):
         self.notify = self.ids.notify
     def synchronize_user_roles(self):
         self.selected_role = None
+        self.values = []
         for i in User_Role().vrat_vsetky():
             self.values.append(i["name"])
 
