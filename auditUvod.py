@@ -19,7 +19,7 @@ from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
 
-from sqlite import Customer, Vehicle, Pattern, Config
+from sqlite import Customer, Vehicle, Pattern, Config, synchronize_db_server_client
 
 
 
@@ -153,6 +153,12 @@ class UvodAuditu(Screen):
 
 
     def povodnyStav(self, *args):
+        try:
+            synchronize_db_server_client()
+        except:
+            print("neda sa pripojit")
+            pass
+
         self.scrollZakaznici.naVyber = [x for x in Customer().vrat_vsetky(True) if
                                         not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None]
         self.scrollAuta.naVyber = [x for x in Vehicle().vrat_vsetky(True) if not x.over_zmazanie()]

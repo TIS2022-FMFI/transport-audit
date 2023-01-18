@@ -10,7 +10,7 @@ from datetime import datetime
 
 from kivy.uix.textinput import TextInput
 
-from sqlite import User, User_Role
+from sqlite import User, User_Role, synchronize_db_client_server
 
 
 class UzavretyKamion(Screen):
@@ -112,4 +112,10 @@ class UzavretyKamion(Screen):
                 v.nahraj(v.Date_time_start, v.Date_time_end, v.Stillage_number, v.Stillage_Number_on_Header,
                          v.First_scan_product, v.Last_scan_product, v.JLR_Header_NO, v.Carriage_L_JLR_H,
                          v._Check, v.First_scan_TLS_code, v.Last_scan_TLS_code, v.Stillage_Type_id, v.Shipment_id, v.TLS_range_start, v.TLS_range_stop, v.Note)
+
+        try:
+            synchronize_db_client_server()
+        except:
+            print("neda sa pripojit")
+            pass
         self.povodna.spat()

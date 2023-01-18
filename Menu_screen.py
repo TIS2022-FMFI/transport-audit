@@ -5,7 +5,7 @@ from Configs_settings.Settings_Configs import *
 from Stillage_types_settings.Settings_Stillage_types import *
 from Export_setting.Settings_export import *
 from Patterns_settings.Settings_Patterns import *
-
+from sqlite import synchronize_db_client_server
 class Menu_screen (BoxLayout):
     btn1 = Button(text="Zamestnanci")
     btn2 = Button(text="Zákaznici")
@@ -96,6 +96,12 @@ class Menu_screen (BoxLayout):
         self.aplikacia.screenManager.current = self.auditScreen
 
     def odhlasit(self, *args):
+        try:
+            synchronize_db_client_server()
+        except:
+            print("neda sa pripojit")
+            pass
+
         self.aplikacia.zamestnanec = None
         self.aplikacia.kod.clear()
         self.aplikacia.screenManager.current = self.povodna.name

@@ -14,7 +14,7 @@ if platform == "android": # Zarucuje, že iba na androide sa if spustí, teda an
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE,Permission.CAMERA])
 
-from sqlite import synchronize_db_server_client, Vehicle
+from sqlite import synchronize_db_server_client
 try:
     synchronize_db_server_client()
 except:
@@ -202,4 +202,8 @@ class MainApp(App):
         #self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
+    from sqlite import User, User_Role
+    print("zamstnanci")
+    for u in User().vrat_vsetky():
+        print(u, User_Role().stiahni(u['User_Role_id']).name)
     MainApp().run()
