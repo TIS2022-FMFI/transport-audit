@@ -45,26 +45,36 @@ class Menu_screen (BoxLayout):
     def vytvorMenu(self, *arg):
 
         # self.clear_widgets()
-        # id  = self.aplikacia.zamestnanec.User_Role_id
-        # rola = User_Role().stiahni(id).name
+        id  = self.aplikacia.zamestnanec.User_Role_id
+        rola = User_Role().stiahni(id).name
 
         # mnou dorobene docasne
-        rola = 'Administrátor'
-        id = '0f32fe18-0407-338b-dbd2-b8336b563381'
+        #rola = 'Administrátor'
+        #id = '0f32fe18-0407-338b-dbd2-b8336b563381'
         # ignorovat
 
         # ----------------------------
         print("rola : ", rola)
 
 
-        # if rola == 'Administrátor':
-        #     self.add_widget(self.btn1)
-        # if rola in {'Administrátor', 'Operátor'}:
-        #     self.add_widget(self.btn2)
-        #     self.add_widget(self.btn3)
-        #     self.add_widget(self.btn4)
-        #     self.add_widget(self.btn5)
-        #     self.add_widget(self.btn6)
+        if rola == 'Administrátor':
+            self.btn1.disabled = False
+        else:
+            self.btn1.disabled = True
+        if rola in {'Administrátor', 'Operátor'}:
+            self.btn2.disabled = False
+            self.btn3.disabled = False
+            self.btn4.disabled = False
+            self.btn5.disabled = False
+            self.btn6.disabled = False
+            self.btn7.disabled = False
+        else:
+            self.btn2.disabled = True
+            self.btn3.disabled = True
+            self.btn4.disabled = True
+            self.btn5.disabled = True
+            self.btn6.disabled = True
+            self.btn7.disabled = True
         # self.add_widget(self.btnOdhlasenie)
         # self.add_widget(self.btnAudit)
 
