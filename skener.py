@@ -95,7 +95,7 @@ class Scanner(Screen):
         self.butPouzit = Button(text=f'{kod}', size_hint_y=None, height='48dp', on_press=self.koniec,
                                 pos_hint={'center_y': 0.15})
         self.add_widget(self.butPouzit)
-        self.butNove = Button(text=f'skenovat dalej', size_hint_y=None, height='48dp', on_press=self.pokracovat,
+        self.butNove = Button(text=f'skenovat ďalej', size_hint_y=None, height='48dp', on_press=self.pokracovat,
                               pos_hint={'center_y': 0.25})
         self.add_widget(self.butNove)
 

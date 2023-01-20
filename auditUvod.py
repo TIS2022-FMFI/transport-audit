@@ -139,9 +139,9 @@ class UvodAuditu(Screen):
                                     background_normal="", pos_hint = {'center_x': 0.5, "top":0.2}, size_hint =(1, 0.08), color=(1, 1, 1, 1))
         bPokracovat.bind(on_press=self.pokracovat)
         self.add_widget(bPokracovat)
-        bOdhlasenie = Button(text='Odhlásiť', pos_hint={"top":0.1, 'center_x': 0.5}, background_color=rgba('#021D49'),
+        bOdhlasenie = Button(text='Späť', pos_hint={"top":0.1, 'center_x': 0.5}, background_color=rgba('#021D49'),
                                     background_normal="",size_hint =(1, 0.08), color=(1, 1, 1, 1))
-        bOdhlasenie.bind(on_press=self.odhlasit)
+        bOdhlasenie.bind(on_press=self.spat)
         self.add_widget(bOdhlasenie)
 
         self.scrollZakaznici = ScrollbarVyber([x for x in Customer().vrat_vsetky(True) if not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None], 'Zákazníci', self, 0.8)
@@ -167,6 +167,9 @@ class UvodAuditu(Screen):
             return
         self.scrollZakaznici.vynuluj()
         self.scrollAuta.vynuluj()
+
+    def spat(self, *args):
+        self.aplikacia.screenManager.current = self.povodna.name
 
     def odhlasit(self, *args):
         print("odhladujem")

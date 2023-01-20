@@ -32,7 +32,7 @@ class Delete_Patterns (BoxLayout):
             if self.customer_list[i] in self.pattern_list.values():
                 self.values.append(i)
         self.ids.spinner_delete_patter.values = self.values
-        self.ids.spinner_delete_patter.text = "Customer"
+        self.ids.spinner_delete_patter.text = "Zákazník"
     def synchronize_patterns(self):
         self.select_pattern = None
         self.pattern_list = dict([(i['id'], i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])

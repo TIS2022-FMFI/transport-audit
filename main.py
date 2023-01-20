@@ -7,6 +7,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from startScreen2 import StartScreen
 from UzavretyAudit import UzavretyKamion
 from priebehAuditu import PrebiehajuciAudit
+from kivy.core.window import Window
 
 from auditUvod import UvodAuditu
 from kivy.utils import platform
@@ -23,11 +24,17 @@ except:
 from skener2 import Scanner as Scanner2
 
 class MainApp(App):
+
+    def kontrolaSpat(self, window, key, *args):
+        if key == 27:
+            return True
+        return False
     def build(self):
         if platform == "android":
             request_permissions(
                 [Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE, Permission.CAMERA])
         Builder.load_file('design.kv')
+        Window.bind(on_keyboard=self.kontrolaSpat)
         #Vehicle().stiahni('9a414a42-1edc-42dc-a562-e635de6db7d2').zmazat()
         self.sm = self.screenManager = ScreenManager()
         # Configs
@@ -176,13 +183,13 @@ class MainApp(App):
         self.screenManager.add_widget(self.startScreen)
 
         # Menu screen
-        scrn = Screen(name='Menu_screen')
+        self.scrnMenu = Screen(name='Menu_screen')
         ms = Menu_screen(self, self.startScreen, 'uvodAudit')
-        scrn.add_widget(ms)
-        scrn.bind(on_enter=ms.vytvorMenu)
-        self.sm.add_widget(scrn)
+        self.scrnMenu.add_widget(ms)
+        self.scrnMenu.bind(on_enter=ms.vytvorMenu)
+        self.sm.add_widget(self.scrnMenu)
 
-        self.auditUvodScreen = UvodAuditu(self, self.startScreen, self.startScreen, name='uvodAudit')
+        self.auditUvodScreen = UvodAuditu(self, self.scrnMenu, self.startScreen, name='uvodAudit')
         self.screenManager.add_widget(self.auditUvodScreen)
 
         self.prebiehajuciAudit = PrebiehajuciAudit(self, self.auditUvodScreen, None, None,
