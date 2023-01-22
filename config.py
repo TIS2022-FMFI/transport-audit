@@ -1,8 +1,8 @@
 allow_synchronize = True
 
-sync_URL = "http://server.nahovno.eu:5100"
+sync_URL = "https://wrp-audit.gefcoslovakia.sk" #bez koncoveho lomitka
 
-api_password = "YouWontGuessThisOne"
+api_password = "94bd18c7-91a4-4f79-b45a-7a59105631f4" # musi byt rovnake aj na strane servera
 
 def re_write_bool(variable,value):
     with open("config.py", 'r') as file:
@@ -28,3 +28,4 @@ def re_write_string(variable,value):
         with open("config.py", 'w') as file:
             for line in new_file:
                 file.writelines(line)
+
