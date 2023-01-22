@@ -76,7 +76,9 @@ echo '<nav class="navbar navbar-expand-lg bg-light">
 			<li><a class="dropdown-item" href="logy-android.php">Android</a></li>
           </ul>
         </li>
-		
+		        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="nahraj_report.php">Nahrať report</a>
+        </li>
       </ul>
 				'.($stranka == "Užívatelia" && $admin !=0 ? '
 					<!-- Button trigger modal -->

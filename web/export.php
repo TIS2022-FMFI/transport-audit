@@ -4,8 +4,12 @@
  include 'fpdf/exfpdf.php';
  include 'fpdf/easyTable.php';
  require('db.php');
+ error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
-
+function secure_iterable($var)
+{
+    return is_iterable($var) ? $var : array();
+}
  function dekoduj($text){
 	 return iconv('UTF-8//IGNORE', 'ISO-8859-2//IGNORE', $text);
  }
@@ -138,7 +142,7 @@ if( isset($_POST['Note']) ){
 }
  $table->printRow();
  $i = 0;
-foreach($shipmentz_array as $item) {
+foreach(secure_iterable($shipmentz_array) as $item) {
     $bgcolor='';
     if($i%2)
     {

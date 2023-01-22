@@ -5,7 +5,10 @@ include('db.php');
 include('funkcie.php');
 require('fpdf/fpdf.php');
 $pdf = new FPDF();
-
+if(isset($_SESSION['prihlasovacie_meno'])==false){
+	    echo "<script> location.href='index.php'; </script>";
+        exit;
+}
 if( isset($_SESSION['prihlasovacie_meno'])&& vrat_uzivatela_web($db,$_SESSION['prihlasovacie_meno'])[4]==999 ){
 		echo "Účet expirovaný";
 		session_unset();
@@ -46,12 +49,79 @@ over_pouzivatela($db, $_POST["prihlasmeno"], $_POST["heslo"] )==true && vrat_uzi
 	$_SESSION['prihlasovacie_meno'] = $pouzivatel[1] ;
 	vloz_log($db,100,"Prihlásenie",$_SESSION['prihlasovacie_meno']);
 }
+
+
+
 if (isset($_SESSION['prihlasovacie_meno'])){
 	//vloz_log($mysqli,$_SESSION['prihlasovacie_meno'],"Návšteva indexu ako prihlásený");
-	navigacia('Exporty');
+	navigacia('Nahraj report');
 	
 	
-  
+if (isset($_FILES['file'])){  
+	$target_url = "http://127.0.0.1:14030/Send_report_web";
+
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "http://127.0.0.1:14030/Send_report_web");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POST, true);
+$tmpfile = $_FILES['file']['tmp_name'];
+$filename = basename($_FILES['file']['name']);
+$data = array(
+    'file'      => curl_file_create($tmpfile, $_FILES['file']['type'], $filename),
+    'api-heslo'         => $API_PASSWD
+);
+
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+$output = curl_exec($ch);
+$info = curl_getinfo($ch);
+
+if (curl_errno($ch)) { 
+   print curl_error($ch); 
+} 
+
+curl_close($ch);
+
+$curlresponse = json_decode($output, true);
+
+
+
+	echo '<div class="modal fade" id="onload" tabindex="-1"">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Správa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">';
+        if($curlresponse=='200'){
+			echo '<p>Export úspešne nahraný.</p>';
+			vloz_log($db,109,"Update reportu úspešný",$_SESSION['prihlasovacie_meno']);
+		}
+		        if($curlresponse=='400'){
+			echo '<p>Súbor nemá prípomu .csv.</p>';
+			vloz_log($db,107,"Zlý formát reportu",$_SESSION['prihlasovacie_meno']);
+		}
+		        if($curlresponse=='401'){
+			echo '<p>Webová verzia aplikácie nemá v súbore db.php správne nastavené api heslo.</p>';
+			vloz_log($db,107,"Zlý api-key pri nahrávaní reportu",$_SESSION['prihlasovacie_meno']);
+		}
+		echo '
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>';
+echo "<script type='text/javascript'>
+    window.onload = () => {
+        $('#onload').modal('show');
+    }
+</script>";
+
+
+}
 
 
 ?>
@@ -60,13 +130,18 @@ if (isset($_SESSION['prihlasovacie_meno'])){
 
 
 <div class="row">
-    <div class="col-4 d-flex">
-        <?php vypis_audit($db2,$aktualna_strana); ?>
-    </div>
+
+         <form method = "post" enctype="multipart/form-data">  
+        <input type="file" accept=".csv" name="file" required>  
+		</br>
+		</br>
+        <button type="submit" class="btn btn-primary">Nahrať</button> 
+    </form>  
+
 </div>
 		
 				
-	<?php posuvanie_strany($db2,$aktualna_strana); ?>			
+			
 
 <?php
 
