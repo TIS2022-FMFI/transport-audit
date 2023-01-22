@@ -72,15 +72,18 @@ class Scanner(Screen):
         self.butNove.disabled = True
         self.butPouzit.disabled = True
 
+    def pouzitZadany(self, *args):
+        kod = self.zadanyKod.text.strip()
+        if kod:
+            self.kody.append(kod)
+        self.spat()
+
     def spat(self, *args):
         self.zbarcam.stop()
         self.remove_widget(self.zbarcam)
         self.skenovat = False
         self.precButtonyKody()
-        kod = self.zadanyKod.text.strip()
-        if kod:
 
-            self.kody.append(kod)
         self.screenManager.current = self.povodnaScreen
 
     def koniec(self, *args):
@@ -106,7 +109,7 @@ class Scanner(Screen):
 
         self.butNove.disabled = False
         self.butPouzit.disabled = False
-        self.butNove.text = f'skenovat dalej'
+        self.butNove.text = f'skenovať ďalej'
         self.butPouzit.text = f'{kod}'
 
 

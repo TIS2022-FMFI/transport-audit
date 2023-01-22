@@ -394,7 +394,7 @@ class PrebiehajuciAudit(Screen):
 
         ##########################################
 
-        bSpat = Button(text='Späť', background_color=rgba('#021D49'),
+        bSpat = Button(text='Zrušiť audit', background_color=rgba('#021D49'),
                        background_normal="", pos_hint={'center_x': 0.5, "top":0.3}, size_hint=(1, 0.08))
         bSpat.bind(on_press=self.spat)
         self.add_widget(bSpat)
