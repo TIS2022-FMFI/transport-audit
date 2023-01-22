@@ -33,7 +33,7 @@ class StartScreen(Screen):
         # bPokracovat.bind(on_press=self.skeno)
         # self.add_widget(bJazyk)
         # self.bind(on_enter=self.kontrolaPrihlasenia)
-        bJazyk = self.ids.btnJ
+
 
         self.bind(on_enter=self.kontrolaPrihlasenia)
 

@@ -763,9 +763,6 @@
         MyButton:
             id: btnSC
             text: "Naskenujte svoj kód"
-        MyButton:
-            id: btnJ
-            text: "Výber jazyka"
 
 <Scanner>
     BoxLayout:
@@ -786,12 +783,12 @@
                 id: btnNove
                 on_press: root.pokracovat()
                 text: ""
-            MyTextInput:
-                id: input
             MyButton:
                 id: btnPouzit
                 on_press: root.koniec()
                 text: ""
+            MyTextInput:
+                id: input
             MyButton:
                 id: btnBack
                 text: "Použiť zadaný kód"
