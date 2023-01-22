@@ -1,4 +1,33 @@
 import csv
+import requests
+from config import sync_URL,api_password
+from logy import logni
+def ziskaj_report(user_code):
+    URL = f"{sync_URL}/Report"
+    post = {
+        "api-heslo": f"{api_password}"
+    }
+    try:
+        r = requests.post(url=URL, json=post, timeout=None)
+        open('report.csv', 'wb').write(r.content)
+        return True
+    except requests.exceptions.HTTPError as errh:
+        print("Http Error:", errh)
+        logni(user_code,201,str(errh))
+        return False
+    except requests.exceptions.ConnectionError as errc:
+        print("Error Connecting:", errc)
+        logni(user_code, 202, str(errc))
+        return False
+    except requests.exceptions.Timeout as errt:
+        print("Timeout Error:", errt)
+        logni(user_code, 203, str(errt))
+        return False
+    except requests.exceptions.RequestException as err:
+        print("OOps: Something Else", err)
+        logni(user_code, 0, str(err))
+        return False
+
 
 def citaj_report():
     with open('report.csv') as file_obj:
@@ -44,7 +73,6 @@ def citaj_report_dict(): #Vracia ako dictionary
         polozkyVozika.sort(key=lambda x: int(x['position']))
     return vysledok
 if __name__ == "__main__" :
-    print(citaj_report())
-    print(citaj_report_dict())
+    print(ziskaj_report(1234))
 
 
