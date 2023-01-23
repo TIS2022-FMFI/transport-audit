@@ -48,13 +48,22 @@ class ScrollbarVyber:
         self.uvodnaPonuka(None, None)
 
     def scroll_change(self, scrlv, instance, value):
+        """
+            posun poloziek v scrollbare
+        """
         scrlv.scroll_y = value
 
     def slider_change(self, s, instance, value):
+        """
+            posun slidera v scrollbare
+        """
         if value >= 0:
             s.value = value
 
     def vyberPoloziek(self):
+        """
+            ak je to mozne, prepne sa na zobrazovanie poloziek na vyber
+        """
         if not self.naVyber:
             return
         if isinstance(self.naVyber[0], Vehicle) and self.druhyScrollbar.vybrate is None:
@@ -91,6 +100,13 @@ class ScrollbarVyber:
         self.screen.add_widget(self.root)
 
     def uvodnaPonuka(self, vybrate, button):
+        """
+        ak mame vybratu hodnotu, nastavime text buttonu na hodnotu tejto polozky, ak to bola instancia Customer, preorganizuju sa polozky vehicle tak, aby na zaciatku boli asuta z configov daneho zakaznika
+        ak sme sa sem dostali po kliknuti na button vyber poloziek, odstranime z layoutu vsetky buttony scrollbaru
+        :param vybrate: jedna hodnota z poloziek, ktroru teraz bude mat button pre zobrazenie scrollbaru
+        :param button: button z vyberu poloziek na ktory bolo kliknute
+
+        """
         self.polozkyZobrazene = False
         text = self.text
         if vybrate is not None:
@@ -117,6 +133,9 @@ class ScrollbarVyber:
         self.root.parent = None
 
     def vynuluj(self):
+        """
+            navrat screenu do povodneho stavu, kde nie je vybrata ziadna polozka a buttony s polozkami scrollbaru su schovane
+        """
         if self.polozkyZobrazene:
             self.uvodnaPonuka(None, False)
             return
@@ -154,6 +173,10 @@ class UvodAuditu(Screen):
 
 
     def povodnyStav(self, *args):
+        """
+            nastavenie screenu do povodneho stavu bez vybranych poloziek
+            ak je to mozne, vykona sa synchronizacia lokalnej databzy so serverom
+        """
         try:
             synchronize_db_server_client()
         except:
@@ -170,15 +193,22 @@ class UvodAuditu(Screen):
         self.scrollAuta.vynuluj()
 
     def spat(self, *args):
+        """
+            navrat na main menu
+        """
         self.aplikacia.screenManager.current = self.povodna.name
 
     def odhlasit(self, *args):
+
         print("odhladujem")
         self.aplikacia.zamestnanec = None
         self.aplikacia.kod.clear()
         self.aplikacia.screenManager.current = self.povodna.name
 
     def pokracovat(self, *args):
+        """
+            ak je vyvraty zakaznik aj vozidlo, prepne sa na audit a aplikacia si ulozi obidve instancie
+        """
         if self.scrollZakaznici.vybrate is None:
             popup = Popup(title='Nie je možné pokračovať v audite',
                           content=Label(text='Nie je vybratý zákazník'),

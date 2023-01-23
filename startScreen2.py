@@ -39,9 +39,17 @@ class StartScreen(Screen):
 
 
     def skenovanie(self, *args):
+        """
+            prepnutie na skenovanie kodov
+        """
         self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def kontrolaPrihlasenia(self, *args):
+        """
+            ak mame v self.aplikacia.kod ulozeni kod, overime ci patri nevymayanemu uzivatelovi a ci ma platnu user role
+            ak ano, prepne sa na main menu a alikacia si ulozi prihlaseneho zamestanca
+            ak nie, zobarzi sa hlasenie ze sa nedalo prihlasit
+        """
         self.aplikacia.skenovanieScreen.povodnaScreen = self.name
         self.aplikacia.skenovanieScreen.dalsiaScreen = self.name
 

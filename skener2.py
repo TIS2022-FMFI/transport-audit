@@ -29,56 +29,59 @@ class Scanner(Screen):
         self.skenovat = False
         self.bind(on_enter=self.zapnutieKamery)
 
-        # self.butSpat = Button(text='Späť', size_hint_y=None, height='48dp', on_press=self.spat,
-        #                       pos_hint={'center_y': 0.05})
-        # self.add_widget(self.butSpat)
-
-
         self.butNove = self.ids.btnNove
         self.butPouzit = self.ids.btnPouzit
         self.butNove.disabled = True
         self.butPouzit.disabled = True
-        # self.zadanyKod = TextInput(text='', size_hint_y=None, height='48dp',
-        #                       pos_hint={'center_y': 0.25})
-        # self.add_widget(self.zadanyKod)
+
         self.zadanyKod = self.ids.input
 
         Clock.schedule_interval(self.read_text, 1)
 
     def zapnutieKamery(self, *args):
+        """
+            spusti kameru a umozni detekciu kodov
+        """
         if self.prveSpustenie:
             self.prveSpustenie = False
             self.skenovat = False
             return
-        # self.add_widget(self.zbarcam)
+
         self.zadanyKod.text = ''
         self.skenovat = True
         self.zbarcam.start()
 
     def pokracovat(self, *args):
+        """
+            po zdetekovani kodu umozni naskenovat dalsi kod
+        """
         self.skenovat = True
-        #self.i = (self.i+1)%2
-        #self.zbarcam.start()
-
         self.precButtonyKody()
 
     def precButtonyKody(self):
+        """
+            ak je prave zobrazovany naskenovany kod, znefunkcnime buttony skenovaneho kodu a na pokracovanie skenovania
+        """
         if self.butNove is None:
             return
-        # self.remove_widget(self.butNove)
-        # self.remove_widget(self.butPouzit)
-        # self.butNove = None
-        # self.butPouzit = None
         self.butNove.disabled = True
         self.butPouzit.disabled = True
 
     def pouzitZadany(self, *args):
+        """
+            ak kod v poli na zadavanie neprazdny, tak ho vlozi do pola a zavola spat
+        """
         kod = self.zadanyKod.text.strip()
         if kod:
+            self.kody.clear()
             self.kody.append(kod)
         self.spat()
 
     def spat(self, *args):
+        """
+            zastavi a odpoji kameru, zrusi detekciu kodov, odstrani pripadne buttony na vyber kodu
+            nasledne sa prepne na predchadzajucu screen
+        """
         self.zbarcam.stop()
         self.remove_widget(self.zbarcam)
         self.skenovat = False
@@ -87,26 +90,20 @@ class Scanner(Screen):
         self.screenManager.current = self.povodnaScreen
 
     def koniec(self, *args):
+        """
+            ulozi naskenovany kod do pola, a zavola metodu spat
+        """
         self.kody.clear()
         self.kody.append(self.najdene)
-        self.zbarcam.stop()
-        self.remove_widget(self.zbarcam)
-        self.precButtonyKody()
-
-        self.screenManager.current = self.dalsiaScreen
+        self.spat()
 
     def pouzitKod(self, kod):
-        #self.zbarcam.stop()
+        """
+            ulozi si naskenovany kod, vypne detekciu kodov a spristupni buttony na vyber kodu a pokracovanie v skenovani
+            :param kod: naskenovany kod ktory si chceme ulozit
+        """
         self.skenovat = False
         self.najdene = kod
-
-        # self.butPouzit = Button(text=f'{kod}', size_hint_y=None, height='48dp', on_press=self.koniec,
-        #                         pos_hint={'center_y': 0.15})
-        # self.add_widget(self.butPouzit)
-        # self.butNove = Button(text=f'skenovat dalej', size_hint_y=None, height='48dp', on_press=self.pokracovat,
-        #                       pos_hint={'center_y': 0.25})
-        # self.add_widget(self.butNove)
-
         self.butNove.disabled = False
         self.butPouzit.disabled = False
         self.butNove.text = f'skenovať ďalej'
@@ -115,8 +112,11 @@ class Scanner(Screen):
 
 
     def read_text(self, *args):
+        """
+            ak je prave skenovanie, a kamera detekuje aspon jeden kod, zavola metodu pouziKod s prvym detekovanym kodom
+        """
         if self.zbarcam is None or not self.skenovat:
             return
 
-        if self.zbarcam.symbols: # when something is detected
+        if self.zbarcam.symbols:
             self.pouzitKod(str(self.zbarcam.symbols[0].data, 'UTF-8'))

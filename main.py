@@ -35,6 +35,10 @@ class MainApp(App):
     report = {}
     zamestnanec = None
     def kontrolaSpat(self, window, key, *args):
+        """
+            ak bol stlaceny esc alebo back na mobile, vykona sa navrat na predchadzajucu screen
+            zo start screen, main menu ani priebeh auditu nie je mozny navrat na minulu screen tymto sposobom
+        """
         if key == 27:
             screen = self.sm.current
             funkcia = self.spatZoScreenov.get(screen)
@@ -45,6 +49,9 @@ class MainApp(App):
         return False
 
     def stiahnutieReportu(self, *args):
+        """
+            tato metoda je volana kazdych 15 minut a zabezpecuje stahuvanie sucasnej verzie reportu
+        """
         kod = 0
 
         if self.zamestnanec is not None:
@@ -53,6 +60,11 @@ class MainApp(App):
         ziskaj_report(kod)
 
     def udajeReportu(self, kod):
+        """
+        ak je to mozne, precita, spracuje a vrati obsah sucasne ulozeneho reportu
+        :param kod: kod prihlaseneho zamestnanca
+        :return: spracovany obsah reportu
+        """
         try:
             self.report = citaj_report_dict()
         except:
@@ -283,5 +295,12 @@ class MainApp(App):
         # self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
-    from sqlite import User, User_Role
+    from sqlite import Stillage, Shipment
+    synchronize_db_client_server()
+    synchronize_db_server_client()
+    for u in Stillage().vrat_vsetky():
+        print(u)
+    print()
+    for v in Shipment().vrat_vsetky():
+        print(v)
     MainApp().run()

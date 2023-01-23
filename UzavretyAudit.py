@@ -28,8 +28,15 @@ class UzavretyKamion(Screen):
 
         self.bind(on_enter=self.kontrolaPatternu)
     def skenovanie(self, *args):
+        """
+            prepnutie na skenovanie kodov
+        """
         self.aplikacia.screenManager.current  = self.aplikacia.skenovanieScreen.name
     def kontrolaPatternu(self, *args):
+        """
+            ak nemame naskenovany kod, skontrolujeme splnenie patternu a v zavislosti od toho zobrazime button na porusenie patternu
+            ak je naskenovany kod a patri adminovi alebo kontrolorovi, potvrdime porusenie patternu
+        """
         self.screen()
         if not self.aplikacia.kod:
             splneniePatternu = self.povodna.kontrolaSplneniaPatternu()
@@ -63,10 +70,16 @@ class UzavretyKamion(Screen):
 
 
     def otvorit(self, *args):
+        """
+            navrat na priebeh auditu
+        """
         self.aplikacia.kod.clear()
         self.aplikacia.screenManager.current = self.povodna.name
 
     def screen(self):
+        """
+            zostavenie uvodnych widgetov pre screen uzavreteho kamionu
+        """
         self.aplikacia.skenovanieScreen.povodnaScreen = self.name
         self.aplikacia.skenovanieScreen.dalsiaScreen = self.name
         self.clear_widgets()
@@ -96,7 +109,9 @@ class UzavretyKamion(Screen):
                             background_normal="", pos_hint={'center_x': 0.5, "top": 0.3}, size_hint=(1, 0.08))
         self.bsken.bind(on_press=self.skenovanie)
     def novyAudit(self, *args):
-
+        """
+            ak nebol poruseny pattern alebo bolo potrvdene porusenie, nahrame do databazy audit aj jeho voziky a vratime sa na uvod do auditu
+        """
         if not self.potvrdenie:
             popup = Popup(title='Porušenie patternu',
                           content=Label(text='Pre uzavretie auditu musíte potrvdiť porušenie patternu'), size_hint=(0.5, 0.5))

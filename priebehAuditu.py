@@ -41,37 +41,17 @@ class PrebiehajuciAudit(Screen):
         self.kodNaSkenovanie = NajblizsiKod.VOZIK
         self.styllageTypeOpravaChyby = set()
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
-        #self.report = citaj_report_dict()
         self.prebiehaAudit = False
-
-
-
-        #####################################
-
-        #self.skenovanieScreen = Scanner(self.aplikacia.screenManager, self.kod, self.name, self.name,
-        #                                name='skener' + self.name)
-        #self.aplikacia.screenManager.add_widget(self.skenovanieScreen)
-
-
-        ##########################################
-
-
-        #######################
-        #self.skenovanieScreen.prveSpustenie = False
 
         self.bind(on_enter = self.kontrolaKodu)
 
 
 
     def nakresliObdznik(self):
-        # if self.dielikov > self.maxDielikov:
-        #     with self.canvas:
-        #         Color(1, 0, 0)
-        #         Rectangle(pos=(0, 500), size=(self.sirka, 70))
-        #     return
-        # with self.canvas:
-        #     Color(0, 1, 0)
-        #     Rectangle(size=(self.dielikov* self.sirkaDielika, 70), pos_hint={'center_x': 0.5, "top": 0.95})
+        """
+            zobrazovanie ukazovatela naplnenia patternu
+            podla toho kolko vozikov je nalozenych sa sfarbuju jednotlive dieliky
+        """
         self.remove_widget(self.BL)
         self.BL = BoxLayout(pos_hint={'center_x': 0.5, "top": 1}, size_hint=(1, 0.08), orientation='horizontal')
 
@@ -84,23 +64,25 @@ class PrebiehajuciAudit(Screen):
             for i in range(self.maxDielikov):
                 self.BL.add_widget(Button(size_hint=(1 / self.maxDielikov, 1), background_color=[1, 0, 0]))
         self.add_widget(self.BL)
-        # for i in range(12):
-        #     self.BL.add_widget(Button(id=i, size_hint=(1 / 12, 1)))
-        # self.add_widget(self.BL)
+
 
     def spat(self, *args):
+        """
+            navrat na uvod auditu, aplikacia si dalej nebude pamatat udaje tohto konkretneho auditu
+        """
         print("navrat na uvod auditu")
         self.aplikacia.shippment = None
         self.prebiehaAudit = False
         self.aplikacia.shippmentStillages = set()
         self.aplikacia.kod.clear()
         self.pattern = None
-        #prebiehaAuditself.aplikacia.screenManager.remove_widget(self)
-        #self.aplikacia.screenManager.remove_widget(self.aplikacia.skenovanieScreen)
-        #self.aplikacia.screenManager.remove_widget(self.uzavretyScreen)
         self.aplikacia.screenManager.current = self.povodna.name
 
     def vynulovatVozik(self, *args):
+        """
+            labely pre skenovane hodnoty idu do povodneho stavu s praznym textom
+            nastavenie do stavu kde ideme od zaciatku skenovat cely vozik
+        """
         self.aplikacia.kod.clear()
         self.lVozik.text = ""
         self.lStillage.text = ""
@@ -112,8 +94,14 @@ class PrebiehajuciAudit(Screen):
         self.opravovany = False
 
     def uzavriet(self, *args):
+        """
+            preonutie sa na screen uzavreteho kamionu
+        """
         self.aplikacia.screenManager.current = self.aplikacia.uzavretyScreen.name
     def kontrolaVozika(self):
+        """
+            kontrola udajov doskenovaneho vozika, ak vsetko sedi, rovno ho ulozime do zoznamu vozikov, ak nie zobrazia sa chybove hlasky a pridaju sa buttony na riesenie chyb
+        """
         poradoveCislo = int(self.stillage.JLR_Header_NO)
         najdenaChyba = False
 
@@ -190,7 +178,11 @@ class PrebiehajuciAudit(Screen):
 
 
     def nahrajVozikZasielky(self, bezChyby):
-        ##############upravit
+        """
+            ulozenie udajov vozika do databay, podla toho ci bol chybovy alebo opravovany, nastavime prislusne hodnoty atributov
+            aktualiyujeme naplnenie patternu, nasledne sa vratime do stavu kde cakame zaciatok skenovania vozika
+        :param bezChyby:
+        """
         if self.opravovany:
             self.aplikacia.vozikyVOprave[self.stillage.kod] = None
 
@@ -202,10 +194,10 @@ class PrebiehajuciAudit(Screen):
         self.ubratZPatternu()
         self.stillage.Date_time_end = str(parse(str(datetime.now())))
         if not bezChyby:
-            self.stillage._Check = "NOK"
+            self.stillage._Check = 0
             self.stillage.Note = "Expected correction"
         else:
-            self.stillage._Check = "OK"
+            self.stillage._Check = 1
             if self.opravovany:
                 self.stillage.Note = "Corrected"
 
@@ -217,12 +209,18 @@ class PrebiehajuciAudit(Screen):
         self.vynulovatVozik()
 
     def schovatChyboveButtony(self):
+        """
+            odstranenie buttonov na riesenie chyby
+        """
         #upravit
         self.remove_widget(self.bPotvrditChybu)
         self.remove_widget(self.bOdlozitOpravu)
         #self.remove_widget(self.bVymazatVozik)
 
     def zobrazitChyboveButtony(self):
+        """
+            zobrazenie buttonov na riesenie chyb a nastavenie chybpvych atributov sicasneho vozika
+        """
         #upravit
         self.stillage._Check = "NOK"
         self.stillage.Note = "Expected correction"
@@ -231,6 +229,9 @@ class PrebiehajuciAudit(Screen):
         #self.add_widget(self.bVymazatVozik)
 
     def odlozitOpravu(self, *args):
+        """
+            chybovy vozik si dame do zoznamu cakajucich na opravenie a prepneme sa na novy vozik
+        """
         #self.styllageTypeOpravaChyby.add(self.stillage.Stillage_Type_id)
         self.aplikacia.vozikyVOprave[self.stillage.kod] = self.stillage
         self.schovatChyboveButtony()
@@ -238,6 +239,9 @@ class PrebiehajuciAudit(Screen):
         #print(self.aplikacia.)
 
     def potvrditChybu(self, *args):
+        """
+            potvrdenie chyboveho vozika, nahranie jeho udajov
+        """
         self.schovatChyboveButtony()
         if self.stillage.kod in self.aplikacia.vozikyVOprave:
             self.aplikacia.vozikyVOprave[self.stillage.kod] = None
@@ -246,10 +250,24 @@ class PrebiehajuciAudit(Screen):
         self.vynulovatVozik()
 
     def vyhovujeKodVozika(self, kod):
+        """
+        :param kod: kod na kontrolu
+        :return: true ak kod vyhovuje podmienke na kod vozika, inak false
+        """
         return len(kod) > 4
     def vyhovujeStillageNumberOnHeader(self, kod):
+        """
+
+        :param kod: kod na kontrolu
+        :return: true ak kod vyhovuje podmienke na stillage number, inak false
+        """
         return len(kod) >= 10 and kod.isnumeric()
     def vyhovujeTlsRange(self, kod):
+        """
+
+        :param kod: kod na kontrolu
+        :return: true ak kod vyhovuje podmienke na tls range, inak false
+        """
         if len(kod) != 9 and not "-" in kod:
             return False
         v = [x.strip() for x in kod.split("-")]
@@ -261,18 +279,34 @@ class PrebiehajuciAudit(Screen):
         return prve.isnumeric() and druhe.isnumeric()
 
     def vyhovujeProdukt(self, kod):
+        """
+        :param kod: kod na kontrolu
+        :return: true k kod ma dlzku iono alebo tls kodu a je numericky, inak false
+        """
         if len(kod) != PrebiehajuciAudit.dlzkaTLS and len(kod) != PrebiehajuciAudit.dlzkaIONO:
             return False
 
         return kod.isnumeric()
 
     def stillageTypMenoZKodu(self, kod):
+        """
+        :param kod: kod na analyzu
+        :return: meno typu vozika ktory ma vozik so zadanym kodom
+        """
         return kod[:-4]
 
     def stillageNumberZKodu(self, kod):
+        """
+        :param kod: kod na analyzu
+        :return: ziskany stillage number z celeho kodu z headera
+        """
         return kod[-4:]
 
     def rozkladStillageNumberOnHeader(self, kod):
+        """
+        :param kod: kod z jlr headera na rozklad
+        :return: jednotlive polozky kodu
+        """
         vysl = {}
         vysl['carriageLabel'] = kod[3:5]
         vysl['JLRHeaderNo'] = kod[-2:]
@@ -280,17 +314,26 @@ class PrebiehajuciAudit(Screen):
         return vysl
 
     def stillageTypZKodu(self, kod):
+        """
+        :param kod: kod na analyzu
+        :return: instancia stillage type vozika so zadanym kodom
+        """
         typMeno = self.stillageTypMenoZKodu(kod)
         return Stillage_type().stiahniMeno(typMeno)
 
     def ubratZPatternu(self):
-
+        """
+            ak je sucasny vozik v pattene, uberiem z ocakavaneho poctu vozikov jeho typu
+        """
         meno = self.stillageTypMenoZKodu(self.stillage.kod)
         print(meno, self.poctyPoloziekPatternu)
         if meno in self.poctyPoloziekPatternu.keys():
             self.poctyPoloziekPatternu[meno] -= 1
 
     def kontrolaSplneniaPatternu(self):
+        """
+        :return: 1 ak je nalozenych viac vozikov ako urcuje pattern, -1 ak niektory typ z patternu nema nalozene vsetky voziky, inak 0
+        """
         print(self.dielikov, self.maxDielikov)
         if self.dielikov > self.maxDielikov:
             return 1
@@ -300,6 +343,9 @@ class PrebiehajuciAudit(Screen):
         return 0
 
     def ulozVozikKod(self):
+        """
+            ulozenie informacii ziskanych z kodu vozika
+        """
         print("oprava ", self.aplikacia.vozikyVOprave)
 
         if self.kodVybraty in self.aplikacia.vozikyVOprave and self.aplikacia.vozikyVOprave[self.kodVybraty] is not None:
@@ -319,19 +365,31 @@ class PrebiehajuciAudit(Screen):
 
 
     def ulozStillageNumber(self):
+        """
+           ulozenie informacii ziskanych zo stillage number
+        """
         self.stillage.Stillage_Number_on_Header = self.kodVybraty
         casti = self.rozkladStillageNumberOnHeader(self.kodVybraty)
         self.stillage.JLR_Header_NO = casti['JLRHeaderNo']
         self.stillage.Carriage_L_JLR_H = casti['carriageLabel'] + "/" + casti['JLRHeaderStillageNo']
     def ulozRange(self):
+        """
+            ulozenie prveho a posledneho tls kodu z jlr headera
+        """
         self.stillage.TLS_range_start, self.stillage.TLS_range_stop = [x.strip() for x in self.kodVybraty.split("-")]
 
     def ulozPrvyKod(self):
+        """
+            ulozenie naskenovaneho kodu prveho produktu
+        """
         self.stillage.First_scan_product = self.kodVybraty
         if len(self.kodVybraty) == PrebiehajuciAudit.dlzkaTLS:
             self.stillage.First_scan_TLS_code = self.kodVybraty
 
     def ulozDruhyKod(self):
+        """
+            ulozenie naskenovaneho kodu posledneho produktu
+        """
         self.stillage.Last_scan_product = self.kodVybraty
         if len(self.kodVybraty) == PrebiehajuciAudit.dlzkaTLS:
             self.stillage.Last_scan_TLS_code = self.kodVybraty
@@ -339,6 +397,9 @@ class PrebiehajuciAudit(Screen):
         #self.styllageTypeOpravaChyby.discard(self.stillage.Stillage_Type_id) #doplnit do nahravania vozika
 
     def vynulovanieObrazovky(self, *args):
+        """
+            ak nie je v prebiehajuci ziaden audit, dame screen do povodneho stavu, nacitame si pattern pre zakaznika a pripravime datove struktury na kontrolu auditu
+        """
         print("audit v priebehu ", self.prebiehaAudit)
         if self.prebiehaAudit:
             return
@@ -446,17 +507,10 @@ class PrebiehajuciAudit(Screen):
 
 
 
-
-        #print(Stillage_type().vrat_vsetky())
         self.sirka = self.size[0]
 
         self.sirkaDielika = self.sirka / self.maxDielikov
         self.dielikov = 0
-
-        # with self.canvas:
-        #     Color(0.4, 0.4, 0.4)
-        #     Rectangle(pos=(0, 500), size=(self.sirka, 70), pos_hint={'center_x': 0.8, "top": 0.35})
-        # self.nakresliObdznik()
 
         self.BL = BoxLayout(pos_hint={'center_x': 0.5, "top": 1}, size_hint=(1, 0.08), orientation='horizontal')
 
@@ -476,8 +530,9 @@ class PrebiehajuciAudit(Screen):
 
 
     def kontrolaKodu(self, *args):
-        #upravit
-
+        """
+            ak bol prave naskenovany kod, vyhodnoti sa v zavislosti od toho, ktory typ kodu bolo povolene skenovat a vykoaju sa prislusne akcie na spracovanie kodu
+        """
 
         self.vynulovanieObrazovky()
         print("po volani vynulovania")
@@ -543,33 +598,50 @@ class PrebiehajuciAudit(Screen):
         self.aplikacia.kod.clear()
 
     def skenPrvy(self, *args):
-
+        """
+            ak je povolene skenovanie prveho produktu, prepneme sa na skenovaciu screen
+        """
         if self.kodNaSkenovanie != NajblizsiKod.PRVY:
             return
         self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenDruhy(self, *args):
+        """
+            ak je povolene skenovanie posledneho produktu, prepneme sa na skenovaciu screen
+        """
         if self.kodNaSkenovanie != NajblizsiKod.DRUHY:
             return
         self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenVozik(self, *args):
+        """
+            ak je povolene skenovanie kodu vozika, prepneme sa na skenovaciu screen
+        """
         self.prebiehaAudit = True
         if self.kodNaSkenovanie != NajblizsiKod.VOZIK:
             return
         self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenStillage(self, *args):
+        """
+            ak je povolene skenovanie stillage number z headera, prepneme sa na skenovaciu screen
+        """
         if self.kodNaSkenovanie != NajblizsiKod.STILLAGE_NUMBER:
             return
         self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenRange(self, *args):
+        """
+            ak je povolene skenovanie tls range z headera, prepneme sa na skenovaciu screen
+        """
         if self.kodNaSkenovanie != NajblizsiKod.TLS_RANGE:
             return
         self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
     def skenKontrolor(self, *args):
+        """
+            nastavenie na skenovanie kodu kontrolora a prepnutie na skenovaciu screen
+        """
         self.kodNaSkenovanie = NajblizsiKod.KONTROLOR
         self.aplikacia.screenManager.current = self.aplikacia.skenovanieScreen.name
 
