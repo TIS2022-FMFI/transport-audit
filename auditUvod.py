@@ -20,6 +20,7 @@ from kivy.uix.widget import Widget
 from kivy.utils import rgba
 
 from sqlite import Customer, Vehicle, Pattern, Config, synchronize_db_server_client
+from logy import logni
 
 
 
@@ -157,7 +158,7 @@ class UvodAuditu(Screen):
             synchronize_db_server_client()
         except:
             print("neda sa pripojit")
-            pass
+            logni(self.aplikacia.zamestnanec.code, 202, "chyba pri synchroniizácii")
 
         self.scrollZakaznici.naVyber = [x for x in Customer().vrat_vsetky(True) if
                                         not x.over_zmazanie() and Pattern().patternZakaznika(x.id) is not None]

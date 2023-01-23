@@ -13,20 +13,27 @@ from auditUvod import UvodAuditu
 from kivy.utils import platform
 if platform == "android": # Zarucuje, že iba na androide sa if spustí, teda android package sa nemusí (a ani nedá) inštalovať
     from android.permissions import request_permissions, Permission
-    request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE,Permission.CAMERA])
+    request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE,Permission.CAMERA, Permission.INTERNET])
 
 from sqlite import synchronize_db_server_client
 from logy import logy_nahraj_vsetky_na_server,logni
+
+
+from kivy.clock import Clock
 try:
     synchronize_db_server_client()
     logy_nahraj_vsetky_na_server()
 except:
     print("neda sa pripojit")
-    logni(0,0,"chyba pri synchroniizácii")
+    logni(0,202,"chyba pri synchroniizácii")
 from skener2 import Scanner as Scanner2
+from parser import ziskaj_report, citaj_report_dict
+
 
 class MainApp(App):
     spatZoScreenov = {}
+    report = {}
+    zamestnanec = None
     def kontrolaSpat(self, window, key, *args):
         if key == 27:
             screen = self.sm.current
@@ -36,12 +43,30 @@ class MainApp(App):
 
             return True
         return False
+
+    def stiahnutieReportu(self, *args):
+        kod = 0
+
+        if self.zamestnanec is not None:
+            kod = self.zamestnanec.code
+        print(kod, "stahuje report")
+        ziskaj_report(kod)
+
+    def udajeReportu(self, kod):
+        try:
+            self.report = citaj_report_dict()
+        except:
+            logni(kod, 205, "nepodarilo sa precitat report")
+        return self.report
     def build(self):
         if platform == "android":
             request_permissions(
-                [Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE, Permission.CAMERA])
+                [Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE, Permission.CAMERA, Permission.INTERNET])
         Builder.load_file('design.kv')
+
         Window.bind(on_keyboard=self.kontrolaSpat)
+        self.stiahnutieReportu()
+        Clock.schedule_interval(self.stiahnutieReportu, 15 * 60)
         #Vehicle().stiahni('9a414a42-1edc-42dc-a562-e635de6db7d2').zmazat()
         self.sm = self.screenManager = ScreenManager()
         # Configs
@@ -211,7 +236,7 @@ class MainApp(App):
         self.spatZoScreenov['Settings_Exports'] = settings_exports.call_Back
 
         ###########
-        self.zamestnanec = None
+
         self.kod = []
 
         #skener
@@ -253,6 +278,7 @@ class MainApp(App):
         self.shippment = None
         self.shippmentStillages = set()
         self.vozikyVOprave = {}
+
         self.sm.current = 'startScreen'
         # self.sm.current = 'Menu_screen'
         return self.sm

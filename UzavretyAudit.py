@@ -113,9 +113,4 @@ class UzavretyKamion(Screen):
                          v.First_scan_product, v.Last_scan_product, v.JLR_Header_NO, v.Carriage_L_JLR_H,
                          v._Check, v.First_scan_TLS_code, v.Last_scan_TLS_code, v.Stillage_Type_id, v.Shipment_id, v.TLS_range_start, v.TLS_range_stop, v.Note)
 
-        try:
-            synchronize_db_client_server()
-        except:
-            print("neda sa pripojit")
-            pass
         self.povodna.spat()

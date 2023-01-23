@@ -6,6 +6,7 @@ from Stillage_types_settings.Settings_Stillage_types import *
 from Export_setting.Settings_export import *
 from Patterns_settings.Settings_Patterns import *
 from sqlite import synchronize_db_client_server
+from logy import logni
 class Menu_screen (BoxLayout):
     btn1 = Button(text="Zamestnanci")
     btn2 = Button(text="Zákaznici")
@@ -100,7 +101,7 @@ class Menu_screen (BoxLayout):
             synchronize_db_client_server()
         except:
             print("neda sa pripojit")
-            pass
+            logni(self.aplikacia.zamestnanec.code, 202, "chyba pri synchroniizácii")
 
         self.aplikacia.zamestnanec = None
         self.aplikacia.kod.clear()

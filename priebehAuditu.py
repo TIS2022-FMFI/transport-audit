@@ -13,7 +13,7 @@ from sqlite import Shipment, Pattern, Pattern_Item, Stillage_type, Stillage, Use
 from enum import Enum
 from datetime import datetime
 from dateutil.parser import parse
-from parser import *
+#from parser import *
 class NajblizsiKod(Enum):
     VOZIK = 0
     STILLAGE_NUMBER = 1
@@ -41,7 +41,7 @@ class PrebiehajuciAudit(Screen):
         self.kodNaSkenovanie = NajblizsiKod.VOZIK
         self.styllageTypeOpravaChyby = set()
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
-        self.report = citaj_report_dict()
+        #self.report = citaj_report_dict()
         self.prebiehaAudit = False
 
 
@@ -124,7 +124,7 @@ class PrebiehajuciAudit(Screen):
                 popup.open()
                 najdenaChyba = True
 
-        dataReport = self.report.get(self.stillage.Stillage_Number_on_Header, None)
+        dataReport = self.aplikacia.udajeReportu(self.aplikacia.zamestnanec.code).get(self.stillage.Stillage_Number_on_Header, None)
         #self.report[]
         TLS = True
         if PrebiehajuciAudit.dlzkaIONO == len(self.stillage.First_scan_product):
@@ -368,12 +368,12 @@ class PrebiehajuciAudit(Screen):
                 self.poctyPoloziekPatternu[stillageTupe.Name] = p.Number
         print(self.poctyPoloziekPatternu)
         if self.maxDielikov == 0:
-            print("same nuly")
+            logni(self.aplikacia.zamestnanec, 204, "pattern zakaznika je prazdny")
             self.spat()
             return
 
 
-        self.report = citaj_report_dict()
+        #self.report = citaj_report_dict()
         # self.clear_widgets()
 
         self.bPotvrditVozik = Button(text='Potvrdiť vozík kontrolórom', background_color="#ff0000",
