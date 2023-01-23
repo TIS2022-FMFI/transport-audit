@@ -58,11 +58,11 @@ if (isset($_SESSION['prihlasovacie_meno'])){
 	
 	
 if (isset($_FILES['file'])){  
-	$target_url = "http://127.0.0.1:14030/Send_report_web";
+	
 
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, "http://127.0.0.1:14030/Send_report_web");
+curl_setopt($ch, CURLOPT_URL, $target_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_POST, true);
 $tmpfile = $_FILES['file']['tmp_name'];

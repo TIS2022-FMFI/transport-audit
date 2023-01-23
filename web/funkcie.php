@@ -633,84 +633,71 @@ function vypis_audit($db,$aktualna_strana){
 		echo '				
 					<form target="_blank" action="export.php" method="POST" >';
 					
-						echo "<script type='text/javascript'>
-	$('#select-all').click(function(event) {   
-    if(this.checked) {
-        // Iterate each checkbox
-        $(':checkbox').each(function() {
-            this.checked = true;                        
-        });
-    } else {
-        $(':checkbox').each(function() {
-            this.checked = false;                       
-        });
-    }
-}); 
-	</script><input type='checkbox' name='select-all' id='select-all' /><label for='select-all'>Označiť / odznačiť všetko</label><br><br>";
+
 		echo'
 			
-			<input type="checkbox" id="shipment_ajdi" name="shipment_ajdi" value="' . $number . '">
+			<input type="checkbox" id="shipment_ajdi" name="shipment_ajdi" value="' . $number . '" checked=checked>
 			<label for="shipment_ajdi">Shipment ID</label><br>
 			
 
-			<input type="checkbox" id="Plate_NO" name="Plate_NO" value="' . $row_spz[0] . '">
+			<input type="checkbox" id="Plate_NO" name="Plate_NO" value="' . $row_spz[0] . '" checked=checked>
 			<label for="Plate number">Plate_NO</label><br>
 			
-			<input type="checkbox" id="Customer" name="Customer" value="' . $row_customer[0] . '">
+			<input type="checkbox" id="Customer" name="Customer" value="' . $row_customer[0] . '" checked=checked>
 			<label for="Customer">Customer</label><br>
 			
-			<input type="checkbox" id="User" name="User" value="' . $row_user[1] . ' ' . $row_user[2] . ' ( ' . $row_user[0] . ' )">
+			<input type="checkbox" id="User" name="User" value="' . $row_user[1] . ' ' . $row_user[2] . ' ( ' . $row_user[0] . ' )" checked=checked>
 			<label for="User">User</label><br>
 			
-						<input type="checkbox" id="time_close_s" name="time_close_s" value="' . $item['Date_time_close'] . '">
+						<input type="checkbox" id="time_close_s" name="time_close_s" value="' . $item['Date_time_close'] . '" checked=checked>
 			<label for="time_close_s">Time close</label><br>
 
-			<input type="checkbox" id="time_start" name="time_start" value="1">
+			<input type="checkbox" id="time_start" name="time_start" value="1" checked=checked>
 			<label for="time_start">(Stillage)Time start</label><br>
 
-			<input type="checkbox" id="time_end" name="time_end" value="1">
+			<input type="checkbox" id="time_end" name="time_end" value="1" checked=checked>
 			<label for="time_end">(Stillage)Time end</label><br>
 			
 			
-			<input type="checkbox" id="Type" name="Type" value="1">
+			<input type="checkbox" id="Type" name="Type" value="1" checked=checked>
 			<label for="Type">(Stillage)Type</label><br>
 			
 
 
-			<input type="checkbox" id="Stillage_number" name="Stillage_number" value="1">
+			<input type="checkbox" id="Stillage_number" name="Stillage_number" value="1" checked=checked>
 			<label for="Stillage_number">(Stillage)Stillage number</label><br>
 
-			<input type="checkbox" id="Stillage_Number_on_Header" name="Stillage_Number_on_Header" value="1">
+			<input type="checkbox" id="Stillage_Number_on_Header" name="Stillage_Number_on_Header" value="1" checked=checked>
 			<label for="Stillage_Number_on_Header">(Stillage)Stillage number on header</label><br>
 
-			<input type="checkbox" id="First_scan_product" name="First_scan_product" value="1">
+			<input type="checkbox" id="First_scan_product" name="First_scan_product" value="1" checked=checked>
 			<label for="First_scan_product">(Stillage)First scan product</label><br>
 
-			<input type="checkbox" id="Last_scan_product" name="Last_scan_product" value="1">
+			<input type="checkbox" id="Last_scan_product" name="Last_scan_product" value="1" checked=checked>
 			<label for="Last_scan_product">(Stillage)Last scan product</label><br>
 
-			<input type="checkbox" id="JLR_Header_NO" name="JLR_Header_NO" value="1">
+			<input type="checkbox" id="JLR_Header_NO" name="JLR_Header_NO" value="1" checked=checked>
 			<label for="JLR_Header_NO">(Stillage)JLR Header NO</label><br>
 
-			<input type="checkbox" id="Carriage" name="Carriage" value="1">
+			<input type="checkbox" id="Carriage" name="Carriage" value="1" checked=checked>
 			<label for="Carriage">(Stillage)Carriage</label><br>
 
-			<input type="checkbox" id="Check" name="Check" value="1">
+			<input type="checkbox" id="Check" name="Check" value="1" checked=checked>
 			<label for="Check">(Stillage)Check</label><br>
 
-			<input type="checkbox" id="First_scan_TLS" name="First_scan_TLS" value="1">
+			<input type="checkbox" id="First_scan_TLS" name="First_scan_TLS" value="1" checked=checked>
 			<label for="First_scan_TLS">(Stillage)First scan TLS</label><br>
 
-			<input type="checkbox" id="Last_scan_TLS" name="Last_scan_TLS" value="1">
+			<input type="checkbox" id="Last_scan_TLS" name="Last_scan_TLS" value="1" checked=checked>
 			<label for="First_scan_TLS">(Stillage)Last scan TLS</label><br>
 
-			<input type="checkbox" id="TLS_Range_start" name="TLS_Range_start" value="1">
+			<input type="checkbox" id="TLS_Range_start" name="TLS_Range_start" value="1" checked=checked>
 			<label for="TLS_Range_start">(Stillage)TLS Range start</label><br>
 
-			<input type="checkbox" id="TLS_Range_stop" name="TLS_Range_stop" value="1">
+			<input type="checkbox" id="TLS_Range_stop" name="TLS_Range_stop" value="1" checked=checked>
 			<label for="TLS_Range_stop">(Stillage)TLS range stop</label><br>
 
-			<input type="checkbox" id="Note" name="Note" value="1">
+			<input type="checkbox" id="Note" name="Note" value="1" checked=checked>
 			<label for="Note">(Stillage)Note</label><br>
 			<input type="hidden" id="shipment_id_r" name="shipment_id_r" value="'.$id_string.'">
 		

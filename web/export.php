@@ -198,7 +198,14 @@ if( isset($_POST['Carriage']) ){
  $table->easyCell(dekoduj($item['Carriage_L_JLR_H'])); // ČO je toto ?
 }
 if( isset($_POST['Check']) ){
- $table->easyCell(dekoduj($item['_Check']));
+	$check_textik = dekoduj($item['_Check']);
+	if($check_textik=="1"){
+		$check_textik = "OK";
+	}
+	if($check_textik=="0"){
+		$check_textik = "NOK";
+	}
+ $table->easyCell($check_textik);
 }
 
 if( isset($_POST['TLS_Range_start']) ){
