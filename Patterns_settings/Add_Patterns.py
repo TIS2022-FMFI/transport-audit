@@ -55,6 +55,7 @@ class Add_Patterns (BoxLayout):
             self.values2.append(i)
         self.ids.spinner_add_pattern_2.values = self.values2
         self.ids.spinner_add_pattern_2.text = 'Typ vozíka'
+        self.ids.spinner_add_pattern_3.text = 'Počet'
     def set_number(self,text):
         self.select_number = text
     def set_stillage_type(self,text):
