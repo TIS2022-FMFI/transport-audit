@@ -6,6 +6,9 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from sqlite import User
 class Delete_Workers (BoxLayout):
+    """
+    mazanie zamestnancov
+    """
     notify = Button(text = '')
     on_delete_selected = None
     drop1 = DropDown()
@@ -21,6 +24,9 @@ class Delete_Workers (BoxLayout):
         self.notify = self.ids.notify
         self.btn3 = self.ids.button_delete_worker
     def synchronize_workers(self,*args):
+        """
+        nacita zamestnancov z databazy
+        """
         self.on_delete_selected = None
         self.values = []
         self.workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']), str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -31,14 +37,23 @@ class Delete_Workers (BoxLayout):
         self.ids.spinner_delete_worker.text = 'Vyber pracovníka na vymazanie'
 
     def select_code(self,text):
+        """
+        oznaci zamestnanca na vymazanie
+        """
         if text not in self.workers_list:
             return
         tex = self.workers_list[text]
         self.btn3.text = tex
         self.on_delete_selected = tex
     def call_Back (self):
+        """
+        presunutie sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Workers'
     def check (self):
+        """
+        kontrola vstupov nasledne mazanie zamestnanca
+        """
         if (self.on_delete_selected is None):
                 self.notify.text = "Prosím vyberte zamestnanca."
         else:
@@ -47,6 +62,9 @@ class Delete_Workers (BoxLayout):
             self.call_Back()
 
     def clear_screen(self, *args):
+        """
+        prvotna inicializacia obrazovky
+        """
         self.notify.text = ""
         self.btn3.text = "Užívateľský kód"
         self.synchronize_workers()

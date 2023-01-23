@@ -6,6 +6,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Customer,Stillage_type,Pattern_Item,Pattern
 class Delete_Patterns (BoxLayout):
+    """
+    mazanie paternov
+    """
     select_customer = None
     select_pattern  = None
     notify = Button(text = '')
@@ -23,6 +26,9 @@ class Delete_Patterns (BoxLayout):
         self.notify = self.ids.notify
 
     def synchronize_customers(self):
+        """
+        nacita zakaznikov z databazy
+        """
         self.select_customer = None
         # self.drop2.clear_widgets()
         # self.drop2.select("Customer")
@@ -34,9 +40,15 @@ class Delete_Patterns (BoxLayout):
         self.ids.spinner_delete_patter.values = self.values
         self.ids.spinner_delete_patter.text = "Zákazník"
     def synchronize_patterns(self):
+        """
+        nacita paterny z databazy
+        """
         self.select_pattern = None
         self.pattern_list = dict([(i['id'], i['Customer_id']) for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED'])
     def set_customer_id(self,tex1):
+        """
+        oznaci patern zakaznika na vymazanie
+        """
         self.select_pattern = None
         if tex1 not in self.customer_list:
             return
@@ -46,8 +58,14 @@ class Delete_Patterns (BoxLayout):
                 self.select_pattern = i['id']
                 break
     def call_Back (self):
+        """
+        presunutie sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Patterns'
     def check (self):
+        """
+        kontrola vstupov nasledne mazanie patternu zakaznika
+        """
         if self.select_customer is None:
             self.notify.text = "Vyber zákazníka"
         else:
@@ -59,6 +77,9 @@ class Delete_Patterns (BoxLayout):
                     on_delete_pattern_item.zmazat()
             self.call_Back()
     def clear_screen(self, *args):
+        """
+        prvotna inicializacia obrazovky
+        """
         self.notify.text = ""
         self.synchronize_patterns()
         self.synchronize_customers()

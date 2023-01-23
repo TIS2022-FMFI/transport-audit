@@ -11,6 +11,10 @@ class Settings_Stillage_types (BoxLayout):
     btn4 = Button(text="Späť")
     screenManager = None
     def __init__(self,screenManager, **kwargs):
+        """
+        nastavenia typov vozikov
+        nasledovne funkcie zavolaju prislusny screen ktory si vyberieme
+        """
         super(Settings_Stillage_types, self).__init__(**kwargs)
         self.screenManager = screenManager
     def call_add(self):

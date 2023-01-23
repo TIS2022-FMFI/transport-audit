@@ -6,6 +6,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import User, User_Role
 class Add_Workers (BoxLayout):
+    """
+    pridavanie zamestnancov
+    """
     selected_role = None
     notify = Button(text = '')
     drop1 = DropDown()
@@ -24,22 +27,32 @@ class Add_Workers (BoxLayout):
         self.text2 = self.ids.input1
         self.notify = self.ids.notify
     def synchronize_user_roles(self):
+        """
+        natiahne uzivatelske role z databazy
+        """
         self.selected_role = None
         self.values = []
         for i in User_Role().vrat_vsetky():
             self.values.append(i["name"])
-
         self.ids.spinner_id.values = self.values
         self.ids.spinner_id.text = 'Vyber rolu'
 
     def set_selected(self,text):
+        """
+        oznaci vybratu pracovnu rolu
+        """
         if self.values.count(text) == 0:
             return
         self.selected_role = text
     def call_Back (self):
+        """
+        vrati sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Workers'
     def check (self):
-        print(self.selected_role)
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne prida zamestnanca do databazy
+        """
         if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) != len(self.text1.text) or self.text1.text == "Meno":
             self.notify.text = "Meno je v zlom formáte."
         elif  len([x for x in self.text2.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) > ord('A') and ord(x) < ord('Z')))]) != len(self.text2.text) or self.text2.text == "Priezvisko":
@@ -56,6 +69,9 @@ class Add_Workers (BoxLayout):
             User().nahraj(self.text1.text, self.text2.text, self.selected_role)
             self.call_Back()
     def clear_screen(self,*args):
+        """
+        nacitanie udajov
+        """
         self.text1.text = ""
         self.text2.text = ""
         self.notify.text = ""

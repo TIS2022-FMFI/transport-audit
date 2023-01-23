@@ -5,6 +5,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Stillage_type
 class Edit_Stillage_type (BoxLayout):
+    """
+    uprava typov vozika
+    """
     select_id  = None
     notify = Button(text = '')
     text1 = TextInput(text='Meno typu vozíka')
@@ -15,6 +18,9 @@ class Edit_Stillage_type (BoxLayout):
     screenManager = None
     values = []
     def synchronize_stillage_types(self):
+        """
+        natiahne typy vozikov z databazy
+        """
         self.select_id = None
         self.values = []
         self.stillage_type_list = dict([(i['Name'], i['id']) for i in Stillage_type().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -28,13 +34,22 @@ class Edit_Stillage_type (BoxLayout):
         self.text1 = self.ids.input_edit_st
         self.notify = self.ids.notify
     def set_widgets(self,tex1):
+        """
+        ulozi vybraty typ vozika a nacita do textoveho pola jeho meno ktore vieme upravit
+        """
         if tex1 not in self.stillage_type_list:
             return
         self.text1.text = tex1
         self.select_id = self.stillage_type_list[tex1]
     def call_Back (self):
+        """
+        vrati sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Stillage_types'
     def check (self):
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne updatne typ vozika v databze
+        """
         if (self.select_id is None):
                 self.notify.text = "Vyber typ vozíka"
         elif self.text1.text in self.stillage_type_list.keys() and self.stillage_type_list[self.text1.text] != self.select_id:
@@ -47,6 +62,9 @@ class Edit_Stillage_type (BoxLayout):
             updated_stillage_type.update()
             self.call_Back()
     def clear_screen(self, *args):
+        """
+        nacitanie udajov
+        """
         self.text1.text = ""
         self.notify.text = ""
         self.synchronize_stillage_types()

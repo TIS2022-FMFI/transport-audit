@@ -6,6 +6,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Customer,Stillage_type,Pattern_Item,Pattern
 class Add_Patterns (BoxLayout):
+    """
+    pridavanie paternov
+    """
     select_customer_id  = None
     select_stillage_type = None
     on_delete_type_stillage = None
@@ -39,6 +42,9 @@ class Add_Patterns (BoxLayout):
         self.drop4 = self.ids.spinner_add_pattern_4
         self.notify = self.ids.notify
     def synchronize_customers(self):
+        """
+        natiahne zakaznikov z databazy
+        """
         self.select_customer_id = None
         self.values1 = []
         self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED' and i['id'] not in [i['Customer_id'] for i in Pattern().vrat_vsetky() if i['doplnok'] != 'DELETED']])
@@ -47,6 +53,9 @@ class Add_Patterns (BoxLayout):
         self.ids.spinner_add_pattern_1.values = self.values1
         self.ids.spinner_add_pattern_1.text = "Vyber zákazníka"
     def synchronize_stillage_types(self):
+        """
+        natiahne typy vozikov z databazy
+        """
         self.select_stillage_type = None
         # self.drop2.clear_widgets()
         self.values2 = []
@@ -57,18 +66,36 @@ class Add_Patterns (BoxLayout):
         self.ids.spinner_add_pattern_2.text = 'Typ vozíka'
         self.ids.spinner_add_pattern_3.text = 'Počet'
     def set_number(self,text):
+        """
+        ulozi pocet oznaceneho typu vozika
+        """
         self.select_number = text
     def set_stillage_type(self,text):
+        """
+        oznaci vybraty typ vozika
+        """
         self.select_stillage_type = text
     def set_widgets(self,tex1):
+        """
+        oznaci vybrateho zakaznika
+        """
         if tex1 not in self.customer_list:
             return
         self.select_customer_id = self.customer_list[tex1]
     def set_on_delete_type_stillage(self,tex):
+        """
+        oznaci vyrbaty typ vozika ktory chceme z patternu zmazat
+        """
         self.on_delete_type_stillage = tex
     def call_Back (self):
+        """
+        vrati sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Patterns'
     def check_deleted_pattern_tem(self):
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne odstrani typ vozika ktory necheme mat v paterne
+        """
         if self.on_delete_type_stillage is None:
             self.notify.text = "Vyber typ vozíka na mazanie"
         else:
@@ -80,6 +107,9 @@ class Add_Patterns (BoxLayout):
             self.ids.spinner_add_pattern_4.text = 'Zoznam vybratych typov vozíkov'
             self.on_delete_type_stillage = None
     def check_added_pattern_item(self):
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne prida typ vozika aj s poctom do nasho patternu
+        """
         if self.select_customer_id is None:
             self.notify.text = "Vyber zákazníka"
         elif self.select_stillage_type is None:
@@ -98,6 +128,9 @@ class Add_Patterns (BoxLayout):
         self.ids.spinner_add_pattern_4.values = self.values4
         self.ids.spinner_add_pattern_4.text = 'Zoznam vybratých typov vozíkov'
     def check (self):
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne prida patern do databazy
+        """
         if self.select_customer_id is None:
             self.notify.text = "Vyber zákazníka"
         elif len(self.pattern_item_list) ==0:
@@ -108,6 +141,9 @@ class Add_Patterns (BoxLayout):
                 Pattern_Item().nahraj(int(self.pattern_item_list[i]),Updated_Pattern_id,self.stillage_type_list[i])
             self.call_Back()
     def clear_screen(self, *args):
+        """
+        nacitanie udajov
+        """
         self.notify.text = ""
         self.select_number = None
         self.drop3.select('Number')

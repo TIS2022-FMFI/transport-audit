@@ -11,6 +11,10 @@ class Settings_Vehicles (BoxLayout):
     btn4 = Button(text="Späť")
     screenManager = None
     def __init__(self, screenManager,**kwargs):
+        """
+        nastavenia SPZ
+        nasledovne funkcie zavolaju prislusny screen ktory si vyberieme
+        """
         super(Settings_Vehicles, self).__init__(**kwargs)
         self.screenManager = screenManager
     def call_add(self):

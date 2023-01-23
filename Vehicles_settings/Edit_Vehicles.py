@@ -6,6 +6,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Vehicle
 class Edit_Vehicles (BoxLayout):
+    """
+    uprava SPZ
+    """
     select_id  = None
     notify = Button(text = '')
     text1 = TextInput(text='ŠPZ')
@@ -21,6 +24,9 @@ class Edit_Vehicles (BoxLayout):
         self.notify = self.ids.notify
         self.text1 = self.ids.input_edit_vehicle
     def synchronize_vehicles(self):
+        """
+        natiahne SPZ z databazy
+        """
         self.select_id = None
         self.values = []
         self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -29,15 +35,23 @@ class Edit_Vehicles (BoxLayout):
         self.ids.spinner_edit_vehicle.values = self.values
         self.ids.spinner_edit_vehicle.text = 'Vyber ŠPZ na úpravu'
     def set_widgets(self,tex1):
+        """
+        ulozi vybratu SPZ a nacita do textoveho pola jej meno ktore vieme upravit
+        """
         if tex1 not in self.vehicle_list:
             self.text1.text = ""
             return
         self.text1.text = tex1
         self.select_id = self.vehicle_list[tex1]
     def call_Back (self):
+        """
+        vrati sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Vehicles'
     def check (self):
-        print(self.text1)
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne updatne SPZ v databze
+        """
         if (self.select_id is None):
             self.notify.text = "Nie je vybratá ŠPZ."
         elif len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')) or (ord(x) == ' ') or (ord(x) >= ord('0') and ord(x) <= ord('9')))]) != len(self.text1.text) or self.text1.text == "ŠPZ":

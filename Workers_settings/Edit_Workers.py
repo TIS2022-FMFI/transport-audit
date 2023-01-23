@@ -6,6 +6,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import User, User_Role
 class Edit_Workers (BoxLayout):
+    """
+    uprava zamestnancov
+    """
     select_role = None
     select_code  = None
     notify = Button(text = '')
@@ -28,6 +31,9 @@ class Edit_Workers (BoxLayout):
         self.btn3 = self.ids.button_edit_worker
         self.notify = self.ids.notify
     def synchronize_workers(self):
+        """
+        natiahne zamestnancov z databazy
+        """
         self.select_code = None
         self.values2 = []
         self.workers_list = dict([(i['Name'][0] + ". " + i['Last_name'] + " " + str(i['code']), str(i['code'])) for i in User().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -36,6 +42,9 @@ class Edit_Workers (BoxLayout):
         self.ids.spinner_edit_worker_1.values = self.values2
         self.ids.spinner_edit_worker_1.text = 'Vyber pracovníka na úpravu'
     def synchronize_user_roles(self):
+        """
+        natiahne role z databazy
+        """
         self.select_code = None
         self.values1 = []
         for i in User_Role().vrat_vsetky():
@@ -43,8 +52,14 @@ class Edit_Workers (BoxLayout):
         self.ids.spinner_edit_worker_2.values = self.values1
         self.ids.spinner_edit_worker_2.text = 'Vyber rolu'
     def set_select(self,tex):
+        """
+        oznaci vybratu rolu
+        """
         self.select_role = tex
     def set_widgets(self,text):
+        """
+        ulozi vybrateho zamestnanca a nacita do textovych poli jeho udaje ktore vieme upravit
+        """
         if text not in self.workers_list:
             return
         tex1 = self.workers_list[text]
@@ -61,8 +76,14 @@ class Edit_Workers (BoxLayout):
             self.select_role = selected_role.name
             self.ids.spinner_edit_worker_2.text = self.select_role
     def call_Back (self):
+        """
+        vrati sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Workers'
     def check (self):
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne updatne zamestnanca v databze
+        """
         if (self.select_code is None):
                 self.notify.text = "Vyber zamestnanca."
         elif len([x for x in self.text1.text if
@@ -88,6 +109,9 @@ class Edit_Workers (BoxLayout):
             updated_user.update()
             self.call_Back()
     def clear_screen(self,*args):
+        """
+        nacitanie udajov
+        """
         self.text1.text = ""
         self.text2.text = ""
         self.notify.text = ""

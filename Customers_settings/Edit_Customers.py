@@ -6,6 +6,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Customer
 class Edit_Customers (BoxLayout):
+    """
+    uprava zakaznikov
+    """
     select_id  = None
     notify = Button(text = '')
     text1 = TextInput(text='Meno')
@@ -16,6 +19,9 @@ class Edit_Customers (BoxLayout):
     screenManager = None
     values = []
     def synchronize_customers(self):
+        """
+        natiahne zakaznikov z databazy
+        """
         self.select_id = None
         self.values = []
         self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -29,13 +35,22 @@ class Edit_Customers (BoxLayout):
         self.notify = self.ids.notify
         self.text1 = self.ids.text_customer
     def set_widgets(self,tex1):
+        """
+        ulozi vybrateho zakaznika a nacita do textoveho pola jeho meno ktore vieme upravit
+        """
         if tex1 not in self.customer_list:
             return
         self.text1.text = tex1
         self.select_id = self.customer_list[tex1]
     def call_Back (self):
+        """
+        vrati sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Customers'
     def check (self):
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne updatne zakaznika v databze
+        """
         if (self.select_id is None):
                 self.notify.text = "Vyber zákazníka"
         elif self.text1.text in self.customer_list.keys() and self.customer_list[self.text1.text] != self.select_id:
@@ -48,6 +63,9 @@ class Edit_Customers (BoxLayout):
             updated_customer.update()
             self.call_Back()
     def clear_screen(self, *args):
+        """
+        nacitanie udajov
+        """
         self.synchronize_customers()
         self.text1.text = ""
         self.notify.text = ""

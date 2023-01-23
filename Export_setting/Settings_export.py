@@ -6,6 +6,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import General
 class Settings_Exports (BoxLayout):
+    """
+    nastavenia Exportov
+    """
     selected_answer = None
     notify = Button(text = '')
     drop1 = DropDown()
@@ -17,12 +20,21 @@ class Settings_Exports (BoxLayout):
         super(Settings_Exports, self).__init__(**kwargs)
         self.screenManager = screenManager
     def set_selected(self,text):
+        """
+        nastavi vybratu moznost
+        """
         self.selected_answer = 0
         if text == "Áno":
             self.selected_answer = 1
     def call_Back (self):
+        """
+        vrati naspat na povodnu obrazovku
+        """
         self.screenManager.current = 'Menu_screen'
     def check (self):
+        """
+        updatuje databazu
+        """
         if self.selected_answer is None:
             self.notify.text = "Please select one of opportunities"
         else:
@@ -31,6 +43,9 @@ class Settings_Exports (BoxLayout):
             on_update_exporting.update()
             self.call_Back()
     def clear_screen(self,*args):
+        """
+        nacitanie obrazovky
+        """
         self.notify.text = ""
         # self.drop1.clear_widgets()
         self.values = []

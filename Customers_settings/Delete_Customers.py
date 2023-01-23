@@ -5,6 +5,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Customer
 class Delete_Customers (BoxLayout):
+    """
+    mazanie zakaznikov
+    """
     notify = Button(text = '')
     on_delete_selected = None
     drop1 = DropDown()
@@ -14,6 +17,9 @@ class Delete_Customers (BoxLayout):
     screenManager = None
     values=[]
     def synchronize_customers(self):
+        """
+        nacita zakaznikov z databazy
+        """
         self.on_delete_selected = None
         self.values = []
         self.customer_list = dict([(i['Name'],i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -26,12 +32,21 @@ class Delete_Customers (BoxLayout):
         self.screenManager = screenManager
         self.notify = self.ids.notify
     def select_code(self,tex):
+        """
+        oznaci zakaznika na vymazanie
+        """
         if tex not in self.customer_list:
             return
         self.on_delete_selected = self.customer_list[tex]
     def call_Back (self):
+        """
+        presunutie sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Customers'
     def check (self):
+        """
+        kontrola vstupov nasledne mazanie zakaznika
+        """
         if (self.on_delete_selected is None):
                 self.notify.text = "Vyber zákazníka"
         else:
@@ -39,5 +54,8 @@ class Delete_Customers (BoxLayout):
             on_delete_customer.zmazat()
             self.call_Back()
     def clear_screen(self, *args):
+        """
+        prvotna inicializacia obrazovky
+        """
         self.notify.text = ""
         self.synchronize_customers()

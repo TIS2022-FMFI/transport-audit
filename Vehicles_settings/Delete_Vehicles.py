@@ -5,6 +5,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Vehicle
 class Delete_Vehicles (BoxLayout):
+    """
+    mazanie SPZ
+    """
     notify = Button(text = '')
     on_delete_selected = None
     drop1 = DropDown()
@@ -14,6 +17,9 @@ class Delete_Vehicles (BoxLayout):
     screenManager = None
     values=[]
     def synchronize_vehicles(self):
+        """
+        nacita SPZ z databazy
+        """
         self.on_delete_selected = None
         self.values = []
         self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -26,12 +32,21 @@ class Delete_Vehicles (BoxLayout):
         self.screenManager = screenManager
         self.notify = self.ids.notify
     def select_id(self,tex):
+        """
+        oznaci SPZ na vymazanie
+        """
         if tex not in self.vehicle_list:
             return
         self.on_delete_selected  = self.vehicle_list[tex]
     def call_Back (self):
+        """
+        presunutie sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Vehicles'
     def check (self):
+        """
+        kontrola vstupov nasledne mazanie SPZ
+        """
         if (self.on_delete_selected is None):
                 self.notify.text = "Nie je vybraté vozidlo."
         else:
@@ -39,5 +54,8 @@ class Delete_Vehicles (BoxLayout):
             on_delete_Vehicle.zmazat()
             self.call_Back()
     def clear_screen(self, *args):
+        """
+        prvotna inicializacia obrazovky
+        """
         self.notify.text = ""
         self.synchronize_vehicles()

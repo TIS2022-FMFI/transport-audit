@@ -8,6 +8,10 @@ class Settings_Customers (BoxLayout):
 
     screenManager = None
     def __init__(self,screenManager, **kwargs):
+        """
+        nastavenia zakaznikov
+        nasledovne funkcie zavolaju prislusny screen ktory si vyberieme
+        """
         super(Settings_Customers, self).__init__(**kwargs)
         self.screenManager = screenManager
     def call_add(self):

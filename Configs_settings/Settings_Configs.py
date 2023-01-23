@@ -4,11 +4,18 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.app import App
 class Settings_Configs (BoxLayout):
+    """
+    menu configov
+    """
     btn1 = Button(text="Pridaj")
     btn3 = Button(text="Vymaž")
     btn4 = Button(text="Späť")
     screenManager = None
     def __init__(self,screenManager, **kwargs):
+        """
+        nastavenia konfigov
+        nasledovne funkcie zavolaju prislusny screen ktory si vyberieme
+        """
         super(Settings_Configs, self).__init__(**kwargs)
         self.screenManager = screenManager
     def call_add(self):

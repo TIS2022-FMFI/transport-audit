@@ -5,6 +5,10 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.app import App
 class Settings_Patterns (BoxLayout):
+    """
+    nastavenia patternov
+    nasledovne funkcie zavolaju prislusny screen ktory si vyberieme
+    """
     btn1 = Button(text="Pridaj")
     btn2 = Button(text="Uprav")
     btn3 = Button(text="Vymaž")

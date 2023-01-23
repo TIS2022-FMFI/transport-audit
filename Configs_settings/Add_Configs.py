@@ -2,7 +2,11 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.dropdown import DropDown
 from sqlite import Customer,Vehicle, Config
+
 class Add_Configs (BoxLayout):
+    """
+    pridavanie configov
+    """
     select_customer_id  = None
     select_vehicle = None
     notify = Button(text = '')
@@ -21,6 +25,9 @@ class Add_Configs (BoxLayout):
         self.screenManager = screenManager
         self.notify = self.ids.notify
     def synchronize_customers(self):
+        """
+        natiahne zakaznikov z databazy
+        """
         self.select_customer_id  = None
         self.customer_list = dict([(i['Name'], i['id']) for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED'])
         self.values1 = []
@@ -29,6 +36,9 @@ class Add_Configs (BoxLayout):
         self.ids.spinner_add_config1.values = self.values1
         self.ids.spinner_add_config1.text = "Vyber zákazníka"
     def synchronize_vehicles(self):
+        """
+        natiahne SPZ vozidiel z databazy
+        """
         self.select_vehicle = None
         self.advanced_user_list = set()
         self.vehicle_list = dict([(i['SPZ'], i['id']) for i in Vehicle().vrat_vsetky() if i['doplnok'] != 'DELETED'])
@@ -39,20 +49,32 @@ class Add_Configs (BoxLayout):
         self.ids.spinner_add_config2.values = self.values2
         self.ids.spinner_add_config2.text = "Vyber ŠPZ"
     def synchronize_configs(self):
+        """
+        natiahne zoznam configov z databazy
+        """
         self.config_list = [(i["Customer_id"], i["Vehicle_id"]) for i in Config().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def set_customer(self,text):
+        """
+        zapamata si vybrateho zakaznika zo zoznamu
+        """
         if text != "Vyber zákazníka":
             self.select_customer_id = self.customer_list[text]
     def set_vehicle(self,text):
+        """
+        zapamata si SPZ zo zoznamu
+        """
         if text != "Vyber ŠPZ":
             self.select_vehicle = self.vehicle_list[text]
 
     def call_Back (self):
+        """
+        vrati sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Configs'
-
-    def set_on_delete_advanced_user(self,text):
-        self.on_delete_advanced_user = text
     def check (self):
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne prida config do databazy
+        """
         if self.select_customer_id is None:
             self.notify.text = "Vyber zákazníka"
         elif self.select_vehicle is None:
@@ -64,6 +86,9 @@ class Add_Configs (BoxLayout):
             Config().nahraj(self.select_customer_id,self.select_vehicle)
             self.call_Back()
     def clear_screen(self, *args):
+        """
+        nacitanie udajov
+        """
         self.notify.text = ""
         self.synchronize_customers()
         self.synchronize_vehicles()

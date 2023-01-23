@@ -5,6 +5,10 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.app import App
 class Settings_Workers (BoxLayout):
+    """
+    nastavenia zamestnancov
+    nasledovne funkcie zavolaju prislusny screen ktory si vyberieme
+    """
     screenManager = None
 
     def __init__(self, screenManager,**kwargs):

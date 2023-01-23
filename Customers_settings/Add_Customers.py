@@ -6,6 +6,9 @@ from kivy.uix.dropdown import DropDown
 from kivy.app import App
 from sqlite import Customer
 class Add_Customers (BoxLayout):
+    """
+    pridavanie zakaznikov
+    """
     notify = Button(text = '')
     text1 = TextInput(text='Meno zákazníka')
     screenManager = None
@@ -16,10 +19,19 @@ class Add_Customers (BoxLayout):
         self.text1 = self.ids.input_add_customer
         self.notify = self.ids.notify
     def synchronize_customers(self):
+        """
+        natiahne zakaznikov z databazy
+        """
         self.customer_list = [i['Name'] for i in Customer().vrat_vsetky() if i['doplnok'] != 'DELETED']
     def call_Back (self):
+        """
+        vrati sa na predchadzajucu obrazovku
+        """
         self.screenManager.current = 'Settings_Customers'
     def check (self):
+        """
+        skontroluje ci su vsetky vstupy spravne nasledne prida zakaznika do databazy
+        """
         if  len([x for x in self.text1.text if ((ord(x) >= ord('a') and ord(x) <= ord('z')) or (ord(x) >= ord('A') and ord(x) <= ord('Z')))]) == 0 or self.text1.text == "Meno zákazníka":
             self.notify.text = "Zadaj názov"
         elif self.text1.text in self.customer_list:
@@ -28,6 +40,9 @@ class Add_Customers (BoxLayout):
             Customer().nahraj(self.text1.text)
             self.call_Back()
     def clear_screen(self, *args):
+        """
+        nacitanie udajov
+        """
         self.notify.text = ""
         self.text1.text = ''
         self.synchronize_customers()
