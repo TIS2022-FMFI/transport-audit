@@ -28,7 +28,7 @@ class Menu_screen (BoxLayout):
         self.btn3 = self.ids.MSbtn3
         self.btn4 = self.ids.MSbtn4
         self.btn5 = self.ids.MSbtn5
-        self.btn6 = self.ids.MSbtn6
+        # self.btn6 = self.ids.MSbtn6
         self.btn7 = self.ids.MSbtn8
 
         self.btnOdhlasenie = self.ids.MSbtn7
@@ -66,14 +66,14 @@ class Menu_screen (BoxLayout):
             self.btn3.disabled = False
             self.btn4.disabled = False
             self.btn5.disabled = False
-            self.btn6.disabled = False
+            # self.btn6.disabled = False
             self.btn7.disabled = False
         else:
             self.btn2.disabled = True
             self.btn3.disabled = True
             self.btn4.disabled = True
             self.btn5.disabled = True
-            self.btn6.disabled = True
+            # self.btn6.disabled = True
             self.btn7.disabled = True
         # self.add_widget(self.btnOdhlasenie)
         # self.add_widget(self.btnAudit)

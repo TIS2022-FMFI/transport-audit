@@ -16,11 +16,13 @@ if platform == "android": # Zarucuje, že iba na androide sa if spustí, teda an
     request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE,Permission.CAMERA])
 
 from sqlite import synchronize_db_server_client
+from logy import logy_nahraj_vsetky_na_server,logni
 try:
     synchronize_db_server_client()
+    logy_nahraj_vsetky_na_server()
 except:
     print("neda sa pripojit")
-    pass
+    logni(0,0,"chyba pri synchroniizácii")
 from skener2 import Scanner as Scanner2
 
 class MainApp(App):
@@ -252,11 +254,8 @@ class MainApp(App):
         self.shippmentStillages = set()
         self.vozikyVOprave = {}
         self.sm.current = 'startScreen'
-        #self.sm.current = 'Menu_screen'
+        # self.sm.current = 'Menu_screen'
         return self.sm
 if __name__ == '__main__':
     from sqlite import User, User_Role
-    print("zamstnanci")
-    for u in User().vrat_vsetky():
-        print(u, User_Role().stiahni(u['User_Role_id']).name)
     MainApp().run()
