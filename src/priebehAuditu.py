@@ -71,11 +71,13 @@ class PrebiehajuciAudit(Screen):
             navrat na uvod auditu, aplikacia si dalej nebude pamatat udaje tohto konkretneho auditu
         """
         print("navrat na uvod auditu")
+        self.vynulovatVozik()
         self.aplikacia.shippment = None
         self.prebiehaAudit = False
         self.aplikacia.shippmentStillages = set()
         self.aplikacia.kod.clear()
         self.pattern = None
+        self.kodNaSkenovanie = NajblizsiKod.VOZIK
         self.aplikacia.screenManager.current = self.povodna.name
 
     def vynulovatVozik(self, *args):
@@ -525,6 +527,7 @@ class PrebiehajuciAudit(Screen):
         self.aplikacia.shippment.Vehicle_id = self.auto.id
 
         self.aplikacia.shippmentStillages = set()
+        self.poradoveCisloNasledujucehoVozikaPodlaType = {}
         self.stillage = Stillage()
         self.opravovany = False
 
