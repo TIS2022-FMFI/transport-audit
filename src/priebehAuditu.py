@@ -121,12 +121,14 @@ class PrebiehajuciAudit(Screen):
                               content=Label(text=f'Nesprávne poradie vozíkov typu {self.stillageTypMenoZKodu(self.stillage.kod)}'), size_hint=(0.5, 0.5))
                 popup.open()
                 najdenaChyba = True
-
-        dataReport = self.aplikacia.udajeReportu(self.aplikacia.zamestnanec.code).get(self.stillage.Stillage_Number_on_Header, None)
+        #print("idem hladat ", self.stillage.Stillage_Number_on_Header)
+        #print(self.aplikacia.udajeReportu().keys())
+        dataReport = self.aplikacia.udajeReportu().get("0"+self.stillage.Stillage_Number_on_Header, None)
         #self.report[]
         TLS = True
         if PrebiehajuciAudit.dlzkaIONO == len(self.stillage.First_scan_product):
             TLS = False
+        print(dataReport)
         if dataReport is not None and dataReport:
             if TLS:
                 if dataReport[0]['TLS']!= self.stillage.First_scan_product:
