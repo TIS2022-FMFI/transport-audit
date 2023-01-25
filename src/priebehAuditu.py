@@ -239,11 +239,13 @@ class PrebiehajuciAudit(Screen):
             zobrazenie buttonov na riesenie chyb a nastavenie chybpvych atributov sicasneho vozika
         """
         #upravit
+
         self.chyba = True
         self.bVymazatVozik.disabled = True
         self.bUzavriet.disabled = True
         print("nepristupne buttony")
-        self.stillage._Check = "NOK"
+        self.stillage._Check = 0
+
         self.stillage.Note = "Expected correction"
         self.add_widget(self.bPotvrditChybu)
         self.add_widget(self.bOdlozitOpravu)
