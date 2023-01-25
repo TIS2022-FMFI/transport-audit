@@ -123,7 +123,7 @@ class PrebiehajuciAudit(Screen):
                 najdenaChyba = True
         #print("idem hladat ", self.stillage.Stillage_Number_on_Header)
         #print(self.aplikacia.udajeReportu().keys())
-        dataReport = self.aplikacia.udajeReportu().get("0"+self.stillage.Stillage_Number_on_Header, None)
+        dataReport = self.aplikacia.udajeReportu().get(sself.stillage.Stillage_Number_on_Header, None)
         #self.report[]
         TLS = True
         if PrebiehajuciAudit.dlzkaIONO == len(self.stillage.First_scan_product):
