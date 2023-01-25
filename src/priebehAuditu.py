@@ -42,6 +42,7 @@ class PrebiehajuciAudit(Screen):
         self.styllageTypeOpravaChyby = set()
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
         self.prebiehaAudit = False
+        self.chyba  = False
 
         self.bind(on_enter = self.kontrolaKodu)
 
@@ -70,6 +71,13 @@ class PrebiehajuciAudit(Screen):
         """
             navrat na uvod auditu, aplikacia si dalej nebude pamatat udaje tohto konkretneho auditu
         """
+
+        if self.kodNaSkenovanie == NajblizsiKod.KONTROLOR:
+            self.remove_widget(self.bPotvrditVozik)
+        if self.chyba:
+            self.chyba = False
+            self.remove_widget(self.bOdlozitOpravu)
+            self.remove_widget(self.bPotvrditChybu)
         print("navrat na uvod auditu")
         self.vynulovatVozik()
         self.aplikacia.shippment = None
@@ -113,12 +121,14 @@ class PrebiehajuciAudit(Screen):
                               content=Label(text=f'Nesprávne poradie vozíkov typu {self.stillageTypMenoZKodu(self.stillage.kod)}'), size_hint=(0.5, 0.5))
                 popup.open()
                 najdenaChyba = True
-
-        dataReport = self.aplikacia.udajeReportu(self.aplikacia.zamestnanec.code).get(self.stillage.Stillage_Number_on_Header, None)
+        #print("idem hladat ", self.stillage.Stillage_Number_on_Header)
+        #print(self.aplikacia.udajeReportu().keys())
+        dataReport = self.aplikacia.udajeReportu().get(self.stillage.Stillage_Number_on_Header, None)
         #self.report[]
         TLS = True
         if PrebiehajuciAudit.dlzkaIONO == len(self.stillage.First_scan_product):
             TLS = False
+        print(dataReport)
         if dataReport is not None and dataReport:
             if TLS:
                 if dataReport[0]['TLS']!= self.stillage.First_scan_product:
@@ -169,6 +179,8 @@ class PrebiehajuciAudit(Screen):
             else:
                 self.kodNaSkenovanie = NajblizsiKod.KONTROLOR
                 self.add_widget(self.bPotvrditVozik)
+                self.bVymazatVozik.disabled = True
+                self.bUzavriet.disabled = True
                 return
         if najdenaChyba:
             self.zobrazitChyboveButtony()
@@ -217,6 +229,9 @@ class PrebiehajuciAudit(Screen):
         #upravit
         self.remove_widget(self.bPotvrditChybu)
         self.remove_widget(self.bOdlozitOpravu)
+        self.bVymazatVozik.disabled = False
+        self.bUzavriet.disabled = False
+        print("spristupnene 1")
         #self.remove_widget(self.bVymazatVozik)
 
     def zobrazitChyboveButtony(self):
@@ -224,7 +239,13 @@ class PrebiehajuciAudit(Screen):
             zobrazenie buttonov na riesenie chyb a nastavenie chybpvych atributov sicasneho vozika
         """
         #upravit
+
+        self.chyba = True
+        self.bVymazatVozik.disabled = True
+        self.bUzavriet.disabled = True
+        print("nepristupne buttony")
         self.stillage._Check = 0
+
         self.stillage.Note = "Expected correction"
         self.add_widget(self.bPotvrditChybu)
         self.add_widget(self.bOdlozitOpravu)
@@ -235,6 +256,10 @@ class PrebiehajuciAudit(Screen):
             chybovy vozik si dame do zoznamu cakajucich na opravenie a prepneme sa na novy vozik
         """
         #self.styllageTypeOpravaChyby.add(self.stillage.Stillage_Type_id)
+        self.chyba = False
+        self.bVymazatVozik.disabled = False
+        self.bUzavriet.disabled = False
+        print("spristupnene 2")
         self.aplikacia.vozikyVOprave[self.stillage.kod] = self.stillage
         self.schovatChyboveButtony()
         self.vynulovatVozik()
@@ -244,6 +269,9 @@ class PrebiehajuciAudit(Screen):
         """
             potvrdenie chyboveho vozika, nahranie jeho udajov
         """
+        self.bVymazatVozik.disabled = False
+        self.bUzavriet.disabled = False
+        print("spristupnene 3")
         self.schovatChyboveButtony()
         if self.stillage.kod in self.aplikacia.vozikyVOprave:
             self.aplikacia.vozikyVOprave[self.stillage.kod] = None
@@ -404,6 +432,7 @@ class PrebiehajuciAudit(Screen):
         """
         print("audit v priebehu ", self.prebiehaAudit)
         if self.prebiehaAudit:
+
             return
 
         if self.zakaznik is None:
@@ -435,7 +464,7 @@ class PrebiehajuciAudit(Screen):
             self.spat()
             return
 
-
+        #self.clear_widgets()
         #self.report = citaj_report_dict()
         # self.clear_widgets()
 
@@ -461,11 +490,11 @@ class PrebiehajuciAudit(Screen):
                        background_normal="", pos_hint={'center_x': 0.5, "top":0.3}, size_hint=(1, 0.08))
         bSpat.bind(on_press=self.spat)
         self.add_widget(bSpat)
-        bUzavriet = Button(text='Uzavrieť kamión', pos_hint={'center_x': 0.5, "top":0.2},
+        self.bUzavriet = Button(text='Uzavrieť kamión', pos_hint={'center_x': 0.5, "top":0.2},
                            background_color=rgba('#021D49'),
                            background_normal="", size_hint=(1, 0.08))
-        bUzavriet.bind(on_press=self.uzavriet)
-        self.add_widget(bUzavriet)
+        self.bUzavriet.bind(on_press=self.uzavriet)
+        self.add_widget(self.bUzavriet)
         self.bVymazatVozik = Button(text='Zrusiť vozík', pos_hint={'center_x': 0.5, "top":0.1},
                                     background_color=rgba('#021D49'),
                                     background_normal="", size_hint=(1, 0.08))
@@ -530,6 +559,7 @@ class PrebiehajuciAudit(Screen):
         self.poradoveCisloNasledujucehoVozikaPodlaType = {}
         self.stillage = Stillage()
         self.opravovany = False
+        self.chyba = False
 
 
     def kontrolaKodu(self, *args):
@@ -589,6 +619,10 @@ class PrebiehajuciAudit(Screen):
                 rola = User_Role().stiahni(zamestnanec.User_Role_id)
                 if rola is not None and not rola.over_zmazanie() and (rola.name == 'Operátor' or rola.name == 'Administrátor'):
                     self.remove_widget(self.bPotvrditVozik)
+                    self.bVymazatVozik.disabled = False
+                    self.bUzavriet.disabled = False
+                    print("spristupnene 4")
+
                     self.nahrajVozikZasielky(True)
                     self.aplikacia.kod.clear()
                     return

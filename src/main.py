@@ -51,6 +51,7 @@ class MainApp(App):
     def stiahnutieReportu(self, *args):
         """
             tato metoda je volana kazdych 15 minut a zabezpecuje stahuvanie sucasnej verzie reportu
+            ak je mozne precitat report, spracuje jeho udaje a ulozi ich do self.report
         """
         kod = 0
 
@@ -58,17 +59,19 @@ class MainApp(App):
             kod = self.zamestnanec.code
         print(kod, "stahuje report")
         ziskaj_report(kod)
-
-    def udajeReportu(self, kod):
-        """
-        ak je to mozne, precita, spracuje a vrati obsah sucasne ulozeneho reportu
-        :param kod: kod prihlaseneho zamestnanca
-        :return: spracovany obsah reportu
-        """
         try:
             self.report = citaj_report_dict()
+            #for x in self.report.items():
+            #    print(x)
         except:
+            print("neslo precitat report")
             logni(kod, 205, "nepodarilo sa precitat report")
+
+    def udajeReportu(self):
+        """
+        :return: spracovany obsah sucasneho reportu
+        """
+
         return self.report
     def build(self):
         if platform == "android":
@@ -304,3 +307,4 @@ if __name__ == '__main__':
     for v in Shipment().vrat_vsetky():
         print(v)
     MainApp().run()
+
