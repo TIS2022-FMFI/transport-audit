@@ -78,6 +78,14 @@ class PrebiehajuciAudit(Screen):
             self.chyba = False
             self.remove_widget(self.bOdlozitOpravu)
             self.remove_widget(self.bPotvrditChybu)
+        self.remove_widget(self.bVozik)
+        self.remove_widget(self.bStillage)
+        self.remove_widget(self.bRange)
+        self.remove_widget(self.bPrvy)
+        self.remove_widget(self.bDruhy)
+        self.remove_widget(self.bUzavriet)
+        self.remove_widget(self.bVymazatVozik)
+        self.remove_widget(self.bSpat)
         print("navrat na uvod auditu")
         self.vynulovatVozik()
         self.aplikacia.shippment = None
@@ -486,10 +494,10 @@ class PrebiehajuciAudit(Screen):
 
         ##########################################
 
-        bSpat = Button(text='Zrušiť audit', background_color=rgba('#021D49'),
+        self.bSpat = Button(text='Zrušiť audit', background_color=rgba('#021D49'),
                        background_normal="", pos_hint={'center_x': 0.5, "top":0.3}, size_hint=(1, 0.08))
-        bSpat.bind(on_press=self.spat)
-        self.add_widget(bSpat)
+        self.bSpat.bind(on_press=self.spat)
+        self.add_widget(self.bSpat)
         self.bUzavriet = Button(text='Uzavrieť kamión', pos_hint={'center_x': 0.5, "top":0.2},
                            background_color=rgba('#021D49'),
                            background_normal="", size_hint=(1, 0.08))
