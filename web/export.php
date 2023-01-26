@@ -158,7 +158,12 @@ if( isset($_POST['Type']) ){
 				  ON "Stillage_Type_id" = "Stillage_type".id WHERE "Stillage".id = ' . $ajdi_stillage_type . ' ';
 				$result_stillage_type = pg_query($db2,$query_stillage_type) or die('Error message: ' . pg_last_error());
 				$row_stillage_type = pg_fetch_row($result_stillage_type);
- $table->easyCell($row_stillage_type[0]);
+				if($row_stillage_type != null) {
+						$table->easyCell($row_stillage_type[0]);
+				}
+				else {
+					$table->easyCell("");
+				}
 }
 if( isset($_POST['Stillage_number']) ){
  $table->easyCell(dekoduj($item['Stillage_number']));
@@ -215,7 +220,7 @@ if( isset($_POST['TLS_Range_stop']) ){
  $table->easyCell(dekoduj($item['TLS_range_stop']));
 }
 if( isset($_POST['Note']) ){
- $table->easyCell('Note');
+ $table->easyCell(dekoduj($item['Note']));
 }
     $table->printRow();
 	$i++;

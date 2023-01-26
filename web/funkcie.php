@@ -226,6 +226,7 @@ function pridaj_uzivatela_web($db,$Name,$username,$User_Role,$passwd){
 				  //echo "Data is updated: $res\n";
 				  return True;
 			  } else {
+				  echo pg_last_error($db);
 				  return False;
 			  }
 }
